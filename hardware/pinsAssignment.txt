@@ -19,5 +19,10 @@ BOOT Interface:
 	BOOT0 - 10k pull-down, pad for jumpering to +3V3
 	BOOT1 - 10k pull-down
 
+Bootloader Interface:
+	RX_SCK - shared with SWDIO
+	MOSI   - shared with SWCLK
+	NRST
+
 HW Rev ID:
 	Rev A: PB12 PB13 PB14 - All LOW
