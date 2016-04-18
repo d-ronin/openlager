@@ -15,4 +15,4 @@ The **openlager** firmware in `src/` is licensed under a simplified BSD license 
 
 The **fatfs** library in `libs/fatfs` is licensed under the one-clause BSD license as found in the source files in that directory.
 
-The **STM32F4xx_StdPeriph_Driver** library in `libs/STM32F4xx_StdPeriph_Driver` is licensed under a restrictive license that limits its usage to ST family processors.  To use this software on non-ST parts, the dependency on this library code must be removed.
+The **STM32F4xx_StdPeriph_Driver** library in `libs/STM32F4xx_StdPeriph_Driver` is largely licensed under a restrictive license that limits its usage to ST family processors.  To use this software on non-ST parts, the dependency on this library code must be removed.  Portions of this code (the `core_cm*` include headers) are licensed under a permissive 3 clause BSD license from ARM, as noted in the individual files.
