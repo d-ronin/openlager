@@ -39,10 +39,16 @@ CC := $(ARM_SDK_PREFIX)gcc
 CPPFLAGS += $(patsubst %,-I%,$(INC))
 CPPFLAGS += -DSTM32F411xE -DUSE_STDPERIPH_DRIVER
 
-CFLAGS += -mcpu=cortex-m4 -mthumb
+CFLAGS :=
+CFLAGS += -mcpu=cortex-m4 -mthumb -fdata-sections -ffunction-sections
+CFLAGS += -fomit-frame-pointer -Wall
 
-foo: $(OBJ)
-	echo $(OBJ)
+LDFLAGS := -nostartfiles -Wl,-static -lc -lgcc -Wl,--warn-common
+LDFLAGS += -Wl,--fatal-warnings -Wl,--gc-sections
+LDFLAGS += -Tsrc/stm32f411.ld
+
+build/openlager: $(OBJ)
+	$(V1) $(CC) $(CFLAGS) $(OBJ) -o $@ $(LDFLAGS)
 
 clean:
 	rm -rf $(BUILD_DIR)
