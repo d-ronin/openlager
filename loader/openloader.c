@@ -42,6 +42,30 @@ const GPIO_InitTypeDef led_def = {
 	.GPIO_PuPd = GPIO_PuPd_NOPULL
 };
 
+#define MAINPROGRAM_OFFSET 0x08010000 // from src/memory.ld
+void invoke_next_program() {
+	// XXX should deinit interrupt-y things here... or at least mask
+	// interrupts.
+	RCC_APB2PeriphResetCmd(0xffffffff, ENABLE);
+	RCC_APB1PeriphResetCmd(0xffffffff, ENABLE);
+	RCC_APB2PeriphResetCmd(0xffffffff, DISABLE);
+	RCC_APB1PeriphResetCmd(0xffffffff, DISABLE);
+
+	void *memory = (void *) MAINPROGRAM_OFFSET;
+
+	register uintptr_t stack_pointer asm("r0") = *((const uintptr_t *)(memory));
+	register uintptr_t program_entry asm("r1") = *((const uintptr_t *)(memory + sizeof(void *)));
+
+	asm volatile (
+		"mov	sp, r0\n\t"
+		"msr	MSP, r0\n\t"
+		"bx	r1\n\t"
+		: "+r" (stack_pointer), "+r" (program_entry)
+	       	: :);	// No clobbers etc, because this never comes back.
+
+	__builtin_unreachable();
+}
+
 int main() {
 	/* Keep it really simple in the loader-- just run from 16MHz RC osc,
 	 * no wait states, etc. */
@@ -109,16 +133,15 @@ int main() {
 
 	uint32_t nextTick = 0;
 
-	while (1) {
-		if (systick_cnt > nextTick) {
-			nextTick += 20;
+	for (int i=0; i<32; i++) {
+		while (systick_cnt < nextTick);
 
+		nextTick += 15;
 
-			GPIO_ToggleBits(GPIOA, GPIO_Pin_5);
-			// This appears not to work in the emulator:
-			//GPIO_WriteBit(GPIOA, GPIO_Pin_5, toggle ? Bit_SET : Bit_RESET);
-		}
+		GPIO_ToggleBits(GPIOA, GPIO_Pin_5);
 	}
+
+	invoke_next_program();
 
 	return 0;
 }
