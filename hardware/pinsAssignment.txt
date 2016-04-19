@@ -1,3 +1,12 @@
+Main interface:
+	Pin 1 - SO
+	Pin 2 - RX/CK
+	Pin 3 - TX/CS
+	Pin 4 - 5V
+	Pin 5 - GND
+	Pin 6 - SI
+	Pin 7 - NRST
+
 SD Card Interface:
 	SDIO_CK  - PB15
 	SDIO_CMD - PA6
