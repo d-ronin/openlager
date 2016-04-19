@@ -2,7 +2,7 @@ TOOLS_DIR := tools
 ARM_SDK_DIR := $(TOOLS_DIR)/gcc-arm-none-eabi-5_2-2015q4
 ARM_SDK_PREFIX := $(ARM_SDK_DIR)/bin/arm-none-eabi-
 
-ifeq ("$(wildcard $(ARM_SDK_PREFIX)gcc)","")
+ifeq ("$(wildcard $(ARM_SDK_PREFIX)gcc*)","")
     $(error **ERROR** ARM-SDK is not in $(ARM_SDK_DIR))
 endif
 
@@ -52,7 +52,11 @@ LDFLAGS := -nostartfiles -Wl,-static -lc -lgcc -Wl,--warn-common
 LDFLAGS += -Wl,--fatal-warnings -Wl,--gc-sections
 LDFLAGS += -Tshared/stm32f411.ld
 
-all: build/openlager build/openloader
+all: build/openlager.bin build/openloader.bin
+
+%.bin: %
+	$(ARM_SDK_PREFIX)objcopy -O binary $< $@
+
 
 build/openlager: $(OBJ)
 	$(CC) $(CFLAGS) $(OBJ) -o $@ -Tsrc/memory.ld $(LDFLAGS) 
