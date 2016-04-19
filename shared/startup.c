@@ -46,6 +46,8 @@ void _start(void)
 	/* We don't have CCM-SRAM, but why limit ourselves */
 	/* bzero(&_sfast, &_efast - &_sfast); */
 
+	// XXX GNU-ARM-Eclipse-QEMU can't handle this
+#if 0
 	/* FPU interrupt handling: lazy save of FP state */
 	FPU->FPCCR |= FPU_FPCCR_ASPEN_Msk | FPU_FPCCR_LSPEN_Msk;
 
@@ -56,6 +58,7 @@ void _start(void)
 
 	/* Enable the FPU in the coprocessor state register; CP10/11 */
 	SCB->CPACR |= 0x00f00000;
+#endif
 
 	/* Invoke main. */
 	asm ("bl	main");
