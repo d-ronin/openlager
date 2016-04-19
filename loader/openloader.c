@@ -24,6 +24,8 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
+#include <stdbool.h>
+
 #include <stm32f4xx_rcc.h>
 #include <systick_handler.h>
 
@@ -32,7 +34,13 @@ const void *_systick_vector __attribute((section(".systick_vector"))) = systick_
 const void *_interrupt_vectors[FPU_IRQn] __attribute((section(".interrupt_vectors"))) = {
 };
 
-int test=5;
+const GPIO_InitTypeDef led_def = {
+	.GPIO_Pin = GPIO_Pin_5,
+	.GPIO_Mode = GPIO_Mode_OUT,
+	.GPIO_Speed = GPIO_Low_Speed,
+	.GPIO_OType = GPIO_OType_PP,
+	.GPIO_PuPd = GPIO_PuPd_NOPULL
+};
 
 int main() {
 	/* Keep it really simple in the loader-- just run from 16MHz RC osc,
@@ -92,15 +100,25 @@ int main() {
 
 	SysTick_Config(16000000/250);	/* 250Hz systick */
 
-
+	GPIO_Init(GPIOA, (GPIO_InitTypeDef *) &led_def);
 
 	/* Real hardware has LED on PB9 / TIM4_CH4.
-	 * Eval hardware has blue LED on PD15 which can also be TIM4_CH4.
+	 * Discovery hardware has blue LED on PD15 which can also be TIM4_CH4.
+	 * Nucleo F411 has LED on PA5 (source)
 	 */
 
-	while (test); // XXX 
+	uint32_t nextTick = 0;
 
-	while (1);
+	while (1) {
+		if (systick_cnt > nextTick) {
+			nextTick += 20;
+
+
+			GPIO_ToggleBits(GPIOA, GPIO_Pin_5);
+			// This appears not to work in the emulator:
+			//GPIO_WriteBit(GPIOA, GPIO_Pin_5, toggle ? Bit_SET : Bit_RESET);
+		}
+	}
 
 	return 0;
 }
