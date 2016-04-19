@@ -52,7 +52,11 @@ LDFLAGS := -nostartfiles -Wl,-static -lc -lgcc -Wl,--warn-common
 LDFLAGS += -Wl,--fatal-warnings -Wl,--gc-sections
 LDFLAGS += -Tshared/stm32f411.ld
 
-all: build/openlager build/openloader
+all: build/openlager.bin build/openloader.bin
+
+%.bin: %
+	$(ARM_SDK_PREFIX)objcopy -O binary $< $@
+
 
 build/openlager: $(OBJ)
 	$(CC) $(CFLAGS) $(OBJ) -o $@ -Tsrc/memory.ld $(LDFLAGS)
