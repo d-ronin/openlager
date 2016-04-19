@@ -27,7 +27,8 @@
 #include <strings.h>
 #include <stm32f4xx.h>
 
-extern char _sbss, _ebss, _sidata, _sdata, _edata, _stack_top /*, _sfast, _efast */;
+extern char _sbss, _ebss, _sidata, _sdata, _edata, _stack_top,
+      _start_vectors /*, _sfast, _efast */;
 
 typedef const void (vector)(void);
 
@@ -37,6 +38,8 @@ void _start(void) __attribute__((noreturn, naked, no_instrument_function));
 
 void _start(void)
 {
+	SCB->VTOR = _start_vectors;
+
 	/* Copy data segment */
 	memcpy(&_sdata, &_sidata, &_edata - &_sdata);
 

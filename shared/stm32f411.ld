@@ -6,6 +6,7 @@ SECTIONS
 	.vectors :
 	{
 		. = ALIGN(4);
+		_start_vectors = .;
 		KEEP(*(.vectors))
 		KEEP(*(.systick_vector))
 		KEEP(*(.interrupt_vectors))
@@ -37,6 +38,13 @@ SECTIONS
 		. = ALIGN(4);
 		_edata = .;
 	} >RAM AT> FLASH
+
+	.fill LOADADDR(.data) + (_edata - _sdata) :
+	{
+		FILL(0xffffffff);
+		. = ORIGIN(FLASH) + LENGTH(FLASH) - 1;
+		BYTE(0xff)
+	}
 
 	.bss :
 	{
