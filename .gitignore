@@ -5,3 +5,7 @@
 /hardware/*.net
 /hardware/*.xml
 /hardware/output
+
+# Build cruft
+/build/
+/tools/
