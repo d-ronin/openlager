@@ -1,0 +1,7 @@
+# KiCad temporary and output files
+/hardware/*.bak
+/hardware/*.csv
+/hardware/*.kicad_pcb-bak
+/hardware/*.net
+/hardware/*.xml
+/hardware/output
