@@ -25,17 +25,50 @@
 //
 
 #include <stm32f4xx_rcc.h>
+#include <systick_handler.h>
+
+const void *_systick_vector __attribute((section(".systick_vector"))) = systick_handler;
+
+const void *_interrupt_vectors[FPU_IRQn] __attribute((section(".interrupt_vectors"))) = {
+};
+
+int test=5;
 
 int main() {
 	/* Keep it really simple in the loader-- just run from 16MHz RC osc,
 	 * no wait states, etc. */
 	RCC_DeInit();
 
+	/* Wait for the internal oscillator, not that we expect to need
+	 * it.
+	 */
+	while (RCC_GetFlagStatus(RCC_FLAG_HSIRDY) == RESET);
+
 	RCC_HCLKConfig(RCC_SYSCLK_Div1);	/* AHB = 16MHz */
 	RCC_PCLK1Config(RCC_HCLK_Div1);		/* APB1 = 16MHz */
 	RCC_PCLK2Config(RCC_HCLK_Div1);		/* APB2 = 16MHz */
 	RCC_TIMCLKPresConfig(RCC_TIMPrescDesactivated);
-			/* Desactivate... the timer prescaler */
+			/* "Desactivate"... the timer prescaler */
+
+	/* The PLL is necessary to talk to the SDIO peripheral */
+	RCC_PLLConfig(RCC_PLLSource_HSI,
+			8,	/* PLLM = /8 = 2MHz */
+			96,	/* PLLN = *96 = 192MHz */
+			2,	/* PLLP = /2 = 96MHz, but not used */
+			5	/* PLLQ = /5 = 38.4MHz, underclock SDIO
+				 * (Maximum is 48MHz)  Will get a 19.2MHz
+				 * SD card clock from dividing by 2, or
+				 * 9.6MBps at 4 bits wide.
+				 */
+		);
+
+	/* SDIO peripheral clocked at 38.4MHz.  minimum APB2 = 14.4MHz,
+	 * and we have 16MHz.. so we're good */
+
+	/* Enable and wait for the PLL */
+	RCC_PLLCmd(ENABLE);
+
+	while (RCC_GetFlagStatus(RCC_FLAG_PLLRDY) == RESET);
 
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA |
 			RCC_AHB1Periph_GPIOB |
@@ -57,9 +90,15 @@ int main() {
 			RCC_APB2Periph_SDIO,
 			ENABLE);
 
+	SysTick_Config(16000000/250);	/* 250Hz systick */
+
+
+
 	/* Real hardware has LED on PB9 / TIM4_CH4.
 	 * Eval hardware has blue LED on PD15 which can also be TIM4_CH4.
 	 */
+
+	while (test); // XXX 
 
 	while (1);
 

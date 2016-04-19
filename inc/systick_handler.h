@@ -1,4 +1,4 @@
-// OpenLager main
+// OpenLager systick handler
 //
 // Copyright (c) 2016, dRonin
 // All rights reserved.
@@ -24,16 +24,13 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-#include <stm32f4xx_rcc.h>
-#include <systick_handler.h>
+#ifndef _SYSTICK_HANDLER_H
+#define _SYSTICK_HANDLER_H
 
-const void *_systick_vector __attribute((section(".systick_vector"))) = systick_handler;
+#include <stdint.h>
 
-const void *_interrupt_vectors[FPU_IRQn] __attribute((section(".interrupt_vectors"))) = {
-};
+void systick_handler() __attribute__((interrupt));
 
-int main() {
-	while (1);
+extern volatile uint32_t systick_cnt;
 
-	return 0;
-}
+#endif // _SYSTICK_HANDLER_H

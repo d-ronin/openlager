@@ -62,6 +62,7 @@ void _start(void)
 	__builtin_unreachable();
 }
 
+/* This ends one early, so other code can provide systick handler */
 const void *_vectors[] __attribute((section(".vectors"))) = {
 	&_stack_top,
 	_start,
@@ -78,5 +79,4 @@ const void *_vectors[] __attribute((section(".vectors"))) = {
 	0,	/* Reserved for debug */
 	0,	/* Reserved */
 	0,	/* PendSV */
-	0,	/* SysTick */
 };

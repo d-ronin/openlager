@@ -7,6 +7,8 @@ SECTIONS
 	{
 		. = ALIGN(4);
 		KEEP(*(.vectors))
+		KEEP(*(.systick_vector))
+		KEEP(*(.interrupt_vectors))
 		. = ALIGN(4);
 	} >FLASH
 
@@ -16,14 +18,14 @@ SECTIONS
 		*(.text) *(.text.*)
 		*(.glue_7t) *(.glue_7)
 		. = ALIGN(4);
-	}
+	} >FLASH
 
 	.rodata :
 	{
 		. = ALIGN(4);
 		*(.rodata) *(.rodata*)
 		. = ALIGN(4);
-	}
+	} >FLASH
 
 	_sidata = LOADADDR(.data);
 
@@ -34,7 +36,7 @@ SECTIONS
 		*(.data) *(.data*)
 		. = ALIGN(4);
 		_edata = .;
-	}
+	} >RAM AT> FLASH
 
 	.bss :
 	{
