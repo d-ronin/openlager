@@ -31,7 +31,7 @@ STDPERIPH_SRC := $(patsubst %,libs/STM32F4xx_StdPeriph_Driver/src/%,$(STDPERIPH_
 FATFS_SRC := $(wildcard libs/fatfs/*.c)
 SHARED_SRC := $(wildcard shared/*.c)
 OPENLAGER_SRC := $(wildcard src/*.c)
-OPENLAGER_LOADER_SRC := $(wildcard src/*.c)
+OPENLAGER_LOADER_SRC := $(wildcard loader/*.c)
 
 SRC := $(STDPERIPH_SRC) $(FATFS_SRC) $(SHARED_SRC) $(OPENLAGER_SRC)
 OBJ := $(patsubst %.c,build/%.o,$(SRC))
@@ -58,7 +58,7 @@ build/openlager: $(OBJ)
 	$(CC) $(CFLAGS) $(OBJ) -o $@ -Tsrc/memory.ld $(LDFLAGS) 
 
 build/openloader: $(BOOTLOADER_OBJ)
-	$(CC) $(CFLAGS) $(OBJ) -o $@ -Tloader/memory.ld $(LDFLAGS) 
+	$(CC) $(CFLAGS) $(BOOTLOADER_OBJ) -o $@ -Tloader/memory.ld $(LDFLAGS) 
 
 clean:
 	rm -rf $(BUILD_DIR)
