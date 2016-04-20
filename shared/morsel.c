@@ -24,7 +24,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include <stdint.h>
+#include <morsel.h>
+#include <systick_handler.h>
 
 /* Morse stuff is between 1 and 6 elements.
  * First 2 bits == 11 (punctuation), next 6 bits are character
@@ -264,6 +265,32 @@ int send_morse(char **c, uint32_t *state) {
 
 		default:		/* illegal state */
 			return 1;
+	}
+}
+
+void send_morse_blocking(char *string, GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin,
+		int time_per_dot) {
+	char *pos = string;
+	int val;
+
+	uint32_t state = 0;
+
+	uint32_t next = systick_cnt;
+
+	while ((val = send_morse(&pos, &state)) != -1) {
+		while (systick_cnt < next);
+
+		next += time_per_dot;
+
+		// Done explicitly for now because of bugs in
+		// GNU-ARM-Eclipse-QEMU
+		if (val > 0) {
+			GPIOx->ODR |= GPIO_Pin;
+			//GPIO_SetBits(GPIOx, GPIO_Pin);
+		} else {
+			GPIOx->ODR &= ~GPIO_Pin;
+			//GPIO_ResetBits(GPIOx, GPIO_Pin);
+		}
 	}
 }
 
