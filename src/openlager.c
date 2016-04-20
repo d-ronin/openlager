@@ -113,6 +113,7 @@ int main() {
 		nextTick += 350;
 
 		GPIO_ToggleBits(GPIOA, GPIO_Pin_5);
+
 	}
 
 	return 0;

@@ -29,6 +29,9 @@
 #include <stm32f4xx_rcc.h>
 #include <systick_handler.h>
 
+#include <sdio.h>
+#include <morsel.h>
+
 const void *_interrupt_vectors[FPU_IRQn] __attribute((section(".interrupt_vectors"))) = {
 };
 
@@ -64,10 +67,22 @@ void invoke_next_program() {
 	__builtin_unreachable();
 }
 
+#define LED GPIOA
+#define LEDPIN GPIO_Pin_5
 void try_loader_stuff() {
-	if (sd_init()) {
+	/* Real hardware has LED on PB9 / TIM4_CH4.
+	 * Discovery hardware has blue LED on PD15 which can also be TIM4_CH4.
+	 * Nucleo F411 has LED on PA5 (source)
+	 */
+
+	send_morse_blocking("LOADER ", LED, LEDPIN, 33);
+
+	if (sd_init(false)) {
+		send_morse_blocking("SD Failed ", LED, LEDPIN, 33);
 		return;
 	}
+
+	send_morse_blocking("SD Inited ", LED, LEDPIN, 33);
 }
 
 int main() {
@@ -129,21 +144,6 @@ int main() {
 	SysTick_Config(16000000/250);	/* 250Hz systick */
 
 	GPIO_Init(GPIOA, (GPIO_InitTypeDef *) &led_def);
-
-	/* Real hardware has LED on PB9 / TIM4_CH4.
-	 * Discovery hardware has blue LED on PD15 which can also be TIM4_CH4.
-	 * Nucleo F411 has LED on PA5 (source)
-	 */
-
-	uint32_t nextTick = 0;
-
-	for (int i=0; i<32; i++) {
-		while (systick_cnt < nextTick);
-
-		nextTick += 15;
-
-		GPIO_ToggleBits(GPIOA, GPIO_Pin_5);
-	}
 
 	try_loader_stuff();
 
