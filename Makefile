@@ -10,6 +10,7 @@ INC :=
 INC += inc
 INC += libs/STM32F4xx_StdPeriph_Driver/inc
 INC += libs/fatfs
+INC += libs/inc
 
 BUILD_DIR := build
 
