@@ -64,6 +64,12 @@ void invoke_next_program() {
 	__builtin_unreachable();
 }
 
+void try_loader_stuff() {
+	if (sd_init()) {
+		return;
+	}
+}
+
 int main() {
 	/* Keep it really simple in the loader-- just run from 16MHz RC osc,
 	 * no wait states, etc. */
@@ -138,6 +144,8 @@ int main() {
 
 		GPIO_ToggleBits(GPIOA, GPIO_Pin_5);
 	}
+
+	try_loader_stuff();
 
 	invoke_next_program();
 

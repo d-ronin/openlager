@@ -42,30 +42,149 @@ static void sd_initpin(GPIO_TypeDef *gpio, uint16_t pin) {
 	GPIO_PinAFConfig(gpio, pin, GPIO_AF_SDIO);
 }
 
-static void sd_simplecmd(uint32_t cmd_idx, uint32_t arg, bool response) {
+static int sd_waitcomplete(uint32_t response_type) {
+	uint32_t status;
+
+	uint32_t completion_mask = SDIO_FLAG_CCRCFAIL | SDIO_FLAG_CMDREND | SDIO_FLAG_CTIMEOUT;
+
+	if (!(response_type & MMC_RSP_PRESENT)) {
+		// Sending the command is enough to consider ourselves "done"
+		// if no response is expected.
+		completion_mask |= SDIO_FLAG_CMDSENT;
+	}
+
+	int timeout=20000;
+
+	do {
+		status = SDIO->STA;
+
+		if (timeout-- < 0) {
+			// XXX timeout
+			return -1;
+		}
+
+	} while (!(status & completion_mask));
+
+	// XXX check / clear physical layer status, flags
+
+	return 0;
+}
+
+static int sd_sendcmd(uint8_t cmd_idx, uint32_t arg, uint32_t response_type) {
+	uint32_t response = SDIO_Response_No;
+
+	if (response_type & MMC_RSP_136) {
+		response = SDIO_Response_Long;
+	} else if (response_type & MMC_RSP_PRESENT) {
+		response = SDIO_Response_Short;
+	}
+
 	SDIO_CmdInitTypeDef cmd = {
 		.SDIO_Argument = arg,
 		.SDIO_CmdIndex = cmd_idx,
-		.SDIO_Response = response ? SDIO_Response_Short : SDIO_Response_No,
+		.SDIO_Response = response,
 		.SDIO_Wait = SDIO_Wait_No,
 		.SDIO_CPSM = SDIO_CPSM_Enable
 	};
 
 	SDIO_SendCommand(&cmd);
+
+	int ret = sd_waitcomplete(response_type);
+	if (ret) return ret;
+
+	if (response_type & MMC_RSP_OPCODE) {
+		if (SDIO_GetCommandResponse() != cmd_idx) {
+			// XXX error
+			return -1;
+		}
+	}
+
+	return 0;
 }
 
-static void sd_appcmd(uint32_t cmd_idx, uint32_t arg) {
+static int sd_cmdtype1(uint8_t cmd_idx, uint32_t arg) {
+	int ret = sd_sendcmd(cmd_idx, arg, MMC_RSP_R1);
+
+	if (ret) return ret;
+
+	uint32_t card_status = SDIO_GetResponse(SDIO_RESP1);
+
+	uint32_t err_bits = R1_STATUS(card_status);
+
+	if (err_bits) {
+		// XXX errcode, etc.
+		return -1;
+	}
+
+	return 0;
+}
+
+static int sd_cmd8() {
+	/* 3.3V, 'DA' check pattern */
+	uint32_t arg = 0x000001DA;
+
+	int ret = sd_sendcmd(SD_SEND_IF_COND, arg, MMC_RSP_R7);
+
+	if (ret) return ret;
+
+	uint32_t response = SDIO_GetResponse(SDIO_RESP1);
+
+	if ((response & 0xFFF) != arg) {
+		// XXX errcode etc
+		return -1;
+	}
+
+	return 0;
+}
+
+static int sd_appcmdtype1(uint8_t cmd_idx, uint32_t arg) {
+	int ret;
+
 	// XXX stuff RCA
-	sd_simplecmd(MMC_APP_CMD, 0, true);
+	ret = sd_cmdtype1(MMC_APP_CMD, 0 /* XXX RCA */);
 
-	// XXX get resp1
-	
-	sd_simplecmd(cmd_idx, arg, true);
+	if (ret) return ret;
+
+	ret = sd_cmdtype1(cmd_idx, arg);
+
+	return ret;
 }
 
-void sd_init(bool fourbit) {
+/* Sends ACMD41, gets resp3, returns op condition register */
+static int sd_acmd41(uint32_t *ocr, bool hicap){
+	int ret;
+
+	ret = sd_cmdtype1(MMC_APP_CMD, 0 /* No RCA yet */);
+
+	if (ret) return ret;
+
+	// some reference code sets the busy bit here, but the spec says
+	// no.  so we don't for now.
+	uint32_t arg = MMC_OCR_320_330;
+
+	if (hicap) {
+		arg |= MMC_OCR_CCS;
+	}
+
+	ret = sd_sendcmd(ACMD_SD_SEND_OP_COND, arg, MMC_RSP_R3);
+
+	if (ret) return ret;
+
+	*ocr = SDIO_GetResponse(SDIO_RESP1);
+
+	return 0;
+}
+
+
+/* Sends CMD3, SD_SEND_RELATIVE_ADDR. */
+static int sd_getrca(uint16_t *rca) {
+	// XXX
+	return 0;
+}
+
+int sd_init(bool fourbit) {
 	// Clocks programmed elsewhere and peripheral/GPIO clock enabled already
-	
+
 	// program GPIO / PinAF
 	// SDIO_CK=PB15            SDIO_CMD=PA6
 	// SDIO_D0=PB7 SDIO_D1=PA8 SDIO_D2=PA9 SDIO_D3=PB5
@@ -91,29 +210,47 @@ void sd_init(bool fourbit) {
 
 	SDIO_ClockCmd(ENABLE);
 
+	bool high_cap = false;
+
 	// The SD card negotiation and selection sequence is annoying.
 
 	// CMD0- go idle state 4.2.1 (card reset)
-	sd_simplecmd(MMC_GO_IDLE_STATE, 0, false);
-	// XXX wait / test error
+	if (sd_sendcmd(MMC_GO_IDLE_STATE, 0, MMC_RSP_NONE)) {
+		/* Nothing works.  Give up! */
+		return -1;
+	}
 
-	// XXX CMD8 SEND_IF_COND 4.2.2 (Operating Condition Validation)
-	// (Find out if we're extended capacity, mostly)
-	sd_simplecmd(SD_SEND_IF_COND, /* voltage/pattern XXX */ 0, true);
-	// get resp7 4.9.6
+	// CMD8 SEND_IF_COND 4.2.2 (Operating Condition Validation)
+	// (Enable advanced features, if card able)
+	if (!sd_cmd8()) {
+		// Woohoo, we can ask about highcap!
+		high_cap = true;
+	}
 
-	// XXX A-CMD41 SD_SEND_OP_COND -- may return busy , need to loop
-	sd_appcmd(ACMD_SD_SEND_OP_COND, /* XXX voltage | type */ 0);
-	// get resp3
+	// A-CMD41 SD_SEND_OP_COND -- may return busy , need to loop
+	uint32_t ocr;
+	if (sd_acmd41(&ocr, high_cap)) {
+		return -1;
+	}
+
+	// XXX confirm response, set our high_cap flag
 
 	// Legacy multimedia card multi-card addressing stuff that infects
 	// the SD standard follows
 
-	// XXX CMD2 SD_CMD_ALL_SEND_CID enter identification state
-	// get resp2
-	
-	// XXX CMD3 SD_CMD_SET_REL_ADDR get RCA 
-	// get resp6
+	// CMD2 MMC_ALL_SEND_CID enter identification state
+	if (sd_sendcmd(MMC_ALL_SEND_CID, 0, MMC_RSP_R2)) {
+		return -1;
+	}
+
+	/* We don't care about the response / CID now. */
+
+	/* But we -do- care about getting the RCA so we can talk to the card */
+	uint16_t rca;
+
+	if (sd_getrca(&rca)) {
+		return -1;
+	}
 
 	// Now that the card is inited.. crank the bus speed up!
 	sd_settings.SDIO_ClockDiv = 0;		// /2; = 24MHz at 48MHz
@@ -121,18 +258,22 @@ void sd_init(bool fourbit) {
 
 	SDIO_Init(&sd_settings);
 
-	// XXX CMD7 SD_CMD_SEL_DESEL_CARD select the card
-	// get resp1
+	// CMD7 select the card
+	if (sd_cmdtype1(MMC_SELECT_CARD, rca << 16)) {
+		return -1;
+	}
 
 	// Interrupt configuration would go here... but we don't use it now.
 	// DMA configuration would go here... but we don't use it now.
-	
+
 	// Four-bit support is mandatory, so don't bother to check it.
 	if (fourbit) {
-		sd_appcmd(ACMD_SET_BUS_WIDTH, SD_BUS_WIDTH_4);
+		sd_appcmdtype1(ACMD_SET_BUS_WIDTH, SD_BUS_WIDTH_4);
 
 		sd_settings.SDIO_BusWide = SDIO_BusWide_4b;
 		SDIO_Init(&sd_settings);
 	}
 
+	// If we got here, we won.. I think.
+	return 0;
 }

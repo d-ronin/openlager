@@ -11,7 +11,7 @@ The **openlager** hardware design and firmware are produced by the [dRonin](http
 
 The **openlager** hardware in `hardware/` is licensed under a Creative Commons Attribution 4.0 International License (CC BY 4.0), as contained in `hardware/LICENSE.txt`
 
-The **openlager** firmware in `src/` is licensed under a simplified BSD license as found in `src/LICENSE.txt`
+The **openlager** firmware (and bootloader) in `src/`, `loader/`, and `shared/` is licensed under a simplified BSD license as found in `src/LICENSE.txt`
 
 The **fatfs** library in `libs/fatfs` is licensed under the one-clause BSD license as found in the source files in that directory.
 
