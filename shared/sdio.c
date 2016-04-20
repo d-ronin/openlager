@@ -33,9 +33,9 @@ static uint16_t sd_rca;
 
 // XXX / todo error codes
 
-static void sd_initpin(GPIO_TypeDef *gpio, uint16_t pin) {
+static void sd_initpin(GPIO_TypeDef *gpio, uint16_t pin_pos) {
 	GPIO_InitTypeDef pin_def = {
-		.GPIO_Pin = pin,
+		.GPIO_Pin = 1 << (pin_pos),
 		.GPIO_Mode = GPIO_Mode_AF,
 		.GPIO_Speed = GPIO_Fast_Speed,
 		.GPIO_OType = GPIO_OType_PP,
@@ -43,7 +43,7 @@ static void sd_initpin(GPIO_TypeDef *gpio, uint16_t pin) {
 	};
 
 	GPIO_Init(gpio, &pin_def);
-	GPIO_PinAFConfig(gpio, pin, GPIO_AF_SDIO);
+	GPIO_PinAFConfig(gpio, pin_pos, GPIO_AF_SDIO);
 }
 
 static int sd_waitcomplete(uint32_t response_type) {
@@ -219,12 +219,12 @@ int sd_init(bool fourbit) {
 	// SDIO_CK=PB15            SDIO_CMD=PA6
 	// SDIO_D0=PB7 SDIO_D1=PA8 SDIO_D2=PA9 SDIO_D3=PB5
 
-	sd_initpin(GPIOA, GPIO_Pin_6);
-	sd_initpin(GPIOA, GPIO_Pin_8);
-	sd_initpin(GPIOA, GPIO_Pin_9);
-	sd_initpin(GPIOB, GPIO_Pin_5);
-	sd_initpin(GPIOB, GPIO_Pin_7);
-	sd_initpin(GPIOB, GPIO_Pin_15);
+	sd_initpin(GPIOA, 6);
+	sd_initpin(GPIOA, 8);
+	sd_initpin(GPIOA, 9);
+	sd_initpin(GPIOB, 5);
+	sd_initpin(GPIOB, 7);
+	sd_initpin(GPIOB, 15);
 
 	// Take, then fix up default settings to talk slow.
 	SDIO_InitTypeDef sd_settings;
