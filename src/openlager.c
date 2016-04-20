@@ -29,8 +29,6 @@
 #include <stm32f4xx_rcc.h>
 #include <systick_handler.h>
 
-const void *_systick_vector __attribute((section(".systick_vector"))) = systick_handler;
-
 const void *_interrupt_vectors[FPU_IRQn] __attribute((section(".interrupt_vectors"))) = {
 };
 

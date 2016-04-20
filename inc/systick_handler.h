@@ -29,8 +29,6 @@
 
 #include <stdint.h>
 
-void systick_handler() __attribute__((interrupt));
-
 extern volatile uint32_t systick_cnt;
 
 #endif // _SYSTICK_HANDLER_H
