@@ -77,6 +77,10 @@ static int sd_waitcomplete(uint32_t response_type) {
 		SDIO_ICR_DBCKENDC | SDIO_ICR_SDIOITC |
 		SDIO_ICR_CEATAENDC;
 
+	if (!(response_type & MMC_RSP_CRC)) {
+		status &= ~SDIO_STA_CCRCFAIL;
+	}
+
 	if (status &
 			(SDIO_STA_CCRCFAIL | SDIO_STA_DCRCFAIL |
 			 SDIO_STA_CTIMEOUT | SDIO_STA_DTIMEOUT |
@@ -172,13 +176,15 @@ static int sd_acmd41(uint32_t *ocr, bool hicap){
 
 	if (ret) return ret;
 
-	// some reference code sets the busy bit here, but the spec says
-	// no.  so we don't for now.
 	uint32_t arg = MMC_OCR_320_330;
 
 	if (hicap) {
 		arg |= MMC_OCR_CCS;
 	}
+
+	// some reference code sets the busy bit here, but the spec says
+	// it should be 0.
+	// arg |= MMC_OCR_CARD_BUSY;
 
 	ret = sd_sendcmd(ACMD_SD_SEND_OP_COND, arg, MMC_RSP_R3);
 
@@ -257,13 +263,24 @@ int sd_init(bool fourbit) {
 		high_cap = true;
 	}
 
-	// A-CMD41 SD_SEND_OP_COND -- may return busy , need to loop
+	// A-CMD41 SD_SEND_OP_COND -- may return busy, need to loop
 	uint32_t ocr;
-	if (sd_acmd41(&ocr, high_cap)) {
-		return -1;
-	}
+	int tries=10000;
 
-	// XXX confirm response, set our high_cap flag
+	do {
+		if (tries-- < 0) {
+			return -1;
+		}
+
+		if (sd_acmd41(&ocr, high_cap)) {
+			return -1;
+		}
+	} while (!(ocr & MMC_OCR_CARD_BUSY));
+
+	// set our high_cap flag based on response
+	if (!(ocr & MMC_OCR_CCS)) {
+		high_cap = false;
+	}
 
 	// Legacy multimedia card multi-card addressing stuff that infects
 	// the SD standard follows
