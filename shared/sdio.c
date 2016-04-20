@@ -29,6 +29,10 @@
 
 #include <mmcreg.h>
 
+static uint16_t sd_rca;
+
+// XXX / todo error codes
+
 static void sd_initpin(GPIO_TypeDef *gpio, uint16_t pin) {
 	GPIO_InitTypeDef pin_def = {
 		.GPIO_Pin = pin,
@@ -59,13 +63,27 @@ static int sd_waitcomplete(uint32_t response_type) {
 		status = SDIO->STA;
 
 		if (timeout-- < 0) {
-			// XXX timeout
 			return -1;
 		}
 
 	} while (!(status & completion_mask));
 
-	// XXX check / clear physical layer status, flags
+	// clear & check physical layer status, flags
+	SDIO->ICR = SDIO_ICR_CCRCFAILC | SDIO_ICR_DCRCFAILC |
+		SDIO_ICR_CTIMEOUTC | SDIO_ICR_DTIMEOUTC |
+		SDIO_ICR_TXUNDERRC | SDIO_ICR_RXOVERRC |
+		SDIO_ICR_CMDRENDC | SDIO_ICR_CMDSENTC |
+		SDIO_ICR_DATAENDC | SDIO_ICR_STBITERRC |
+		SDIO_ICR_DBCKENDC | SDIO_ICR_SDIOITC |
+		SDIO_ICR_CEATAENDC;
+
+	if (status &
+			(SDIO_STA_CCRCFAIL | SDIO_STA_DCRCFAIL |
+			 SDIO_STA_CTIMEOUT | SDIO_STA_DTIMEOUT |
+			 SDIO_STA_TXUNDERR | SDIO_STA_RXOVERR |
+			 SDIO_STA_STBITERR)) {
+		return -1;
+	}
 
 	return 0;
 }
@@ -94,7 +112,6 @@ static int sd_sendcmd(uint8_t cmd_idx, uint32_t arg, uint32_t response_type) {
 
 	if (response_type & MMC_RSP_OPCODE) {
 		if (SDIO_GetCommandResponse() != cmd_idx) {
-			// XXX error
 			return -1;
 		}
 	}
@@ -112,7 +129,6 @@ static int sd_cmdtype1(uint8_t cmd_idx, uint32_t arg) {
 	uint32_t err_bits = R1_STATUS(card_status);
 
 	if (err_bits) {
-		// XXX errcode, etc.
 		return -1;
 	}
 
@@ -130,7 +146,6 @@ static int sd_cmd8() {
 	uint32_t response = SDIO_GetResponse(SDIO_RESP1);
 
 	if ((response & 0xFFF) != arg) {
-		// XXX errcode etc
 		return -1;
 	}
 
@@ -140,8 +155,7 @@ static int sd_cmd8() {
 static int sd_appcmdtype1(uint8_t cmd_idx, uint32_t arg) {
 	int ret;
 
-	// XXX stuff RCA
-	ret = sd_cmdtype1(MMC_APP_CMD, 0 /* XXX RCA */);
+	ret = sd_cmdtype1(MMC_APP_CMD, sd_rca << 16);
 
 	if (ret) return ret;
 
@@ -178,7 +192,23 @@ static int sd_acmd41(uint32_t *ocr, bool hicap){
 
 /* Sends CMD3, SD_SEND_RELATIVE_ADDR. */
 static int sd_getrca(uint16_t *rca) {
-	// XXX
+	int ret = sd_sendcmd(SD_SEND_RELATIVE_ADDR, 0, MMC_RSP_R6);
+
+	if (ret < 0) return -1;
+
+	uint32_t resp = SDIO_GetResponse(SDIO_RESP1);
+
+	// [15:0] card status bits: 23,22,19,12:0
+	// COM_CRC_ERROR, ILLEGAL_COMMAND, ERROR, CURRENT_STATE[4]
+	// READY_FOR_DATA, RESV[2], APP_CMD, RESV, AKE_SEQ_ERROR,
+	// RESV[3]
+	// Check the error bits and current state to be what we expect.
+	if ((resp & 0xfe00) != (R1_STATE_IDENT) << 9) {
+		return -1;
+	}
+
+	*rca = resp >> 16;
+
 	return 0;
 }
 
@@ -246,9 +276,7 @@ int sd_init(bool fourbit) {
 	/* We don't care about the response / CID now. */
 
 	/* But we -do- care about getting the RCA so we can talk to the card */
-	uint16_t rca;
-
-	if (sd_getrca(&rca)) {
+	if (sd_getrca(&sd_rca)) {
 		return -1;
 	}
 
@@ -259,7 +287,7 @@ int sd_init(bool fourbit) {
 	SDIO_Init(&sd_settings);
 
 	// CMD7 select the card
-	if (sd_cmdtype1(MMC_SELECT_CARD, rca << 16)) {
+	if (sd_cmdtype1(MMC_SELECT_CARD, sd_rca << 16)) {
 		return -1;
 	}
 
