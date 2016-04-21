@@ -44,6 +44,7 @@ SECTIONS
 		FILL(0xffffffff);
 		. = ORIGIN(FLASH) + LENGTH(FLASH) - 1;
 		BYTE(0xff)
+		_efill = .;
 	}
 
 	.bss :

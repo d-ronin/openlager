@@ -47,7 +47,7 @@ CPPFLAGS += -DSTM32F411xE -DUSE_STDPERIPH_DRIVER
 
 CFLAGS :=
 CFLAGS += -mcpu=cortex-m4 -mthumb -fdata-sections -ffunction-sections
-CFLAGS += -fomit-frame-pointer -Wall -Os
+CFLAGS += -fomit-frame-pointer -Wall -Os -g3
 
 LDFLAGS := -nostartfiles -Wl,-static -lc -lgcc -Wl,--warn-common
 LDFLAGS += -Wl,--fatal-warnings -Wl,--gc-sections
@@ -55,17 +55,17 @@ LDFLAGS += -Tshared/stm32f411.ld
 
 all: build/ef_lager.bin
 
-flash: build/openloader.bin
+flash: build/ef_lager.bin
 	openocd -f /usr/local/share/openocd/scripts/interface/stlink-v2.cfg -f /usr/local/share/openocd/scripts/target/stm32f4x.cfg -f flash.cfg
 
-build/ef_lager.bin: build/openloader.bin build/openlager.bin
-	cat build/openloader.bin build/openlager.bin > $@
+build/ef_lager.bin: build/openloader.bin build/lager.bin
+	cat build/openloader.bin build/lager.bin > $@
 
 %.bin: %
 	$(ARM_SDK_PREFIX)objcopy -O binary $< $@
 
 
-build/openlager: $(OBJ)
+build/lager: $(OBJ)
 	$(CC) $(CFLAGS) $(OBJ) -o $@ -Tsrc/memory.ld $(LDFLAGS)
 
 build/openloader: $(BOOTLOADER_OBJ)
