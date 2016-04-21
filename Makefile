@@ -40,7 +40,8 @@ OBJ := $(patsubst %.c,build/%.o,$(SRC))
 BOOTLOADER_SRC := $(SHARED_SRC) $(OPENLAGER_LOADER_SRC)
 BOOTLOADER_OBJ := $(patsubst %.c,build/%.o,$(BOOTLOADER_SRC))
 
-CC := $(ARM_SDK_PREFIX)gcc
+CCACHE_BIN := $(shell which ccache 2>/dev/null)
+CC := $(CCACHE_BIN) $(ARM_SDK_PREFIX)gcc
 
 CPPFLAGS += $(patsubst %,-I%,$(INC))
 CPPFLAGS += -DSTM32F411xE -DUSE_STDPERIPH_DRIVER
