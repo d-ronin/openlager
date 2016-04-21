@@ -31,6 +31,7 @@
 
 #include <sdio.h>
 #include <morsel.h>
+#include <ff.h>
 
 const void *_interrupt_vectors[FPU_IRQn] __attribute((section(".interrupt_vectors"))) = {
 };
@@ -79,14 +80,43 @@ void try_loader_stuff() {
 	 * Nucleo F411 has LED on PA5 (source)
 	 */
 
-	send_morse_blocking("LOADER ", LED, LEDPIN, 33);
+	send_morse_blocking("LDR ", LED, LEDPIN, 33);
 
 	if (sd_init(false)) {
-		send_morse_blocking("SD Failed ", LED, LEDPIN, 33);
+		send_morse_blocking("SDFAIL ", LED, LEDPIN, 33);
 		return;
 	}
 
-	send_morse_blocking("SD Inited ", LED, LEDPIN, 33);
+
+	FATFS fatfs;
+
+	if (f_mount(&fatfs, "0:", 1) != FR_OK) {
+		send_morse_blocking("NOMNT ", LED, LEDPIN, 33);
+		return;
+	}
+
+	FIL fil;
+
+	if (f_open(&fil, "0:myfile.txt", FA_READ) != FR_OK) {
+		send_morse_blocking("NOFILE ", LED, LEDPIN, 33);
+		return;
+	}
+
+	send_morse_blocking("MEOW ", LED, LEDPIN, 33);
+
+	char buf[1024];
+
+	UINT amount;
+
+	while (FR_OK == f_read(&fil, buf, sizeof(buf)-1, &amount)) {
+		if (amount == 0) break;
+
+		buf[amount] = 0;
+
+		send_morse_blocking(buf, LED, LEDPIN, 33);
+	}
+
+	send_morse_blocking("END ", LED, LEDPIN, 33);
 }
 
 int main() {
