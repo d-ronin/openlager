@@ -113,7 +113,7 @@ int main() {
 	while (1) {
 		while (systick_cnt < nextTick);
 
-		nextTick += 350;
+		nextTick += 10;
 
 		GPIO_ToggleBits(LED, LEDPIN);
 	}

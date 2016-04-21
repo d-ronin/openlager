@@ -58,8 +58,8 @@ all: build/ef_lager.bin
 flash: build/ef_lager.bin
 	openocd -f /usr/local/share/openocd/scripts/interface/stlink-v2.cfg -f /usr/local/share/openocd/scripts/target/stm32f4x.cfg -f flash.cfg
 
-build/ef_lager.bin: build/openloader.bin build/lager.bin
-	cat build/openloader.bin build/lager.bin > $@
+build/ef_lager.bin: build/bootlager.bin build/lager.bin
+	cat build/bootlager.bin build/lager.bin > $@
 
 %.bin: %
 	$(ARM_SDK_PREFIX)objcopy -O binary $< $@
@@ -68,7 +68,7 @@ build/ef_lager.bin: build/openloader.bin build/lager.bin
 build/lager: $(OBJ)
 	$(CC) $(CFLAGS) $(OBJ) -o $@ -Tsrc/memory.ld $(LDFLAGS)
 
-build/openloader: $(BOOTLOADER_OBJ)
+build/bootlager: $(BOOTLOADER_OBJ)
 	$(CC) $(CFLAGS) $(BOOTLOADER_OBJ) -o $@ -Tloader/memory.ld $(LDFLAGS)
 
 clean:
