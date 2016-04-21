@@ -32,8 +32,11 @@
 const void *_interrupt_vectors[FPU_IRQn] __attribute((section(".interrupt_vectors"))) = {
 };
 
+#define LED GPIOD
+#define LEDPIN GPIO_Pin_15
+
 const GPIO_InitTypeDef led_def = {
-	.GPIO_Pin = GPIO_Pin_5,
+	.GPIO_Pin = LEDPIN,
 	.GPIO_Mode = GPIO_Mode_OUT,
 	.GPIO_Speed = GPIO_Low_Speed,
 	.GPIO_OType = GPIO_OType_PP,
@@ -98,7 +101,7 @@ int main() {
 
 	SysTick_Config(16000000/250);	/* 250Hz systick */
 
-	GPIO_Init(GPIOA, (GPIO_InitTypeDef *) &led_def);
+	GPIO_Init(LED, (GPIO_InitTypeDef *) &led_def);
 
 	/* Real hardware has LED on PB9 / TIM4_CH4.
 	 * Discovery hardware has blue LED on PD15 which can also be TIM4_CH4.
@@ -110,10 +113,9 @@ int main() {
 	while (1) {
 		while (systick_cnt < nextTick);
 
-		nextTick += 350;
+		nextTick += 10;
 
-		GPIO_ToggleBits(GPIOA, GPIO_Pin_5);
-
+		GPIO_ToggleBits(LED, LEDPIN);
 	}
 
 	return 0;

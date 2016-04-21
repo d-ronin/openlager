@@ -38,7 +38,7 @@ void _start(void) __attribute__((noreturn, naked, no_instrument_function));
 
 void _start(void)
 {
-	SCB->VTOR = _start_vectors;
+	SCB->VTOR = (uintptr_t) &_start_vectors;
 
 	/* Copy data segment */
 	memcpy(&_sdata, &_sidata, &_edata - &_sdata);
@@ -64,7 +64,7 @@ void _start(void)
 #endif
 
 	/* Invoke main. */
-	asm ("bl	main");
+	asm volatile ("bl	main");
 	__builtin_unreachable();
 }
 

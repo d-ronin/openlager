@@ -26,12 +26,16 @@
 
 #include <stdbool.h>
 
+#include <stm32f4xx_flash.h>
 #include <stm32f4xx_rcc.h>
+
 #include <systick_handler.h>
 
 #include <sdio.h>
 #include <morsel.h>
 #include <ff.h>
+
+extern uint32_t _efill;
 
 const void *_interrupt_vectors[FPU_IRQn] __attribute((section(".interrupt_vectors"))) = {
 };
@@ -72,6 +76,20 @@ static const GPIO_InitTypeDef led_def = {
 	.GPIO_PuPd = GPIO_PuPd_NOPULL
 };
 
+void chk_flashop(FLASH_Status f) {
+	if (f != FLASH_COMPLETE) {
+		while (1) {
+			// ..-. . .-. .-.
+			send_morse_blocking("FERR  ", LED, LEDPIN, 33);
+		}
+	}
+}
+
+/* If anything goes wrong here, we'll still go to the main program.
+ * But it's doubtful, because things going wrong here are likely to
+ * affect the main program too.  So we are willing to pay the penalty
+ * to flash an error code.
+ */
 void try_loader_stuff() {
 	GPIO_Init(LED, (GPIO_InitTypeDef *) &led_def);
 
@@ -80,43 +98,84 @@ void try_loader_stuff() {
 	 * Nucleo F411 has LED on PA5 (source)
 	 */
 
-	send_morse_blocking("LDR ", LED, LEDPIN, 33);
-
 	if (sd_init(false)) {
-		send_morse_blocking("SDFAIL ", LED, LEDPIN, 33);
+		// -.-. .- .-. -..
+		send_morse_blocking("CARD ", LED, LEDPIN, 33);
 		return;
 	}
-
 
 	FATFS fatfs;
 
 	if (f_mount(&fatfs, "0:", 1) != FR_OK) {
-		send_morse_blocking("NOMNT ", LED, LEDPIN, 33);
+		// -.. .- - .-
+		send_morse_blocking("DATA ", LED, LEDPIN, 33);
 		return;
 	}
 
 	FIL fil;
 
-	if (f_open(&fil, "0:myfile.txt", FA_READ) != FR_OK) {
-		send_morse_blocking("NOFILE ", LED, LEDPIN, 33);
+	if (f_open(&fil, "0:lager.bin", FA_READ) != FR_OK) {
+		// Missing image is not an error -> we don't blink
 		return;
 	}
 
-	send_morse_blocking("MEOW ", LED, LEDPIN, 33);
-
-	char buf[1024];
-
+	uint32_t *prog_flash = &_efill;
 	UINT amount;
 
-	while (FR_OK == f_read(&fil, buf, sizeof(buf)-1, &amount)) {
-		if (amount == 0) break;
+	bool diff = false;
 
-		buf[amount] = 0;
+	// XXX elim magic number.
+	uint32_t buf[16384];	// Nice to have a lot of ram;
+				// can safely use 64k on this stack
+				// frame on the loader.
 
-		send_morse_blocking(buf, LED, LEDPIN, 33);
+	/* XXX Ideally we would set up to flash larger than 64k
+	 * programs, since there's 192k of flash... */
+	if (FR_OK != f_read(&fil, buf, sizeof(buf), &amount)) {
+		// .. ---
+		send_morse_blocking("IO ", LED, LEDPIN, 33);
+		return;
 	}
 
-	send_morse_blocking("END ", LED, LEDPIN, 33);
+	if ((amount < 500) || (amount % sizeof(*buf))) {
+		// Very short or not an integral number of words.
+		send_morse_blocking("TRUNC ", LED, LEDPIN, 33);
+		return;
+	}
+
+	amount /= sizeof(*buf);		// convert into word count
+
+	for (int i = 0; i < amount; i++) {
+		if (buf[i] != prog_flash[i]) {
+			diff = true;
+
+			// ..- .--.   ..- .--.
+			send_morse_blocking("UP UP ", LED, LEDPIN, 33);
+
+			break;
+		}
+	}
+
+	if (!diff) {
+		// no update necessary.. go to main firmware.
+		return;
+	}
+
+	FLASH_Unlock();
+
+	// checks success, infloop blinking if not
+	chk_flashop(FLASH_EraseSector(FLASH_Sector_4, VoltageRange_3));
+
+	send_morse_blocking("PRG ", LED, LEDPIN, 33);
+
+	for (int i = 0; i < amount; i++) {
+		chk_flashop(FLASH_ProgramWord((uint32_t) (prog_flash + i),
+				buf[i]));
+	}
+
+	send_morse_blocking(".. ", LED, LEDPIN, 33);
+
+	FLASH_Lock();
 }
 
 int main() {
