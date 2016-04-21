@@ -47,7 +47,7 @@ CPPFLAGS += -DSTM32F411xE -DUSE_STDPERIPH_DRIVER
 
 CFLAGS :=
 CFLAGS += -mcpu=cortex-m4 -mthumb -fdata-sections -ffunction-sections
-CFLAGS += -fomit-frame-pointer -Wall -Os -g3
+CFLAGS += -fomit-frame-pointer -Wall -Werror -Os -g3
 
 LDFLAGS := -nostartfiles -Wl,-static -lc -lgcc -Wl,--warn-common
 LDFLAGS += -Wl,--fatal-warnings -Wl,--gc-sections

@@ -48,22 +48,17 @@ int main() {
 	 * no wait states, etc. */
 	RCC_DeInit();
 
-	/* Wait for the internal oscillator, not that we expect to need
-	 * it.
-	 */
+	// Wait for internal oscillator settle.
 	while (RCC_GetFlagStatus(RCC_FLAG_HSIRDY) == RESET);
 
-	RCC_HCLKConfig(RCC_SYSCLK_Div1);	/* AHB = 16MHz */
-	RCC_PCLK1Config(RCC_HCLK_Div1);		/* APB1 = 16MHz */
-	RCC_PCLK2Config(RCC_HCLK_Div1);		/* APB2 = 16MHz */
-	RCC_TIMCLKPresConfig(RCC_TIMPrescDesactivated);
-			/* "Desactivate"... the timer prescaler */
+	// XXX On real hardware: need to start external oscillator,
+	// set the PLL source to ext osc.
 
-	/* The PLL is necessary to talk to the SDIO peripheral */
+	// Program the PLL.
 	RCC_PLLConfig(RCC_PLLSource_HSI,
 			8,	/* PLLM = /8 = 2MHz */
 			96,	/* PLLN = *96 = 192MHz */
-			2,	/* PLLP = /2 = 96MHz, but not used */
+			2,	/* PLLP = /2 = 96MHz, slight underclock */
 			5	/* PLLQ = /5 = 38.4MHz, underclock SDIO
 				 * (Maximum is 48MHz)  Will get a 19.2MHz
 				 * SD card clock from dividing by 2, or
@@ -71,13 +66,27 @@ int main() {
 				 */
 		);
 
-	/* SDIO peripheral clocked at 38.4MHz.  minimum APB2 = 14.4MHz,
-	 * and we have 16MHz.. so we're good */
-
-	/* Enable and wait for the PLL */
+	// Get the PLL starting.
 	RCC_PLLCmd(ENABLE);
 
+	// Program 3 wait states as necessary at >2.7V for 96MHz
+	FLASH_SetLatency(FLASH_Latency_3);
+
+	// Wait for the PLL to be ready.
 	while (RCC_GetFlagStatus(RCC_FLAG_PLLRDY) == RESET);
+
+	// Program this, just in case we coasted in here with other periphs
+	// already enabled.
+	RCC_HCLKConfig(RCC_SYSCLK_Div1);	/* AHB = 96MHz */
+	RCC_PCLK1Config(RCC_HCLK_Div2);		/* APB1 = 48MHz (lowspeed domain) */
+	RCC_PCLK2Config(RCC_HCLK_Div1);		/* APB2 = 96MHz (fast domain) */
+	RCC_TIMCLKPresConfig(RCC_TIMPrescDesactivated);
+			/* "Desactivate"... the timer prescaler */
+
+	RCC_SYSCLKConfig(RCC_SYSCLKSource_PLLCLK);
+
+	/* SDIO peripheral clocked at 38.4MHz. * 3/8 = minimum APB2 = 14.4MHz,
+	 * and we have 96MHz.. so we're good ;) */
 
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA |
 			RCC_AHB1Periph_GPIOB |
@@ -99,7 +108,7 @@ int main() {
 			RCC_APB2Periph_SDIO,
 			ENABLE);
 
-	SysTick_Config(16000000/250);	/* 250Hz systick */
+	SysTick_Config(96000000/300);	/* 300Hz systick */
 
 	GPIO_Init(LED, (GPIO_InitTypeDef *) &led_def);
 
@@ -113,7 +122,7 @@ int main() {
 	while (1) {
 		while (systick_cnt < nextTick);
 
-		nextTick += 10;
+		nextTick += 50;
 
 		GPIO_ToggleBits(LED, LEDPIN);
 	}
