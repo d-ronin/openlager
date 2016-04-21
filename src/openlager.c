@@ -25,6 +25,7 @@
 //
 
 #include <stdbool.h>
+#include <usart.h>
 
 #include <stm32f4xx_rcc.h>
 #include <systick_handler.h>
@@ -111,6 +112,8 @@ int main() {
 	SysTick_Config(96000000/300);	/* 300Hz systick */
 
 	GPIO_Init(LED, (GPIO_InitTypeDef *) &led_def);
+
+	usart_init(115200);
 
 	/* Real hardware has LED on PB9 / TIM4_CH4.
 	 * Discovery hardware has blue LED on PD15 which can also be TIM4_CH4.
