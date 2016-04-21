@@ -29,7 +29,13 @@
 
 #include <mmcreg.h>
 
+#include <morsel.h>
+
+#define LED GPIOD
+#define LEDPIN GPIO_Pin_15
+
 static uint16_t sd_rca;
+static bool sd_high_cap;
 
 // XXX / todo error codes
 
@@ -44,6 +50,17 @@ static void sd_initpin(GPIO_TypeDef *gpio, uint16_t pin_pos) {
 
 	GPIO_Init(gpio, &pin_def);
 	GPIO_PinAFConfig(gpio, pin_pos, GPIO_AF_SDIO);
+}
+
+static void sd_clearflags() {
+	// clear & check physical layer status, flags
+	SDIO->ICR = SDIO_ICR_CCRCFAILC | SDIO_ICR_DCRCFAILC |
+		SDIO_ICR_CTIMEOUTC | SDIO_ICR_DTIMEOUTC |
+		SDIO_ICR_TXUNDERRC | SDIO_ICR_RXOVERRC |
+		SDIO_ICR_CMDRENDC | SDIO_ICR_CMDSENTC |
+		SDIO_ICR_DATAENDC | SDIO_ICR_STBITERRC |
+		SDIO_ICR_DBCKENDC | SDIO_ICR_SDIOITC |
+		SDIO_ICR_CEATAENDC;
 }
 
 static int sd_waitcomplete(uint32_t response_type) {
@@ -68,14 +85,7 @@ static int sd_waitcomplete(uint32_t response_type) {
 
 	} while (!(status & completion_mask));
 
-	// clear & check physical layer status, flags
-	SDIO->ICR = SDIO_ICR_CCRCFAILC | SDIO_ICR_DCRCFAILC |
-		SDIO_ICR_CTIMEOUTC | SDIO_ICR_DTIMEOUTC |
-		SDIO_ICR_TXUNDERRC | SDIO_ICR_RXOVERRC |
-		SDIO_ICR_CMDRENDC | SDIO_ICR_CMDSENTC |
-		SDIO_ICR_DATAENDC | SDIO_ICR_STBITERRC |
-		SDIO_ICR_DBCKENDC | SDIO_ICR_SDIOITC |
-		SDIO_ICR_CEATAENDC;
+	sd_clearflags();
 
 	if (!(response_type & MMC_RSP_CRC)) {
 		status &= ~SDIO_STA_CCRCFAIL;
@@ -246,7 +256,7 @@ int sd_init(bool fourbit) {
 
 	SDIO_ClockCmd(ENABLE);
 
-	bool high_cap = false;
+	sd_high_cap = false;
 
 	// The SD card negotiation and selection sequence is annoying.
 
@@ -260,7 +270,7 @@ int sd_init(bool fourbit) {
 	// (Enable advanced features, if card able)
 	if (!sd_cmd8()) {
 		// Woohoo, we can ask about highcap!
-		high_cap = true;
+		sd_high_cap = true;
 	}
 
 	// A-CMD41 SD_SEND_OP_COND -- may return busy, need to loop
@@ -272,14 +282,14 @@ int sd_init(bool fourbit) {
 			return -1;
 		}
 
-		if (sd_acmd41(&ocr, high_cap)) {
+		if (sd_acmd41(&ocr, sd_high_cap)) {
 			return -1;
 		}
 	} while (!(ocr & MMC_OCR_CARD_BUSY));
 
-	// set our high_cap flag based on response
+	// set our sd_high_cap flag based on response
 	if (!(ocr & MMC_OCR_CCS)) {
-		high_cap = false;
+		sd_high_cap = false;
 	}
 
 	// Legacy multimedia card multi-card addressing stuff that infects
@@ -321,4 +331,93 @@ int sd_init(bool fourbit) {
 
 	// If we got here, we won.. I think.
 	return 0;
+}
+
+int sd_read(uint8_t *data, uint32_t sect_num) {
+	if (!(sd_high_cap)) {
+		if (sect_num > 0x7fffff) {
+			return -1;
+		}
+
+		sect_num *= 512;
+	}
+
+	int ret = sd_cmdtype1(MMC_SET_BLOCKLEN, 512);
+
+	if (ret < 0) return ret;
+
+	/* config data transfer and cue up the data xfer state machine */
+	SDIO_DataInitTypeDef data_xfer = {
+		.SDIO_DataTimeOut = 20000000,	/* 1 secondish */
+		.SDIO_DataLength = 512,
+		.SDIO_DataBlockSize = 9 << 4,
+		.SDIO_TransferDir = SDIO_TransferDir_ToSDIO,
+		.SDIO_TransferMode = SDIO_TransferMode_Block,
+		.SDIO_DPSM = SDIO_DPSM_Enable
+	};
+
+	SDIO_DataConfig(&data_xfer);
+
+	ret = sd_cmdtype1(MMC_READ_SINGLE_BLOCK, sect_num);
+
+	if (ret < 0) {
+		send_morse_blocking("CMDFAIL ", LED, LEDPIN, 33);
+		return ret;
+	}
+
+	int i = 512 / 4;
+
+	while (true) {
+		uint32_t status = SDIO->STA;
+
+		if (status &
+				(SDIO_STA_CCRCFAIL | SDIO_STA_DCRCFAIL |
+				 SDIO_STA_CTIMEOUT | SDIO_STA_DTIMEOUT |
+				 SDIO_STA_TXUNDERR | SDIO_STA_RXOVERR |
+				 SDIO_STA_STBITERR)) {
+			send_morse_blocking("FLAG ", LED, LEDPIN, 33);
+			ret = -1;	/* we lose. */
+			break;
+		}
+
+		if (status & SDIO_STA_RXDAVL) {
+			if (i <= 0) {
+				send_morse_blocking("TOOMUCH ", LED, LEDPIN, 33);
+				ret = -1;	/* Too much data? */
+				break;
+			}
+
+			i--;
+
+			uint32_t temp = SDIO_ReadData();
+
+			// LE stuff the data to ram, byte at a time,
+			// in case data is unaligned.
+			*(data++) = temp;
+			*(data++) = temp >> 8;
+			*(data++) = temp >> 16;
+			*(data++) = temp >> 24;
+		} else {
+			if (status & SDIO_STA_DBCKEND) {
+				if (i == 0) {
+					ret = 0;	/* Sounds good! */
+					break;
+				}
+
+				send_morse_blocking("MISSING ", LED, LEDPIN, 33);
+
+				/* What??? Finished before we got all the datai */
+				ret = -1;
+				break;
+			}
+		}
+	}
+
+	sd_clearflags();
+
+	if (ret) {
+		send_morse_blocking("FAIL ", LED, LEDPIN, 33);
+	}
+
+	return ret;
 }

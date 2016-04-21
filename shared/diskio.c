@@ -3,6 +3,7 @@
 /*-----------------------------------------------------------------------*/
 
 #include "diskio.h"		/* FatFs lower layer API */
+#include <sdio.h>		/* dRonin SDIO implementation functions */
 
 /* Definitions of physical drive number for each drive */
 #define CARD		0	/* Example: Map ATA harddisk to physical drive 0 */
@@ -19,7 +20,7 @@ DSTATUS disk_status (
 	if (pdrv != CARD)
 		return STA_NOINIT;
 
-	return STA_NOINIT;
+	return 0;
 }
 
 
@@ -35,7 +36,7 @@ DSTATUS disk_initialize (
 	if (pdrv != CARD)
 		return STA_NOINIT;
 
-	return STA_NOINIT;
+	return 0;
 }
 
 
@@ -54,7 +55,19 @@ DRESULT disk_read (
 	if (pdrv != CARD)
 		return RES_PARERR;
 
-	return RES_PARERR;
+	BYTE *rptr = buff;
+
+	for (UINT i = 0; i < count; i++) {
+		int ret = sd_read(rptr, sector + i);
+
+		if (ret) {
+			return RES_ERROR;
+		}
+
+		rptr += 512;
+	}
+
+	return RES_OK;
 }
 
 

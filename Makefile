@@ -47,13 +47,16 @@ CPPFLAGS += -DSTM32F411xE -DUSE_STDPERIPH_DRIVER
 
 CFLAGS :=
 CFLAGS += -mcpu=cortex-m4 -mthumb -fdata-sections -ffunction-sections
-CFLAGS += -fomit-frame-pointer -Wall
+CFLAGS += -fomit-frame-pointer -Wall -Os
 
 LDFLAGS := -nostartfiles -Wl,-static -lc -lgcc -Wl,--warn-common
 LDFLAGS += -Wl,--fatal-warnings -Wl,--gc-sections
 LDFLAGS += -Tshared/stm32f411.ld
 
 all: build/ef_lager.bin
+
+flash: build/openloader.bin
+	openocd -f /usr/local/share/openocd/scripts/interface/stlink-v2.cfg -f /usr/local/share/openocd/scripts/target/stm32f4x.cfg -f flash.cfg
 
 build/ef_lager.bin: build/openloader.bin build/openlager.bin
 	cat build/openloader.bin build/openlager.bin > $@
