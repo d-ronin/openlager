@@ -28,16 +28,16 @@ STDPERIPH_SRC += stm32f4xx_tim.c
 STDPERIPH_SRC += stm32f4xx_usart.c
 
 STDPERIPH_SRC := $(patsubst %,libs/STM32F4xx_StdPeriph_Driver/src/%,$(STDPERIPH_SRC))
-
 FATFS_SRC := $(wildcard libs/fatfs/*.c)
-SHARED_SRC := $(wildcard shared/*.c)
+OTHERLIB_SRC := $(wildcard libs/src/*.c)
+SHARED_SRC := $(wildcard shared/*.c) $(OTHERLIB_SRC) $(FATFS_SRC) $(STDPERIPH_SRC)
 OPENLAGER_SRC := $(wildcard src/*.c)
 OPENLAGER_LOADER_SRC := $(wildcard loader/*.c)
 
-SRC := $(STDPERIPH_SRC) $(FATFS_SRC) $(SHARED_SRC) $(OPENLAGER_SRC)
+SRC := $(SHARED_SRC) $(OPENLAGER_SRC)
 OBJ := $(patsubst %.c,build/%.o,$(SRC))
 
-BOOTLOADER_SRC := $(STDPERIPH_SRC) $(FATFS_SRC) $(SHARED_SRC) $(OPENLAGER_LOADER_SRC)
+BOOTLOADER_SRC := $(SHARED_SRC) $(OPENLAGER_LOADER_SRC)
 BOOTLOADER_OBJ := $(patsubst %.c,build/%.o,$(BOOTLOADER_SRC))
 
 CC := $(ARM_SDK_PREFIX)gcc

@@ -20,3 +20,5 @@ The **fatfs** library in `libs/fatfs` is licensed under the one-clause BSD licen
 The **STM32F4xx_StdPeriph_Driver** library in `libs/STM32F4xx_StdPeriph_Driver` is largely licensed under a restrictive license that limits its usage to ST family processors.  To use this software on non-ST parts, the dependency on this library code must be removed.  Portions of this code (the `core_cm*` include headers) are licensed under a permissive 3 clause BSD license from ARM, as noted in the individual files.
 
 The **mmcreg.h** file from FreeBSD in `libs/inc` is licensed under a simplified BSD license.
+
+The **jsmn** library in `libs` is licensed under the MIT license.
