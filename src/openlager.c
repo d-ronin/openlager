@@ -27,21 +27,12 @@
 #include <stdbool.h>
 #include <usart.h>
 
+#include <led.h>
+
 #include <stm32f4xx_rcc.h>
 #include <systick_handler.h>
 
 const void *_interrupt_vectors[FPU_IRQn] __attribute((section(".interrupt_vectors"))) = {
-};
-
-#define LED GPIOD
-#define LEDPIN GPIO_Pin_15
-
-const GPIO_InitTypeDef led_def = {
-	.GPIO_Pin = LEDPIN,
-	.GPIO_Mode = GPIO_Mode_OUT,
-	.GPIO_Speed = GPIO_Low_Speed,
-	.GPIO_OType = GPIO_OType_PP,
-	.GPIO_PuPd = GPIO_PuPd_NOPULL
 };
 
 int main() {
@@ -111,14 +102,17 @@ int main() {
 
 	SysTick_Config(96000000/300);	/* 300Hz systick */
 
-	GPIO_Init(LED, (GPIO_InitTypeDef *) &led_def);
-
-	usart_init(115200);
-
 	/* Real hardware has LED on PB9 / TIM4_CH4.
 	 * Discovery hardware has blue LED on PD15 which can also be TIM4_CH4.
 	 * Nucleo F411 has LED on PA5 (source)
 	 */
+	led_init_pin(GPIOD, GPIO_Pin_15, false);
+
+	if (osc_err) {
+		// XXX blink an error
+	}
+
+	usart_init(115200);
 
 	uint32_t nextTick = 0;
 
@@ -127,7 +121,7 @@ int main() {
 
 		nextTick += 50;
 
-		GPIO_ToggleBits(LED, LEDPIN);
+		led_toggle();
 	}
 
 	return 0;

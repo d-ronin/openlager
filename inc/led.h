@@ -1,4 +1,4 @@
-// Morse Library header
+// LED Library header
 //
 // Copyright (c) 2016, dRonin
 // All rights reserved.
@@ -23,14 +23,16 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _MORSEL_H
-#define _MORSEL_H
+#ifndef _LED_H
+#define _LED_H
 
-#include <stdint.h>
+#include <stdbool.h>
 #include <stm32f4xx.h>
+#include <stm32f4xx_gpio.h>
 
-int morse_send(char **c, uint32_t *state);
-void send_morse_blocking(char *string, GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin,
-		int time_per_dot);
+void led_init_pin(GPIO_TypeDef *GPIOx, uint16_t GPIO_pin, bool sense);
+void led_send_morse(char *string, int time_per_dot);
+void led_set(bool light);
+void led_toggle();
 
 #endif
