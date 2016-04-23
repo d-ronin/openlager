@@ -36,6 +36,7 @@
 #include <stm32f4xx_rcc.h>
 #include <systick_handler.h>
 
+#include <lagercfg.h>
 
 const void *_interrupt_vectors[FPU_IRQn] __attribute((section(".interrupt_vectors"))) = {
 };
@@ -43,7 +44,6 @@ const void *_interrupt_vectors[FPU_IRQn] __attribute((section(".interrupt_vector
 static FATFS fatfs;
 
 #define CFGFILE_NAME "0:lager.cfg"
-#define DEFAULT_CFG "{ \"key\" : 31337 }\r\n"
 
 // Try to load a config file.  If it doesn't exist, create it.
 // If we can't load after that, PANNNNIC.
@@ -53,9 +53,9 @@ void process_config() {
 	FRESULT res = f_open(&cfg_file, CFGFILE_NAME, FA_WRITE | FA_CREATE_NEW);
 
 	if (res == FR_OK) {
-		UINT wr_len = strlen(DEFAULT_CFG);
+		UINT wr_len = sizeof(lager_cfg);
 		UINT written;
-		res = f_write(&cfg_file, DEFAULT_CFG, wr_len, &written);
+		res = f_write(&cfg_file, lager_cfg, wr_len, &written);
 
 		if (res != FR_OK) {
 			led_panic("WCFG");
