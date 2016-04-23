@@ -25,15 +25,61 @@
 //
 
 #include <stdbool.h>
-#include <usart.h>
+#include <string.h>
+#include <unistd.h>
 
+#include <ff.h>
 #include <led.h>
+#include <sdio.h>
+#include <usart.h>
 
 #include <stm32f4xx_rcc.h>
 #include <systick_handler.h>
 
+
 const void *_interrupt_vectors[FPU_IRQn] __attribute((section(".interrupt_vectors"))) = {
 };
+
+static FATFS fatfs;
+
+#define CFGFILE_NAME "0:lager.cfg"
+#define DEFAULT_CFG "{ \"key\" : 31337 }\r\n"
+
+// Try to load a config file.  If it doesn't exist, create it.
+// If we can't load after that, PANNNNIC.
+void process_config() {
+	FIL cfg_file;
+
+	FRESULT res = f_open(&cfg_file, CFGFILE_NAME, FA_WRITE | FA_CREATE_NEW);
+
+	if (res == FR_OK) {
+		UINT wr_len = strlen(DEFAULT_CFG);
+		UINT written;
+		res = f_write(&cfg_file, DEFAULT_CFG, wr_len, &written);
+
+		if (res != FR_OK) {
+			led_panic("WCFG");
+		}
+
+		if (written != wr_len) {
+			led_panic("FULL");
+		}
+
+		f_close(&cfg_file);
+	} else if (res != FR_EXIST) {
+		led_panic("WCFG2");
+	}
+
+	res = f_open(&cfg_file, CFGFILE_NAME, FA_READ | FA_OPEN_EXISTING);
+
+	if (res != FR_OK) {
+		led_panic("RCFG");
+	}
+
+	/* XXX parse config */
+
+	f_close(&cfg_file);
+}
 
 int main() {
 	/* Keep it really simple for now-- just run from 16MHz RC osc,
@@ -161,10 +207,7 @@ int main() {
                 led_panic("DATA ");
         }
 
-	while (1) {
-		while (systick_cnt < nextTick);
-
-		nextTick += 50;
+	process_config();
 
 	usart_init(115200);
 
