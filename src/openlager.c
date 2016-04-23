@@ -25,15 +25,61 @@
 //
 
 #include <stdbool.h>
-#include <usart.h>
+#include <string.h>
+#include <unistd.h>
 
+#include <ff.h>
 #include <led.h>
+#include <sdio.h>
+#include <usart.h>
 
 #include <stm32f4xx_rcc.h>
 #include <systick_handler.h>
 
+#include <lagercfg.h>
+
 const void *_interrupt_vectors[FPU_IRQn] __attribute((section(".interrupt_vectors"))) = {
 };
+
+static FATFS fatfs;
+
+#define CFGFILE_NAME "0:lager.cfg"
+
+// Try to load a config file.  If it doesn't exist, create it.
+// If we can't load after that, PANNNNIC.
+void process_config() {
+	FIL cfg_file;
+
+	FRESULT res = f_open(&cfg_file, CFGFILE_NAME, FA_WRITE | FA_CREATE_NEW);
+
+	if (res == FR_OK) {
+		UINT wr_len = sizeof(lager_cfg);
+		UINT written;
+		res = f_write(&cfg_file, lager_cfg, wr_len, &written);
+
+		if (res != FR_OK) {
+			led_panic("WCFG");
+		}
+
+		if (written != wr_len) {
+			led_panic("FULL");
+		}
+
+		f_close(&cfg_file);
+	} else if (res != FR_EXIST) {
+		led_panic("WCFG2");
+	}
+
+	res = f_open(&cfg_file, CFGFILE_NAME, FA_READ | FA_OPEN_EXISTING);
+
+	if (res != FR_OK) {
+		led_panic("RCFG");
+	}
+
+	/* XXX parse config */
+
+	f_close(&cfg_file);
+}
 
 int main() {
 	/* Keep it really simple for now-- just run from 16MHz RC osc,
@@ -70,7 +116,7 @@ int main() {
 	} else {
 		// Program the PLL.
 		RCC_PLLConfig(RCC_PLLSource_HSE,
-				8,	/* PLLM = /4 = 2MHz */
+				4,	/* PLLM = /4 = 2MHz */
 				96,	/* PLLN = *96 = 192MHz */
 				2,	/* PLLP = /2 = 96MHz, slight underclock */
 				5	/* PLLQ = /5 = 38.4MHz, underclock SDIO
@@ -138,7 +184,7 @@ int main() {
 	// Wait for the PLL to be ready.
 	while (RCC_GetFlagStatus(RCC_FLAG_PLLRDY) == RESET);
 
-	SysTick_Config(96000000/300);	/* 300Hz systick */
+	SysTick_Config(96000000/250);	/* 250Hz systick */
 
 	/* Real hardware has LED on PB9 / TIM4_CH4.
 	 * Discovery hardware has blue LED on PD15 which can also be TIM4_CH4.
@@ -147,20 +193,26 @@ int main() {
 	led_init_pin(GPIOD, GPIO_Pin_15, false);
 
 	if (osc_err) {
-		// blink an error
-		led_send_morse("XOSC ", 40);
+		// blink an error; though this is nonfatal.
+		led_send_morse("XOSC ");
 	}
+
+        if (sd_init(false)) {
+                // -.-. .- .-. -..
+                led_panic("CARD");
+        }
+
+        if (f_mount(&fatfs, "0:", 1) != FR_OK) {
+                // -.. .- - .-
+                led_panic("DATA ");
+        }
+
+	process_config();
 
 	usart_init(115200);
 
-	uint32_t nextTick = 0;
-
 	while (1) {
-		while (systick_cnt < nextTick);
-
-		nextTick += 50;
-
-		led_toggle();
+		led_send_morse("HI ");
 	}
 
 	return 0;

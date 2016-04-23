@@ -86,7 +86,19 @@ DRESULT disk_write (
 	if (pdrv != CARD)
 		return RES_PARERR;
 
-	return RES_PARERR;
+	const BYTE *wptr = buff;
+
+	for (UINT i = 0; i < count; i++) {
+		int ret = sd_write(wptr, sector + i);
+
+		if (ret) {
+			return RES_ERROR;
+		}
+
+		wptr += 512;
+	}
+
+	return RES_OK;
 }
 
 

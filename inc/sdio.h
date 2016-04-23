@@ -31,6 +31,7 @@
 
 int sd_init(bool fourbit);
 int sd_read(uint8_t *data, uint32_t sect_num);
+int sd_write(const uint8_t *data, uint32_t sect_num);
 
 #endif
 

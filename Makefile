@@ -79,3 +79,9 @@ clean:
 build/%.o: %.c
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) $(CPPFLAGS) $< -o $@
+
+inc/%cfg.h: %.cfg FORCE
+	echo "const " > $@
+	xxd -i $< >> $@
+
+FORCE:
