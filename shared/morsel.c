@@ -194,7 +194,7 @@ enum __attribute__ ((__packed__)) character_state {
 };
 
 /* Returns 0 for off, 1 for on, -1 for completed */
-int send_morse(char **c, uint32_t *state) {
+int morse_send(char **c, uint32_t *state) {
 	uint8_t *len = ((uint8_t *) state);
 	uint8_t *data = len + 1;
 	enum character_state *char_state = (enum character_state *) (len + 2);
@@ -265,32 +265,6 @@ int send_morse(char **c, uint32_t *state) {
 
 		default:		/* illegal state */
 			return 1;
-	}
-}
-
-void send_morse_blocking(char *string, GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin,
-		int time_per_dot) {
-	char *pos = string;
-	int val;
-
-	uint32_t state = 0;
-
-	uint32_t next = systick_cnt;
-
-	while ((val = send_morse(&pos, &state)) != -1) {
-		while (systick_cnt < next);
-
-		next += time_per_dot;
-
-		// Done explicitly for now because of bugs in
-		// GNU-ARM-Eclipse-QEMU
-		if (val > 0) {
-			GPIOx->ODR |= GPIO_Pin;
-			//GPIO_SetBits(GPIOx, GPIO_Pin);
-		} else {
-			GPIOx->ODR &= ~GPIO_Pin;
-			//GPIO_ResetBits(GPIOx, GPIO_Pin);
-		}
 	}
 }
 

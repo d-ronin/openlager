@@ -1,4 +1,4 @@
-// Morse Library header
+// STM32F4xx USART support functions headers 
 //
 // Copyright (c) 2016, dRonin
 // All rights reserved.
@@ -23,14 +23,13 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _MORSEL_H
-#define _MORSEL_H
+#ifndef _USART_H
+#define _USART_H
 
+#include <stdbool.h>
 #include <stdint.h>
-#include <stm32f4xx.h>
 
-int morse_send(char **c, uint32_t *state);
-void send_morse_blocking(char *string, GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin,
-		int time_per_dot);
+void usart_init(uint32_t baud);
 
 #endif
+

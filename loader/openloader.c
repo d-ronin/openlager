@@ -32,8 +32,9 @@
 #include <systick_handler.h>
 
 #include <sdio.h>
-#include <morsel.h>
 #include <ff.h>
+
+#include <led.h>
 
 extern uint32_t _efill;
 
@@ -64,23 +65,11 @@ void invoke_next_program() {
 	__builtin_unreachable();
 }
 
-//#define LED GPIOA
-//#define LEDPIN GPIO_Pin_5
-#define LED GPIOD
-#define LEDPIN GPIO_Pin_15
-static const GPIO_InitTypeDef led_def = {
-	.GPIO_Pin = LEDPIN,
-	.GPIO_Mode = GPIO_Mode_OUT,
-	.GPIO_Speed = GPIO_Low_Speed,
-	.GPIO_OType = GPIO_OType_PP,
-	.GPIO_PuPd = GPIO_PuPd_NOPULL
-};
-
 void chk_flashop(FLASH_Status f) {
 	if (f != FLASH_COMPLETE) {
 		while (1) {
 			// ..-. . .-. .-.
-			send_morse_blocking("FERR  ", LED, LEDPIN, 33);
+			led_send_morse("FERR  ", 33);
 		}
 	}
 }
@@ -91,16 +80,15 @@ void chk_flashop(FLASH_Status f) {
  * to flash an error code.
  */
 void try_loader_stuff() {
-	GPIO_Init(LED, (GPIO_InitTypeDef *) &led_def);
-
 	/* Real hardware has LED on PB9 / TIM4_CH4.
 	 * Discovery hardware has blue LED on PD15 which can also be TIM4_CH4.
 	 * Nucleo F411 has LED on PA5 (source)
 	 */
+	led_init_pin(GPIOD, GPIO_Pin_15, false);
 
 	if (sd_init(false)) {
 		// -.-. .- .-. -..
-		send_morse_blocking("CARD ", LED, LEDPIN, 33);
+		led_send_morse("CARD ", 33);
 		return;
 	}
 
@@ -108,7 +96,7 @@ void try_loader_stuff() {
 
 	if (f_mount(&fatfs, "0:", 1) != FR_OK) {
 		// -.. .- - .-
-		send_morse_blocking("DATA ", LED, LEDPIN, 33);
+		led_send_morse("DATA ", 33);
 		return;
 	}
 
@@ -133,13 +121,13 @@ void try_loader_stuff() {
 	 * programs, since there's 192k of flash... */
 	if (FR_OK != f_read(&fil, buf, sizeof(buf), &amount)) {
 		// .. ---
-		send_morse_blocking("IO ", LED, LEDPIN, 33);
+		led_send_morse("IO ", 33);
 		return;
 	}
 
 	if ((amount < 500) || (amount % sizeof(*buf))) {
 		// Very short or not an integral number of words.
-		send_morse_blocking("TRUNC ", LED, LEDPIN, 33);
+		led_send_morse("TRUNC ", 33);
 		return;
 	}
 
@@ -150,7 +138,7 @@ void try_loader_stuff() {
 			diff = true;
 
 			// ..- .--.   ..- .--.
-			send_morse_blocking("UP UP ", LED, LEDPIN, 33);
+			led_send_morse("UP UP ", 33);
 
 			break;
 		}
@@ -166,14 +154,14 @@ void try_loader_stuff() {
 	// checks success, infloop blinking if not
 	chk_flashop(FLASH_EraseSector(FLASH_Sector_4, VoltageRange_3));
 
-	send_morse_blocking("PRG ", LED, LEDPIN, 33);
+	led_send_morse("PRG ", 33);
 
 	for (int i = 0; i < amount; i++) {
 		chk_flashop(FLASH_ProgramWord((uint32_t) (prog_flash + i),
 				buf[i]));
 	}
 
-	send_morse_blocking(".. ", LED, LEDPIN, 33);
+	led_send_morse(".. ", 33);
 
 	FLASH_Lock();
 }
@@ -233,6 +221,19 @@ int main() {
 			RCC_APB2Periph_SYSCFG |
 			RCC_APB2Periph_SDIO,
 			ENABLE);
+
+#if 0
+	/* Seize PA14/PA13 from SWD. */
+	GPIO_InitTypeDef swd_def = {
+		.GPIO_Pin = GPIO_Pin_14 | GPIO_Pin_13,
+		.GPIO_Mode = GPIO_Mode_IN,
+		.GPIO_Speed = GPIO_Low_Speed,
+		.GPIO_OType = GPIO_OType_PP,
+		.GPIO_PuPd = GPIO_PuPd_NOPULL
+	};
+
+	GPIO_Init(GPIOA, &swd_def);
+#endif
 
 	SysTick_Config(16000000/250);	/* 250Hz systick */
 

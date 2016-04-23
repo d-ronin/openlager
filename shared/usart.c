@@ -1,4 +1,4 @@
-// Morse Library header
+// STM32F4xx USART peripheral support
 //
 // Copyright (c) 2016, dRonin
 // All rights reserved.
@@ -23,14 +23,43 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _MORSEL_H
-#define _MORSEL_H
-
-#include <stdint.h>
 #include <stm32f4xx.h>
+#include <usart.h>
 
-int morse_send(char **c, uint32_t *state);
-void send_morse_blocking(char *string, GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin,
-		int time_per_dot);
+#define OUR_USART USART1
+#define TXPORT GPIOA
+#define TXPIN 15
+#define RXPORT GPIOB
+#define RXPIN 3
 
-#endif
+static void usart_initpin(GPIO_TypeDef *gpio, uint16_t pin_pos) {
+	GPIO_InitTypeDef pin_def = {
+		.GPIO_Pin = 1 << (pin_pos),
+		.GPIO_Mode = GPIO_Mode_AF,
+		.GPIO_Speed = GPIO_Fast_Speed,
+		.GPIO_OType = GPIO_OType_PP,
+		.GPIO_PuPd = GPIO_PuPd_UP
+	};
+
+	GPIO_Init(gpio, &pin_def);
+	GPIO_PinAFConfig(gpio, pin_pos, GPIO_AF_USART1);
+}
+
+
+void usart_init(uint32_t baud) {
+	// program GPIOs
+	usart_initpin(TXPORT, TXPIN);
+	usart_initpin(RXPORT, RXPIN);
+ 
+	// Fill out default parameters; stuff in our baudrate
+	USART_InitTypeDef usart_params;
+	USART_StructInit(&usart_params);
+
+	usart_params.USART_BaudRate = baud;
+
+	// Init the USART
+	USART_Init(OUR_USART, &usart_params);
+
+	// Enable the USART
+	USART_Cmd(OUR_USART, ENABLE);
+}

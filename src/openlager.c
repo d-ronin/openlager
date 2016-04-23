@@ -25,22 +25,14 @@
 //
 
 #include <stdbool.h>
+#include <usart.h>
+
+#include <led.h>
 
 #include <stm32f4xx_rcc.h>
 #include <systick_handler.h>
 
 const void *_interrupt_vectors[FPU_IRQn] __attribute((section(".interrupt_vectors"))) = {
-};
-
-#define LED GPIOD
-#define LEDPIN GPIO_Pin_15
-
-const GPIO_InitTypeDef led_def = {
-	.GPIO_Pin = LEDPIN,
-	.GPIO_Mode = GPIO_Mode_OUT,
-	.GPIO_Speed = GPIO_Low_Speed,
-	.GPIO_OType = GPIO_OType_PP,
-	.GPIO_PuPd = GPIO_PuPd_NOPULL
 };
 
 int main() {
@@ -54,29 +46,48 @@ int main() {
 	// XXX On real hardware: need to start external oscillator,
 	// set the PLL source to ext osc.
 
-	// Program the PLL.
-	RCC_PLLConfig(RCC_PLLSource_HSI,
-			8,	/* PLLM = /8 = 2MHz */
-			96,	/* PLLN = *96 = 192MHz */
-			2,	/* PLLP = /2 = 96MHz, slight underclock */
-			5	/* PLLQ = /5 = 38.4MHz, underclock SDIO
-				 * (Maximum is 48MHz)  Will get a 19.2MHz
-				 * SD card clock from dividing by 2, or
-				 * 9.6MBps at 4 bits wide.
-				 */
-		);
+	// Turn on the external oscillator
+	RCC_HSEConfig(RCC_HSE_ON);
+
+	bool osc_err = false;
+
+	if (RCC_WaitForHSEStartUp() == ERROR) {
+		// Settle for HSI, and flag error.
+
+		// Program the PLL.
+		RCC_PLLConfig(RCC_PLLSource_HSI,
+				8,	/* PLLM = /8 = 2MHz */
+				96,	/* PLLN = *96 = 192MHz */
+				2,	/* PLLP = /2 = 96MHz, slight underclock */
+				5	/* PLLQ = /5 = 38.4MHz, underclock SDIO
+					 * (Maximum is 48MHz)  Will get a 19.2MHz
+					 * SD card clock from dividing by 2, or
+					 * 9.6MBps at 4 bits wide.
+					 */
+			);
+
+		osc_err = true;
+	} else {
+		// Program the PLL.
+		RCC_PLLConfig(RCC_PLLSource_HSE,
+				8,	/* PLLM = /4 = 2MHz */
+				96,	/* PLLN = *96 = 192MHz */
+				2,	/* PLLP = /2 = 96MHz, slight underclock */
+				5	/* PLLQ = /5 = 38.4MHz, underclock SDIO
+					 * (Maximum is 48MHz)  Will get a 19.2MHz
+					 * SD card clock from dividing by 2, or
+					 * 9.6MBps at 4 bits wide.
+					 */
+			);
+	}
 
 	// Get the PLL starting.
 	RCC_PLLCmd(ENABLE);
 
-	// Program 3 wait states as necessary at >2.7V for 96MHz
-	FLASH_SetLatency(FLASH_Latency_3);
+	// Program this first, just in case we coasted in here with other periphs
+	// already enabled.  The loader does all of this stuff, but who knows,
+	// maybe in the future our startup code will do less of this.
 
-	// Wait for the PLL to be ready.
-	while (RCC_GetFlagStatus(RCC_FLAG_PLLRDY) == RESET);
-
-	// Program this, just in case we coasted in here with other periphs
-	// already enabled.
 	RCC_HCLKConfig(RCC_SYSCLK_Div1);	/* AHB = 96MHz */
 	RCC_PCLK1Config(RCC_HCLK_Div2);		/* APB1 = 48MHz (lowspeed domain) */
 	RCC_PCLK2Config(RCC_HCLK_Div1);		/* APB2 = 96MHz (fast domain) */
@@ -108,14 +119,39 @@ int main() {
 			RCC_APB2Periph_SDIO,
 			ENABLE);
 
-	SysTick_Config(96000000/300);	/* 300Hz systick */
+#if 0
+	/* Seize PA14/PA13 from SWD. */
+	GPIO_InitTypeDef swd_def = {
+		.GPIO_Pin = GPIO_Pin_14 | GPIO_Pin_13,
+		.GPIO_Mode = GPIO_Mode_IN,	// Input, not AF
+		.GPIO_Speed = GPIO_Low_Speed,
+		.GPIO_OType = GPIO_OType_PP,
+		.GPIO_PuPd = GPIO_PuPd_NOPULL
+	};
 
-	GPIO_Init(LED, (GPIO_InitTypeDef *) &led_def);
+	GPIO_Init(GPIOA, &swd_def);
+#endif
+
+	// Program 3 wait states as necessary at >2.7V for 96MHz
+	FLASH_SetLatency(FLASH_Latency_3);
+
+	// Wait for the PLL to be ready.
+	while (RCC_GetFlagStatus(RCC_FLAG_PLLRDY) == RESET);
+
+	SysTick_Config(96000000/300);	/* 300Hz systick */
 
 	/* Real hardware has LED on PB9 / TIM4_CH4.
 	 * Discovery hardware has blue LED on PD15 which can also be TIM4_CH4.
 	 * Nucleo F411 has LED on PA5 (source)
 	 */
+	led_init_pin(GPIOD, GPIO_Pin_15, false);
+
+	if (osc_err) {
+		// blink an error
+		led_send_morse("XOSC ", 40);
+	}
+
+	usart_init(115200);
 
 	uint32_t nextTick = 0;
 
@@ -124,7 +160,7 @@ int main() {
 
 		nextTick += 50;
 
-		GPIO_ToggleBits(LED, LEDPIN);
+		led_toggle();
 	}
 
 	return 0;
