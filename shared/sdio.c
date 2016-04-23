@@ -254,6 +254,9 @@ int sd_init(bool fourbit) {
 	sd_settings.SDIO_ClockDiv = 118;	// /120; = 400KHz at 48MHz
 						// and 320KHz at 38.4MHz
 
+	// Tell the SDIO peripheral to stop the clock when FIFO empty/full
+	sd_settings.SDIO_HardwareFlowControl = SDIO_HardwareFlowControl_Enable;
+
 	SDIO_Init(&sd_settings);
 
 	// Turn it on and enable the clock
