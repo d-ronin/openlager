@@ -147,7 +147,8 @@ int main() {
 	led_init_pin(GPIOD, GPIO_Pin_15, false);
 
 	if (osc_err) {
-		// XXX blink an error
+		// blink an error
+		led_send_morse("XOSC ", 40);
 	}
 
 	usart_init(115200);
