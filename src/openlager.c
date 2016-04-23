@@ -46,17 +46,41 @@ int main() {
 	// XXX On real hardware: need to start external oscillator,
 	// set the PLL source to ext osc.
 
-	// Program the PLL.
-	RCC_PLLConfig(RCC_PLLSource_HSI,
-			8,	/* PLLM = /8 = 2MHz */
-			96,	/* PLLN = *96 = 192MHz */
-			2,	/* PLLP = /2 = 96MHz, slight underclock */
-			5	/* PLLQ = /5 = 38.4MHz, underclock SDIO
-				 * (Maximum is 48MHz)  Will get a 19.2MHz
-				 * SD card clock from dividing by 2, or
-				 * 9.6MBps at 4 bits wide.
-				 */
-		);
+	// Turn on the external oscillator
+	RCC_HSEConfig(RCC_HSE_ON);
+
+	bool osc_err = false;
+
+	if (RCC_WaitForHSEStartUp() == ERROR) {
+		// Settle for HSI, and flag error.
+
+		// Program the PLL.
+		RCC_PLLConfig(RCC_PLLSource_HSI,
+				8,	/* PLLM = /8 = 2MHz */
+				96,	/* PLLN = *96 = 192MHz */
+				2,	/* PLLP = /2 = 96MHz, slight underclock */
+				5	/* PLLQ = /5 = 38.4MHz, underclock SDIO
+					 * (Maximum is 48MHz)  Will get a 19.2MHz
+					 * SD card clock from dividing by 2, or
+					 * 9.6MBps at 4 bits wide.
+					 */
+			);
+
+		osc_err = true;
+	} else {
+		// Program the PLL.
+		RCC_PLLConfig(RCC_PLLSource_HSE,
+				8,	/* PLLM = /4 = 2MHz */
+				96,	/* PLLN = *96 = 192MHz */
+				2,	/* PLLP = /2 = 96MHz, slight underclock */
+				5	/* PLLQ = /5 = 38.4MHz, underclock SDIO
+					 * (Maximum is 48MHz)  Will get a 19.2MHz
+					 * SD card clock from dividing by 2, or
+					 * 9.6MBps at 4 bits wide.
+					 */
+			);
+	}
+
 
 	// Get the PLL starting.
 	RCC_PLLCmd(ENABLE);
@@ -67,8 +91,10 @@ int main() {
 	// Wait for the PLL to be ready.
 	while (RCC_GetFlagStatus(RCC_FLAG_PLLRDY) == RESET);
 
-	// Program this, just in case we coasted in here with other periphs
-	// already enabled.
+	// Program this first, just in case we coasted in here with other periphs
+	// already enabled.  The loader does all of this stuff, but who knows,
+	// maybe in the future our startup code will do less of this.
+
 	RCC_HCLKConfig(RCC_SYSCLK_Div1);	/* AHB = 96MHz */
 	RCC_PCLK1Config(RCC_HCLK_Div2);		/* APB1 = 48MHz (lowspeed domain) */
 	RCC_PCLK2Config(RCC_HCLK_Div1);		/* APB2 = 96MHz (fast domain) */
