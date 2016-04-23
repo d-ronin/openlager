@@ -143,7 +143,11 @@ static int sd_cmdtype1(uint8_t cmd_idx, uint32_t arg) {
 		return -1;
 	}
 
-	return 0;
+	if (card_status & R1_READY_FOR_DATA) {
+		return 0;
+	}
+
+	return 1;		// OK, but not ready for data.
 }
 
 static int sd_cmd8() {
@@ -168,7 +172,7 @@ static int sd_appcmdtype1(uint8_t cmd_idx, uint32_t arg) {
 
 	ret = sd_cmdtype1(MMC_APP_CMD, sd_rca << 16);
 
-	if (ret) return ret;
+	if (ret < 0) return ret;
 
 	ret = sd_cmdtype1(cmd_idx, arg);
 
@@ -181,7 +185,7 @@ static int sd_acmd41(uint32_t *ocr, bool hicap){
 
 	ret = sd_cmdtype1(MMC_APP_CMD, 0 /* No RCA yet */);
 
-	if (ret) return ret;
+	if (ret < 0) return ret;
 
 	uint32_t arg = MMC_OCR_320_330;
 
@@ -223,6 +227,10 @@ static int sd_getrca(uint16_t *rca) {
 	*rca = resp >> 16;
 
 	return 0;
+}
+
+static int sd_checkbusy() {
+	return sd_cmdtype1(MMC_SEND_STATUS, sd_rca << 16);
 }
 
 int sd_init(bool fourbit) {
@@ -311,7 +319,7 @@ int sd_init(bool fourbit) {
 	SDIO_Init(&sd_settings);
 
 	// CMD7 select the card
-	if (sd_cmdtype1(MMC_SELECT_CARD, sd_rca << 16)) {
+	if (sd_cmdtype1(MMC_SELECT_CARD, sd_rca << 16) < 0) {
 		return -1;
 	}
 
@@ -320,7 +328,9 @@ int sd_init(bool fourbit) {
 
 	// Four-bit support is mandatory, so don't bother to check it.
 	if (fourbit) {
-		sd_appcmdtype1(ACMD_SET_BUS_WIDTH, SD_BUS_WIDTH_4);
+		if (sd_appcmdtype1(ACMD_SET_BUS_WIDTH, SD_BUS_WIDTH_4) < 0) {
+			return -1;
+		}
 
 		sd_settings.SDIO_BusWide = SDIO_BusWide_4b;
 		SDIO_Init(&sd_settings);
@@ -330,7 +340,92 @@ int sd_init(bool fourbit) {
 	return 0;
 }
 
+int sd_write(const uint8_t *data, uint32_t sect_num) {
+	if (!(sd_high_cap)) {
+		if (sect_num > 0x7fffff) {
+			return -1;
+		}
+
+		sect_num *= 512;
+	}
+
+	while (sd_checkbusy() > 0);
+
+	int ret = sd_cmdtype1(MMC_SET_BLOCKLEN, 512);
+
+	if (ret) {
+		led_send_morse("BLKLEN ");
+		return ret;
+	}
+
+	ret = sd_cmdtype1(MMC_WRITE_BLOCK, sect_num);
+
+	if (ret) {
+		led_send_morse("WRCMDFAIL ");
+		return ret;
+	}
+
+	SDIO_DataInitTypeDef data_xfer = {
+		.SDIO_DataTimeOut = 20000000,	/* 1 secondish */
+		.SDIO_DataLength = 512,
+		.SDIO_DataBlockSize = 9 << 4,
+		.SDIO_TransferDir = SDIO_TransferDir_ToCard,
+		.SDIO_TransferMode = SDIO_TransferMode_Block,
+		.SDIO_DPSM = SDIO_DPSM_Enable
+	};
+
+	SDIO_DataConfig(&data_xfer);
+
+	int i = 512 / 4;
+
+	while (true) {
+		uint32_t status = SDIO->STA;
+
+		if (status &
+				(SDIO_STA_CCRCFAIL | SDIO_STA_DCRCFAIL |
+				 SDIO_STA_CTIMEOUT | SDIO_STA_DTIMEOUT |
+				 SDIO_STA_TXUNDERR | SDIO_STA_RXOVERR |
+				 SDIO_STA_STBITERR)) {
+			led_send_morse("WFLAG ");
+			ret = -1;	/* we lose. */
+			break;
+		}
+
+		if (i > 0) {
+			if (!(status & SDIO_STA_TXFIFOF)) {
+				i--;
+
+				uint32_t temp;
+
+				// LE pack the data from RAM, in case data is
+				// unaligned.
+				temp = *(data++);
+				temp |= *(data++) << 8;
+				temp |= *(data++) << 16;
+				temp |= *(data++) << 24;
+
+				SDIO->FIFO = temp;
+			}
+		} else {
+			if (status & SDIO_STA_DBCKEND) {
+				ret = 0;	/* Sounds good! */
+				break;
+			}
+		}
+	}
+
+	sd_clearflags();
+
+	if (ret) {
+		led_send_morse("WFAIL ");
+	}
+
+	return ret;
+}
+
 int sd_read(uint8_t *data, uint32_t sect_num) {
+	while (sd_checkbusy() > 0);
+
 	if (!(sd_high_cap)) {
 		if (sect_num > 0x7fffff) {
 			return -1;
@@ -341,7 +436,10 @@ int sd_read(uint8_t *data, uint32_t sect_num) {
 
 	int ret = sd_cmdtype1(MMC_SET_BLOCKLEN, 512);
 
-	if (ret < 0) return ret;
+	if (ret < 0) {
+		led_send_morse("BLKLEN ");
+		return ret;
+	}
 
 	/* config data transfer and cue up the data xfer state machine */
 	SDIO_DataInitTypeDef data_xfer = {
