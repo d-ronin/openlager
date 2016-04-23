@@ -28,9 +28,9 @@
 
 #define OUR_USART USART1
 #define TXPORT GPIOA
-#define TXPIN GPIO_Pin_15
+#define TXPIN 15
 #define RXPORT GPIOB
-#define RXPIN GPIO_Pin_3
+#define RXPIN 3
 
 static void usart_initpin(GPIO_TypeDef *gpio, uint16_t pin_pos) {
 	GPIO_InitTypeDef pin_def = {

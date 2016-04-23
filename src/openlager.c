@@ -81,15 +81,8 @@ int main() {
 			);
 	}
 
-
 	// Get the PLL starting.
 	RCC_PLLCmd(ENABLE);
-
-	// Program 3 wait states as necessary at >2.7V for 96MHz
-	FLASH_SetLatency(FLASH_Latency_3);
-
-	// Wait for the PLL to be ready.
-	while (RCC_GetFlagStatus(RCC_FLAG_PLLRDY) == RESET);
 
 	// Program this first, just in case we coasted in here with other periphs
 	// already enabled.  The loader does all of this stuff, but who knows,
@@ -138,6 +131,12 @@ int main() {
 
 	GPIO_Init(GPIOA, &swd_def);
 #endif
+
+	// Program 3 wait states as necessary at >2.7V for 96MHz
+	FLASH_SetLatency(FLASH_Latency_3);
+
+	// Wait for the PLL to be ready.
+	while (RCC_GetFlagStatus(RCC_FLAG_PLLRDY) == RESET);
 
 	SysTick_Config(96000000/300);	/* 300Hz systick */
 
