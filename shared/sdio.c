@@ -358,7 +358,7 @@ int sd_read(uint8_t *data, uint32_t sect_num) {
 	ret = sd_cmdtype1(MMC_READ_SINGLE_BLOCK, sect_num);
 
 	if (ret < 0) {
-		led_send_morse("CMDFAIL ", 33);
+		led_send_morse("CMDFAIL ");
 		return ret;
 	}
 
@@ -372,14 +372,14 @@ int sd_read(uint8_t *data, uint32_t sect_num) {
 				 SDIO_STA_CTIMEOUT | SDIO_STA_DTIMEOUT |
 				 SDIO_STA_TXUNDERR | SDIO_STA_RXOVERR |
 				 SDIO_STA_STBITERR)) {
-			led_send_morse("FLAG ", 33);
+			led_send_morse("FLAG ");
 			ret = -1;	/* we lose. */
 			break;
 		}
 
 		if (status & SDIO_STA_RXDAVL) {
 			if (i <= 0) {
-				led_send_morse("TOOMUCH ", 33);
+				led_send_morse("TOOMUCH ");
 				ret = -1;	/* Too much data? */
 				break;
 			}
@@ -401,9 +401,9 @@ int sd_read(uint8_t *data, uint32_t sect_num) {
 					break;
 				}
 
-				led_send_morse("MISSING ", 33);
+				led_send_morse("MISSING ");
 
-				/* What??? Finished before we got all the datai */
+				/* What??? Finished before we got all the data */
 				ret = -1;
 				break;
 			}
@@ -413,7 +413,7 @@ int sd_read(uint8_t *data, uint32_t sect_num) {
 	sd_clearflags();
 
 	if (ret) {
-		led_send_morse("FAIL ", 33);
+		led_send_morse("FAIL ");
 	}
 
 	return ret;

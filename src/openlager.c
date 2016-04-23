@@ -147,20 +147,29 @@ int main() {
 	led_init_pin(GPIOD, GPIO_Pin_15, false);
 
 	if (osc_err) {
-		// blink an error
-		led_send_morse("XOSC ", 40);
+		// blink an error; though this is nonfatal.
+		led_send_morse("XOSC ");
 	}
 
-	usart_init(115200);
+        if (sd_init(false)) {
+                // -.-. .- .-. -..
+                led_panic("CARD");
+        }
 
-	uint32_t nextTick = 0;
+        if (f_mount(&fatfs, "0:", 1) != FR_OK) {
+                // -.. .- - .-
+                led_panic("DATA ");
+        }
 
 	while (1) {
 		while (systick_cnt < nextTick);
 
 		nextTick += 50;
 
-		led_toggle();
+	usart_init(115200);
+
+	while (1) {
+		led_send_morse("HI ");
 	}
 
 	return 0;

@@ -69,7 +69,7 @@ void chk_flashop(FLASH_Status f) {
 	if (f != FLASH_COMPLETE) {
 		while (1) {
 			// ..-. . .-. .-.
-			led_send_morse("FERR  ", 33);
+			led_panic("FERR");
 		}
 	}
 }
@@ -88,7 +88,7 @@ void try_loader_stuff() {
 
 	if (sd_init(false)) {
 		// -.-. .- .-. -..
-		led_send_morse("CARD ", 33);
+		led_send_morse("CARD ");
 		return;
 	}
 
@@ -96,7 +96,7 @@ void try_loader_stuff() {
 
 	if (f_mount(&fatfs, "0:", 1) != FR_OK) {
 		// -.. .- - .-
-		led_send_morse("DATA ", 33);
+		led_send_morse("DATA ");
 		return;
 	}
 
@@ -121,13 +121,13 @@ void try_loader_stuff() {
 	 * programs, since there's 192k of flash... */
 	if (FR_OK != f_read(&fil, buf, sizeof(buf), &amount)) {
 		// .. ---
-		led_send_morse("IO ", 33);
+		led_send_morse("IO ");
 		return;
 	}
 
 	if ((amount < 500) || (amount % sizeof(*buf))) {
 		// Very short or not an integral number of words.
-		led_send_morse("TRUNC ", 33);
+		led_send_morse("TRUNC ");
 		return;
 	}
 
@@ -138,7 +138,7 @@ void try_loader_stuff() {
 			diff = true;
 
 			// ..- .--.   ..- .--.
-			led_send_morse("UP UP ", 33);
+			led_send_morse("UP UP ");
 
 			break;
 		}
@@ -154,14 +154,14 @@ void try_loader_stuff() {
 	// checks success, infloop blinking if not
 	chk_flashop(FLASH_EraseSector(FLASH_Sector_4, VoltageRange_3));
 
-	led_send_morse("PRG ", 33);
+	led_send_morse("PRG ");
 
 	for (int i = 0; i < amount; i++) {
 		chk_flashop(FLASH_ProgramWord((uint32_t) (prog_flash + i),
 				buf[i]));
 	}
 
-	led_send_morse(".. ", 33);
+	led_send_morse(".. ");
 
 	FLASH_Lock();
 }

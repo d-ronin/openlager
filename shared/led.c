@@ -5,6 +5,7 @@
 static GPIO_TypeDef *led_gpio;
 static uint16_t led_pin;
 static bool led_sense;
+static int led_time_per_dot = 36;
 
 void led_toggle() {
 	GPIO_ToggleBits(led_gpio, led_pin);
@@ -18,7 +19,7 @@ void led_set(bool light) {
 	}
 }
 
-void led_send_morse(char *string, int time_per_dot) {
+void led_send_morse(char *string) {
 	char *pos = string;
 	int val;
 
@@ -29,10 +30,21 @@ void led_send_morse(char *string, int time_per_dot) {
 	while ((val = morse_send(&pos, &state)) != -1) {
 		while (systick_cnt < next);
 
-		next += time_per_dot;
+		next += led_time_per_dot;
 
 		led_set(val > 0);
 	}
+}
+
+void led_panic(char *string) {
+	while (true) {
+		led_send_morse(string);
+		led_send_morse("  ");
+	}
+}
+
+void led_set_morse_speed(int time_per_dot) {
+	led_time_per_dot = time_per_dot;
 }
 
 void led_init_pin(GPIO_TypeDef *GPIOx, uint16_t GPIO_pin, bool sense) {

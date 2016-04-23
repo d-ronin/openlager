@@ -31,7 +31,9 @@
 #include <stm32f4xx_gpio.h>
 
 void led_init_pin(GPIO_TypeDef *GPIOx, uint16_t GPIO_pin, bool sense);
-void led_send_morse(char *string, int time_per_dot);
+void led_set_morse_speed(int time_per_dot);
+void led_send_morse(char *string);
+void led_panic(char *string);
 void led_set(bool light);
 void led_toggle();
 
