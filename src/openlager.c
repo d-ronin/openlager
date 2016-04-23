@@ -116,7 +116,7 @@ int main() {
 	} else {
 		// Program the PLL.
 		RCC_PLLConfig(RCC_PLLSource_HSE,
-				8,	/* PLLM = /4 = 2MHz */
+				4,	/* PLLM = /4 = 2MHz */
 				96,	/* PLLN = *96 = 192MHz */
 				2,	/* PLLP = /2 = 96MHz, slight underclock */
 				5	/* PLLQ = /5 = 38.4MHz, underclock SDIO
@@ -184,7 +184,7 @@ int main() {
 	// Wait for the PLL to be ready.
 	while (RCC_GetFlagStatus(RCC_FLAG_PLLRDY) == RESET);
 
-	SysTick_Config(96000000/300);	/* 300Hz systick */
+	SysTick_Config(96000000/250);	/* 250Hz systick */
 
 	/* Real hardware has LED on PB9 / TIM4_CH4.
 	 * Discovery hardware has blue LED on PD15 which can also be TIM4_CH4.
