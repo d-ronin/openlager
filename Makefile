@@ -40,6 +40,8 @@ OBJ := $(patsubst %.c,build/%.o,$(SRC))
 BOOTLOADER_SRC := $(SHARED_SRC) $(OPENLAGER_LOADER_SRC)
 BOOTLOADER_OBJ := $(patsubst %.c,build/%.o,$(BOOTLOADER_SRC))
 
+OBJ_FORCE :=
+
 ifeq ("$(STACK_USAGE)","")
     CCACHE_BIN := $(shell which ccache 2>/dev/null)
 endif
@@ -54,7 +56,11 @@ CFLAGS += -mcpu=cortex-m4 -mthumb -fdata-sections -ffunction-sections
 CFLAGS += -fomit-frame-pointer -Wall -Os -g3
 
 ifneq ("$(STACK_USAGE)","")
+    OBJ_FORCE := FORCE
     CFLAGS += -fstack-usage
+
+ALL: build/lager.stack build/bootlager.stack
+
 else
     CFLAGS += -Werror
 endif
@@ -76,6 +82,11 @@ build/ef_lager.bin: build/bootlager.bin build/lager.bin
 %.bin: %
 	$(ARM_SDK_PREFIX)objcopy -O binary $< $@
 
+build/lager.stack: $(OBJ)
+	./misc/avstack.pl $(OBJ) > build/lager.stack
+
+build/bootlager.stack: $(BOOTLOADER_OBJ)
+	./misc/avstack.pl $(BOOTLOADER_OBJ) > build/bootlager.stack
 
 build/lager: $(OBJ)
 	$(CC) $(CFLAGS) $(OBJ) -o $@ -Tsrc/memory.ld $(LDFLAGS)
@@ -86,7 +97,7 @@ build/bootlager: $(BOOTLOADER_OBJ)
 clean:
 	rm -rf $(BUILD_DIR)
 
-build/%.o: %.c
+build/%.o: %.c $(OBJ_FORCE)
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) $(CPPFLAGS) $< -o $@
 
