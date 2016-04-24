@@ -159,7 +159,7 @@ foreach (keys %call_graph) {
 $call_graph{"INTERRUPT"} = {};
 
 foreach (keys %call_graph) {
-    $call_graph{"INTERRUPT"}->{$_} = 1 if /^__vector_/;
+    $call_graph{"INTERRUPT"}->{$_} = 1 if /_handler@/;
 }
 
 # Trace the call graph and calculate, for each function:
@@ -245,14 +245,9 @@ foreach (keys %unresolved) {
 
 foreach (keys %call_graph) { trace $_; }
 
-# Now, print results in a nice table.
-printf "  %-30s %8s %8s %8s\n",
-    "Func", "Cost", "Frame", "Height";
-print "------------------------------------";
-print "------------------------------------\n";
-
 my $max_iv = 0;
 my $main = 0;
+my $text = "";
 
 foreach (sort { $total_cost{$b} <=> $total_cost{$a} } keys %visited) {
     my $name = $_;
@@ -282,7 +277,7 @@ foreach (sort { $total_cost{$b} <=> $total_cost{$a} } keys %visited) {
 	next if (/SetDefaults/);
     }
 
-    printf "%s %-30s %8d %8d %8d\n", $tag, $name, $cost,
+    $text .= sprintf "%3s %-28s %8d %8d %8d\n", $tag, $name, $cost,
 	$frame_size{$_} || 0, $call_depth{$_};
 }
 
@@ -298,3 +293,14 @@ print "\n";
 
 print "The following functions were not resolved:\n";
 foreach (keys %unresolved) { print "  $_\n"; }
+
+print "\n";
+
+# Now, print results in a nice table.
+printf "    %-28s %8s %8s %8s\n",
+    "Func", "Cost", "Frame", "Height";
+print "------------------------------------";
+print "------------------------------------\n";
+
+print $text;
+

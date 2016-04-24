@@ -83,11 +83,11 @@ build/ef_lager.bin: build/bootlager.bin build/lager.bin
 	$(ARM_SDK_PREFIX)objcopy -O binary $< $@
 
 build/lager.stack: $(OBJ) build/lager
-	printf 'Memory used by data+BSS: %d\n\n\n' `/bin/echo -n '0x';$(ARM_SDK_PREFIX)nm build/lager | grep _ebss | cut -c 2-8` > $@
+	printf 'Memory used by data+BSS: %d\n\n' `/bin/echo -n '0x';$(ARM_SDK_PREFIX)nm build/lager | grep _ebss | cut -c 2-8` > $@
 	./misc/avstack.pl $(OBJ) >> $@
 
 build/bootlager.stack: $(BOOTLOADER_OBJ) build/bootlager
-	printf 'Memory used by data+BSS: %d\n\n\n' `/bin/echo -n '0x';$(ARM_SDK_PREFIX)nm build/bootlager | grep _ebss | cut -c 2-8` > $@
+	printf 'Memory used by data+BSS: %d\n\n' `/bin/echo -n '0x';$(ARM_SDK_PREFIX)nm build/bootlager | grep _ebss | cut -c 2-8` > $@
 	./misc/avstack.pl $(BOOTLOADER_OBJ) >> $@
 
 build/lager: $(OBJ)
