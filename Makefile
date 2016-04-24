@@ -40,7 +40,10 @@ OBJ := $(patsubst %.c,build/%.o,$(SRC))
 BOOTLOADER_SRC := $(SHARED_SRC) $(OPENLAGER_LOADER_SRC)
 BOOTLOADER_OBJ := $(patsubst %.c,build/%.o,$(BOOTLOADER_SRC))
 
-CCACHE_BIN := $(shell which ccache 2>/dev/null)
+ifeq ("$(STACK_USAGE)","")
+    CCACHE_BIN := $(shell which ccache 2>/dev/null)
+endif
+
 CC := $(CCACHE_BIN) $(ARM_SDK_PREFIX)gcc
 
 CPPFLAGS += $(patsubst %,-I%,$(INC))
@@ -48,7 +51,14 @@ CPPFLAGS += -DSTM32F411xE -DUSE_STDPERIPH_DRIVER
 
 CFLAGS :=
 CFLAGS += -mcpu=cortex-m4 -mthumb -fdata-sections -ffunction-sections
-CFLAGS += -fomit-frame-pointer -Wall -Werror -Os -g3
+CFLAGS += -fomit-frame-pointer -Wall -Os -g3
+
+ifneq ("$(STACK_USAGE)","")
+    CFLAGS += -fstack-usage
+else
+    CFLAGS += -Werror
+endif
+
 CFLAGS += -DHSE_VALUE=8000000
 
 LDFLAGS := -nostartfiles -Wl,-static -lc -lgcc -Wl,--warn-common
