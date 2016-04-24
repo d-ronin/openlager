@@ -45,6 +45,16 @@ static void usart_initpin(GPIO_TypeDef *gpio, uint16_t pin_pos) {
 	GPIO_PinAFConfig(gpio, pin_pos, GPIO_AF_USART1);
 }
 
+static void usart_rxint() {
+}
+
+// RXNE is the interrupt flag
+// RXNEIE is the interrupt enable
+void usart_int_handler() {
+	if (USART_GetFlagStatus(OUR_USART, USART_FLAG_RXNE) == SET) {
+		usart_rxint();
+	}
+}
 
 void usart_init(uint32_t baud) {
 	// program GPIOs
