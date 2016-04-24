@@ -31,5 +31,7 @@
 
 void usart_init(uint32_t baud);
 
+void usart_int_handler() __attribute__((interrupt));
+
 #endif
 

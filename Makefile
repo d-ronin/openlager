@@ -40,7 +40,12 @@ OBJ := $(patsubst %.c,build/%.o,$(SRC))
 BOOTLOADER_SRC := $(SHARED_SRC) $(OPENLAGER_LOADER_SRC)
 BOOTLOADER_OBJ := $(patsubst %.c,build/%.o,$(BOOTLOADER_SRC))
 
-CCACHE_BIN := $(shell which ccache 2>/dev/null)
+OBJ_FORCE :=
+
+ifeq ("$(STACK_USAGE)","")
+    CCACHE_BIN := $(shell which ccache 2>/dev/null)
+endif
+
 CC := $(CCACHE_BIN) $(ARM_SDK_PREFIX)gcc
 
 CPPFLAGS += $(patsubst %,-I%,$(INC))
@@ -48,7 +53,18 @@ CPPFLAGS += -DSTM32F411xE -DUSE_STDPERIPH_DRIVER
 
 CFLAGS :=
 CFLAGS += -mcpu=cortex-m4 -mthumb -fdata-sections -ffunction-sections
-CFLAGS += -fomit-frame-pointer -Wall -Werror -Os -g3
+CFLAGS += -fomit-frame-pointer -Wall -Os -g3
+
+ifneq ("$(STACK_USAGE)","")
+    OBJ_FORCE := FORCE
+    CFLAGS += -fstack-usage
+
+ALL: build/lager.stack build/bootlager.stack
+
+else
+    CFLAGS += -Werror
+endif
+
 CFLAGS += -DHSE_VALUE=8000000
 
 LDFLAGS := -nostartfiles -Wl,-static -lc -lgcc -Wl,--warn-common
@@ -66,6 +82,13 @@ build/ef_lager.bin: build/bootlager.bin build/lager.bin
 %.bin: %
 	$(ARM_SDK_PREFIX)objcopy -O binary $< $@
 
+build/lager.stack: $(OBJ) build/lager
+	printf 'Memory used by data+BSS: %d\n\n' `/bin/echo -n '0x';$(ARM_SDK_PREFIX)nm build/lager | grep _ebss | cut -c 2-8` > $@
+	./misc/avstack.pl $(OBJ) >> $@
+
+build/bootlager.stack: $(BOOTLOADER_OBJ) build/bootlager
+	printf 'Memory used by data+BSS: %d\n\n' `/bin/echo -n '0x';$(ARM_SDK_PREFIX)nm build/bootlager | grep _ebss | cut -c 2-8` > $@
+	./misc/avstack.pl $(BOOTLOADER_OBJ) >> $@
 
 build/lager: $(OBJ)
 	$(CC) $(CFLAGS) $(OBJ) -o $@ -Tsrc/memory.ld $(LDFLAGS)
@@ -76,7 +99,7 @@ build/bootlager: $(BOOTLOADER_OBJ)
 clean:
 	rm -rf $(BUILD_DIR)
 
-build/%.o: %.c
+build/%.o: %.c $(OBJ_FORCE)
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) $(CPPFLAGS) $< -o $@
 
