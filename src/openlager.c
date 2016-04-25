@@ -48,6 +48,9 @@ static uint32_t cfg_baudrate = 115200;
 
 #define CFGFILE_NAME "0:lager.cfg"
 
+// Must have non-digit characters before the digit characters.
+#define LOGNAME_FMT "log000.txt"
+
 // Try to load a config file.  If it doesn't exist, create it.
 // If we can't load after that, PANNNNIC.
 void process_config() {
@@ -82,6 +85,85 @@ void process_config() {
 	/* XXX parse config */
 
 	f_close(&cfg_file);
+}
+
+static bool is_digit(char c) {
+	if (c < '0') return false;
+	if (c > '9') return false;
+
+	return true;
+}
+
+static int advance_filename(char *f) {
+	while (*f && (!is_digit(*f))) {
+		f++;
+	}
+
+	if (!*f) return -1;	// No digits in string
+
+	while (is_digit(*f)) {
+		f++;
+	}
+
+	f--;			// Scan backwards
+
+	// Now we're at the last digit.  Increment the number, with ripple
+	// carry.
+
+	while (true) {
+		// If we're not pointing to a digit currently, we lose
+		if (!is_digit(*f)) {
+			return -1;
+		}
+
+		(*f)++;
+
+		if (is_digit(*f)) {
+			// We incremented and don't need to carry.  we win.
+			return 0;
+		}
+
+		*f = '0';
+
+		f--;
+	}
+
+}
+
+static void open_log(FIL *fil) {
+	char filename[] = LOGNAME_FMT;
+	FRESULT res;
+
+	res = f_open(fil, filename, FA_WRITE | FA_CREATE_NEW);
+
+	while (res == FR_EXIST) {
+		if (advance_filename(filename)) {
+			// ..-. .. .-.. . ...
+			led_panic("FILES");
+		}
+
+		res = f_open(fil, filename, FA_WRITE | FA_CREATE_NEW);
+	}
+
+	if (res != FR_OK) {
+		// --- .-... --- --.
+		led_panic("OLOG");
+	}
+
+}
+
+static void do_usart_logging(void) {
+	char buf[100*1024];
+
+	usart_init(cfg_baudrate, buf, sizeof(buf));
+
+	FIL log_file;
+
+	open_log(&log_file);
+
+	while (1) {
+		led_send_morse("HI ");
+	}
 }
 
 int main() {
@@ -212,13 +294,7 @@ int main() {
 
 	process_config();
 
-	char buf[4096];
-
-	usart_init(cfg_baudrate, buf, sizeof(buf));
-
-	while (1) {
-		led_send_morse("HI ");
-	}
+	do_usart_logging();
 
 	return 0;
 }
