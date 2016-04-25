@@ -44,7 +44,7 @@ const void *_interrupt_vectors[FPU_IRQn] __attribute((section(".interrupt_vector
 
 static FATFS fatfs;
 
-static uint32_t cfg_baudrate = 230400;
+static uint32_t cfg_baudrate = 500000;
 
 #define CFGFILE_NAME "0:lager.cfg"
 
@@ -289,7 +289,6 @@ int main() {
 			RCC_APB2Periph_SDIO,
 			ENABLE);
 
-#if 0
 	/* Seize PA14/PA13 from SWD. */
 	GPIO_InitTypeDef swd_def = {
 		.GPIO_Pin = GPIO_Pin_14 | GPIO_Pin_13,
@@ -300,7 +299,6 @@ int main() {
 	};
 
 	GPIO_Init(GPIOA, &swd_def);
-#endif
 
 	// Program 3 wait states as necessary at >2.7V for 96MHz
 	FLASH_SetLatency(FLASH_Latency_3);
