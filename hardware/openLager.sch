@@ -450,7 +450,10 @@ P 4850 2850
 F 0 "Y1" V 4850 2950 50  0000 L CNN
 F 1 "CSTCE8M00G15L99" V 4700 2550 50  0000 L CNN
 F 2 "openLagerFootprints:X3-SMD-3.6X1.3X0.8MM" H 4850 2850 50  0001 L CNN
-F 3 "" H 4850 2850 60  0000 C CNN
+F 3 "http://datasheet.octopart.com/CSTCE8M00G15L99-R0-Murata-datasheet-13544362.pdf" H 4850 2850 60  0001 C CNN
+F 4 "Murata" H 4850 2850 60  0001 C CNN "Mfg Name"
+F 5 "CSTCE8M00G15L99-R0" H 4850 2850 60  0001 C CNN "Mfg PN"
+F 6 "https://octopart.com/cstce8m00g15l99-r0-murata-17751576" H 4850 2850 60  0001 C CNN "Link"
 	1    4850 2850
 	0    1    1    0   
 $EndComp
@@ -505,7 +508,10 @@ P 3600 7450
 F 0 "C4" H 3625 7550 50  0000 L CNN
 F 1 "10uF" H 3625 7350 50  0000 L CNN
 F 2 "openLagerFootprints:C_0402" H 3638 7300 50  0001 C CNN
-F 3 "" H 3600 7450 50  0000 C CNN
+F 3 "http://datasheet.octopart.com/CL05A106MP5NUNC-Samsung-datasheet-34153002.pdf" H 3600 7450 50  0001 C CNN
+F 4 "Samsung" H 3600 7450 60  0001 C CNN "Mfg Name"
+F 5 "CL05A106MP5NUNC" H 3600 7450 60  0001 C CNN "Mfg PN"
+F 6 "https://octopart.com/cl05a106mp5nunc-samsung-22457395" H 3600 7450 60  0001 C CNN "Link"
 	1    3600 7450
 	1    0    0    -1  
 $EndComp
@@ -516,7 +522,10 @@ P 1300 7450
 F 0 "C1" H 1325 7550 50  0000 L CNN
 F 1 "10uF" H 1325 7350 50  0000 L CNN
 F 2 "openLagerFootprints:C_0402" H 1338 7300 50  0001 C CNN
-F 3 "" H 1300 7450 50  0000 C CNN
+F 3 "http://datasheet.octopart.com/CL05A106MP5NUNC-Samsung-datasheet-34153002.pdf" H 1300 7450 50  0001 C CNN
+F 4 "Samsung" H 1300 7450 60  0001 C CNN "Mfg Name"
+F 5 "CL05A106MP5NUNC" H 1300 7450 60  0001 C CNN "Mfg PN"
+F 6 "https://octopart.com/cl05a106mp5nunc-samsung-22457395" H 1300 7450 60  0001 C CNN "Link"
 	1    1300 7450
 	1    0    0    -1  
 $EndComp
@@ -549,7 +558,10 @@ P 3450 1800
 F 0 "R1" V 3530 1800 50  0000 C CNN
 F 1 "10k" V 3450 1800 50  0000 C CNN
 F 2 "openLagerFootprints:R_0402" V 3380 1800 50  0001 C CNN
-F 3 "" H 3450 1800 50  0000 C CNN
+F 3 "http://datasheet.octopart.com/RC0402JR-0710KL-Yageo-datasheet-10408619.pdf" H 3450 1800 50  0001 C CNN
+F 4 "Yageo" H 3450 1800 60  0001 C CNN "Mfg Name"
+F 5 "RC0402JR-0710KL" H 3450 1800 60  0001 C CNN "Mfg PN"
+F 6 "https://octopart.com/rc0402jr-0710kl-yageo-55458470" H 3450 1800 60  0001 C CNN "Link"
 	1    3450 1800
 	1    0    0    -1  
 $EndComp
@@ -560,7 +572,10 @@ P 3450 2800
 F 0 "C5" H 3475 2900 50  0000 L CNN
 F 1 "1uF" H 3475 2700 50  0000 L CNN
 F 2 "openLagerFootprints:C_0402" H 3488 2650 50  0001 C CNN
-F 3 "" H 3450 2800 50  0000 C CNN
+F 3 "http://datasheet.octopart.com/GRM-Series-Murata-datasheet-family-27.pdf" H 3450 2800 50  0001 C CNN
+F 4 "Murata" H 3450 2800 60  0001 C CNN "Mfg Name"
+F 5 "GRM155R70J105MA12D" H 3450 2800 60  0001 C CNN "Mfg PN"
+F 6 "https://octopart.com/grm155r70j105ma12d-murata-23261089" H 3450 2800 60  0001 C CNN "Link"
 	1    3450 2800
 	1    0    0    -1  
 $EndComp
@@ -582,7 +597,10 @@ P 3700 2800
 F 0 "R3" V 3780 2800 50  0000 C CNN
 F 1 "10k" V 3700 2800 50  0000 C CNN
 F 2 "openLagerFootprints:R_0402" V 3630 2800 50  0001 C CNN
-F 3 "" H 3700 2800 50  0000 C CNN
+F 3 "http://datasheet.octopart.com/RC0402JR-0710KL-Yageo-datasheet-10408619.pdf" H 3700 2800 50  0001 C CNN
+F 4 "Yageo" H 3700 2800 60  0001 C CNN "Mfg Name"
+F 5 "RC0402JR-0710KL" H 3700 2800 60  0001 C CNN "Mfg PN"
+F 6 "https://octopart.com/rc0402jr-0710kl-yageo-55458470" H 3700 2800 60  0001 C CNN "Link"
 	1    3700 2800
 	1    0    0    -1  
 $EndComp
@@ -593,7 +611,10 @@ P 3700 1800
 F 0 "R2" V 3780 1800 50  0000 C CNN
 F 1 "DNP" V 3700 1800 50  0000 C CNN
 F 2 "openLagerFootprints:R_0402" V 3630 1800 50  0001 C CNN
-F 3 "" H 3700 1800 50  0000 C CNN
+F 3 "DNP" H 3700 1800 50  0001 C CNN
+F 4 "DNP" H 3700 1800 60  0001 C CNN "Mfg Name"
+F 5 "DNP" H 3700 1800 60  0001 C CNN "Mfg PN"
+F 6 "DNP" H 3700 1800 60  0001 C CNN "Link"
 	1    3700 1800
 	1    0    0    -1  
 $EndComp
@@ -604,7 +625,10 @@ P 4000 2800
 F 0 "C6" H 4025 2900 50  0000 L CNN
 F 1 "4.7uF" H 4025 2700 50  0000 L CNN
 F 2 "openLagerFootprints:C_0402" H 4038 2650 50  0001 C CNN
-F 3 "" H 4000 2800 50  0000 C CNN
+F 3 "http://www.samsungsem.com/kr/support/product-search/mlcc/__icsFiles/afieldfile/2015/08/14/S_CL05A475MQ5NQNC.pdf" H 4000 2800 50  0001 C CNN
+F 4 "Samsung" H 4000 2800 60  0001 C CNN "Mfg Name"
+F 5 "CL05A475MQ5NQNC" H 4000 2800 60  0001 C CNN "Mfg PN"
+F 6 "https://octopart.com/cl05a475mq5nqnc-samsung-24957780" H 4000 2800 60  0001 C CNN "Link"
 	1    4000 2800
 	1    0    0    -1  
 $EndComp
@@ -637,7 +661,10 @@ P 3450 3900
 F 0 "R4" V 3530 3900 50  0000 C CNN
 F 1 "10k" V 3450 3900 50  0000 C CNN
 F 2 "openLagerFootprints:R_0402" V 3380 3900 50  0001 C CNN
-F 3 "" H 3450 3900 50  0000 C CNN
+F 3 "http://datasheet.octopart.com/RC0402JR-0710KL-Yageo-datasheet-10408619.pdf" H 3450 3900 50  0001 C CNN
+F 4 "Yageo" H 3450 3900 60  0001 C CNN "Mfg Name"
+F 5 "RC0402JR-0710KL" H 3450 3900 60  0001 C CNN "Mfg PN"
+F 6 "https://octopart.com/rc0402jr-0710kl-yageo-55458470" H 3450 3900 60  0001 C CNN "Link"
 	1    3450 3900
 	1    0    0    -1  
 $EndComp
@@ -715,7 +742,10 @@ P 10350 6950
 F 0 "R9" V 10430 6950 50  0000 C CNN
 F 1 "47k" V 10350 6950 50  0000 C CNN
 F 2 "openLagerFootprints:R_0402" V 10280 6950 50  0001 C CNN
-F 3 "" H 10350 6950 50  0000 C CNN
+F 3 "http://datasheet.octopart.com/RC0402JR-0747KL-Yageo-datasheet-10408619.pdf" H 10350 6950 50  0001 C CNN
+F 4 "Yageo" H 10350 6950 60  0001 C CNN "Mfg Name"
+F 5 "RC0402JR-0747KL" H 10350 6950 60  0001 C CNN "Mfg PN"
+F 6 "https://octopart.com/rc0402jr-0747kl-yageo-39834460" H 10350 6950 60  0001 C CNN "Link"
 	1    10350 6950
 	1    0    0    -1  
 $EndComp
@@ -726,7 +756,10 @@ P 10550 6950
 F 0 "R10" V 10630 6950 50  0000 C CNN
 F 1 "47k" V 10550 6950 50  0000 C CNN
 F 2 "openLagerFootprints:R_0402" V 10480 6950 50  0001 C CNN
-F 3 "" H 10550 6950 50  0000 C CNN
+F 3 "http://datasheet.octopart.com/RC0402JR-0747KL-Yageo-datasheet-10408619.pdf" H 10550 6950 50  0001 C CNN
+F 4 "Yageo" H 10550 6950 60  0001 C CNN "Mfg Name"
+F 5 "RC0402JR-0747KL" H 10550 6950 60  0001 C CNN "Mfg PN"
+F 6 "https://octopart.com/rc0402jr-0747kl-yageo-39834460" H 10550 6950 60  0001 C CNN "Link"
 	1    10550 6950
 	1    0    0    -1  
 $EndComp
@@ -759,7 +792,10 @@ P 6700 7100
 F 0 "C7" H 6500 7200 50  0000 L CNN
 F 1 "0.1uF" H 6450 7000 50  0000 L CNN
 F 2 "openLagerFootprints:C_0402" H 6738 6950 50  0001 C CNN
-F 3 "" H 6700 7100 50  0000 C CNN
+F 3 "http://datasheet.octopart.com/GRM155R70J104KA01D-Murata-datasheet-14400549.pdf" H 6700 7100 50  0001 C CNN
+F 4 "Murata" H 6700 7100 60  0001 C CNN "Mfg Name"
+F 5 "GRM155R70J104KA01D" H 6700 7100 60  0001 C CNN "Mfg PN"
+F 6 "https://octopart.com/grm155r70j104ka01d-murata-17930200" H 6700 7100 60  0001 C CNN "Link"
 	1    6700 7100
 	1    0    0    -1  
 $EndComp
@@ -778,7 +814,10 @@ P 6350 7500
 F 0 "R7" V 6430 7500 50  0000 C CNN
 F 1 "22R" V 6350 7500 50  0000 C CNN
 F 2 "openLagerFootprints:R_0402" V 6280 7500 50  0001 C CNN
-F 3 "" H 6350 7500 50  0000 C CNN
+F 3 "http://datasheet.octopart.com/RC0402JR-0722RL-Yageo-datasheet-10408619.pdf" H 6350 7500 50  0001 C CNN
+F 4 "Yageo" H 6350 7500 60  0001 C CNN "Mfg Name"
+F 5 "RC0402JR-0722RL" H 6350 7500 60  0001 C CNN "Mfg PN"
+F 6 "https://octopart.com/rc0402jr-0722rl-yageo-1173206" H 6350 7500 60  0001 C CNN "Link"
 	1    6350 7500
 	0    1    1    0   
 $EndComp
@@ -789,7 +828,10 @@ P 6050 7400
 F 0 "R6" V 6130 7400 50  0000 C CNN
 F 1 "22R" V 6050 7400 50  0000 C CNN
 F 2 "openLagerFootprints:R_0402" V 5980 7400 50  0001 C CNN
-F 3 "" H 6050 7400 50  0000 C CNN
+F 3 "http://datasheet.octopart.com/RC0402JR-0722RL-Yageo-datasheet-10408619.pdf" H 6050 7400 50  0001 C CNN
+F 4 "Yageo" H 6050 7400 60  0001 C CNN "Mfg Name"
+F 5 "RC0402JR-0722RL" H 6050 7400 60  0001 C CNN "Mfg PN"
+F 6 "https://octopart.com/rc0402jr-0722rl-yageo-1173206" H 6050 7400 60  0001 C CNN "Link"
 	1    6050 7400
 	0    1    1    0   
 $EndComp
@@ -800,7 +842,10 @@ P 6350 7300
 F 0 "R5" V 6430 7300 50  0000 C CNN
 F 1 "22R" V 6350 7300 50  0000 C CNN
 F 2 "openLagerFootprints:R_0402" V 6280 7300 50  0001 C CNN
-F 3 "" H 6350 7300 50  0000 C CNN
+F 3 "http://datasheet.octopart.com/RC0402JR-0722RL-Yageo-datasheet-10408619.pdf" H 6350 7300 50  0001 C CNN
+F 4 "Yageo" H 6350 7300 60  0001 C CNN "Mfg Name"
+F 5 "RC0402JR-0722RL" H 6350 7300 60  0001 C CNN "Mfg PN"
+F 6 "https://octopart.com/rc0402jr-0722rl-yageo-1173206" H 6350 7300 60  0001 C CNN "Link"
 	1    6350 7300
 	0    1    1    0   
 $EndComp
@@ -811,7 +856,10 @@ P 6350 7800
 F 0 "R8" V 6430 7800 50  0000 C CNN
 F 1 "22R" V 6350 7800 50  0000 C CNN
 F 2 "openLagerFootprints:R_0402" V 6280 7800 50  0001 C CNN
-F 3 "" H 6350 7800 50  0000 C CNN
+F 3 "http://datasheet.octopart.com/RC0402JR-0722RL-Yageo-datasheet-10408619.pdf" H 6350 7800 50  0001 C CNN
+F 4 "Yageo" H 6350 7800 60  0001 C CNN "Mfg Name"
+F 5 "RC0402JR-0722RL" H 6350 7800 60  0001 C CNN "Mfg PN"
+F 6 "https://octopart.com/rc0402jr-0722rl-yageo-1173206" H 6350 7800 60  0001 C CNN "Link"
 	1    6350 7800
 	0    1    1    0   
 $EndComp
@@ -868,7 +916,10 @@ P 7250 7550
 F 0 "J1" H 7250 7900 50  0000 C CNN
 F 1 "CONN_01X06" V 7350 7550 50  0000 C CNN
 F 2 "openLagerFootprints:Socket_Strip_Straight_1x06" H 7250 7550 50  0001 C CNN
-F 3 "" H 7250 7550 50  0000 C CNN
+F 3 "DNP" H 7250 7550 50  0001 C CNN
+F 4 "DNP" H 7250 7550 60  0001 C CNN "Mfg Name"
+F 5 "DNP" H 7250 7550 60  0001 C CNN "Mfg PN"
+F 6 "DNP" H 7250 7550 60  0001 C CNN "Link"
 	1    7250 7550
 	1    0    0    -1  
 $EndComp
@@ -879,7 +930,10 @@ P 4050 7500
 F 0 "D1" V 4050 7650 50  0000 C CNN
 F 1 "APHHS1005CGCK" V 3900 7850 50  0000 C CNN
 F 2 "openLagerFootprints:LED_0603" H 4050 7500 50  0001 C CNN
-F 3 "" H 4050 7500 50  0000 C CNN
+F 3 "http://datasheet.octopart.com/APHHS1005CGCK-Kingbright-datasheet-17019150.pdf" H 4050 7500 50  0001 C CNN
+F 4 "Kingbright" H 4050 7500 60  0001 C CNN "Mfg Name"
+F 5 "APHHS1005CGCK" H 4050 7500 60  0001 C CNN "Mfg PN"
+F 6 "https://octopart.com/aphhs1005cgck-kingbright-5355571" H 4050 7500 60  0001 C CNN "Link"
 	1    4050 7500
 	0    1    -1   0   
 $EndComp
@@ -890,7 +944,10 @@ P 4350 4400
 F 0 "D2" H 4350 4250 50  0000 C CNN
 F 1 "APHHS1005SURCK" H 4350 4500 50  0000 C CNN
 F 2 "openLagerFootprints:LED_0603" H 4350 4400 50  0001 C CNN
-F 3 "" H 4350 4400 50  0000 C CNN
+F 3 "http://datasheet.octopart.com/APHHS1005SURCK-Kingbright-datasheet-12529969.pdf" H 4350 4400 50  0001 C CNN
+F 4 "Kingbright" H 4350 4400 60  0001 C CNN "Mfg Name"
+F 5 "APHHS1005SURCK" H 4350 4400 60  0001 C CNN "Mfg PN"
+F 6 "https://octopart.com/aphhs1005surck-kingbright-3990646" H 4350 4400 60  0001 C CNN "Link"
 	1    4350 4400
 	-1   0    0    1   
 $EndComp
@@ -901,7 +958,10 @@ P 3850 7250
 F 0 "R12" V 3930 7250 50  0000 C CNN
 F 1 "330R" V 3850 7250 50  0000 C CNN
 F 2 "openLagerFootprints:R_0402" V 3780 7250 50  0001 C CNN
-F 3 "" H 3850 7250 50  0000 C CNN
+F 3 "http://datasheet.octopart.com/RC0402JR-07330RL-Yageo-datasheet-10408619.pdf" H 3850 7250 50  0001 C CNN
+F 4 "Yageo" H 3850 7250 60  0001 C CNN "Mfg Name"
+F 5 "RC0402JR-07330RL" H 3850 7250 60  0001 C CNN "Mfg PN"
+F 6 "https://octopart.com/rc0402jr-07330rl-yageo-40021082" H 3850 7250 60  0001 C CNN "Link"
 	1    3850 7250
 	0    1    1    0   
 $EndComp
@@ -912,7 +972,10 @@ P 4100 4200
 F 0 "R13" V 4180 4200 50  0000 C CNN
 F 1 "330R" V 4100 4200 50  0000 C CNN
 F 2 "openLagerFootprints:R_0402" V 4030 4200 50  0001 C CNN
-F 3 "" H 4100 4200 50  0000 C CNN
+F 3 "http://datasheet.octopart.com/RC0402JR-07330RL-Yageo-datasheet-10408619.pdf" H 4100 4200 50  0001 C CNN
+F 4 "Yageo" H 4100 4200 60  0001 C CNN "Mfg Name"
+F 5 "RC0402JR-07330RL" H 4100 4200 60  0001 C CNN "Mfg PN"
+F 6 "https://octopart.com/rc0402jr-07330rl-yageo-40021082" H 4100 4200 60  0001 C CNN "Link"
 	1    4100 4200
 	-1   0    0    -1  
 $EndComp
@@ -945,7 +1008,10 @@ P 8900 3500
 F 0 "U1" H 5300 5325 50  0000 L BNN
 F 1 "STM32F411CEUx" H 12500 5325 50  0000 R BNN
 F 2 "openLagerFootprints:QFN-48-1EP_7x7mm_Pitch0.5mm" H 12500 5275 50  0000 R TNN
-F 3 "" H 8900 3500 50  0000 C CNN
+F 3 "http://datasheet.octopart.com/STM32F411CEU6-STMicroelectronics-datasheet-27102711.pdf" H 8900 3500 50  0001 C CNN
+F 4 "ST Microelectronics" H 8900 3500 60  0001 C CNN "Mfg Name"
+F 5 "STM32F411CEU6" H 8900 3500 60  0001 C CNN "Mfg PN"
+F 6 "https://octopart.com/stm32f411ceu6-stmicroelectronics-47202664" H 8900 3500 60  0001 C CNN "Link"
 	1    8900 3500
 	1    0    0    -1  
 $EndComp
@@ -961,7 +1027,10 @@ P 11100 7450
 F 0 "J2" H 11000 8100 50  0000 L CNN
 F 1 "DM3CS-SF" H 11250 8100 50  0000 L CNN
 F 2 "openLagerFootprints:HRS_DM3CS-SF" H 11100 7450 50  0001 L CNN
-F 3 "" H 11100 7450 60  0000 C CNN
+F 3 "http://datasheet.octopart.com/DM3CS-SF-Hirose-datasheet-62290579.pdf" H 11100 7450 60  0001 C CNN
+F 4 "Hirose" H 11100 7450 60  0001 C CNN "Mfg Name"
+F 5 "DM3CS-SF" H 11100 7450 60  0001 C CNN "Mfg PN"
+F 6 "https://octopart.com/dm3cs-sf-hirose-44525751" H 11100 7450 60  0001 C CNN "Link"
 	1    11100 7450
 	1    0    0    -1  
 $EndComp
@@ -972,7 +1041,10 @@ P 3300 7450
 F 0 "C3" H 3325 7550 50  0000 L CNN
 F 1 "0.1uF" H 3325 7350 50  0000 L CNN
 F 2 "openLagerFootprints:C_0402" H 3338 7300 50  0001 C CNN
-F 3 "" H 3300 7450 50  0000 C CNN
+F 3 "http://datasheet.octopart.com/GRM155R70J104KA01D-Murata-datasheet-14400549.pdf" H 3300 7450 50  0001 C CNN
+F 4 "Murata" H 3300 7450 60  0001 C CNN "Mfg Name"
+F 5 "GRM155R70J104KA01D" H 3300 7450 60  0001 C CNN "Mfg PN"
+F 6 "https://octopart.com/grm155r70j104ka01d-murata-17930200" H 3300 7450 60  0001 C CNN "Link"
 	1    3300 7450
 	1    0    0    -1  
 $EndComp
@@ -983,7 +1055,10 @@ P 10500 8100
 F 0 "C8" H 10525 8200 50  0000 L CNN
 F 1 "0.1uF" H 10525 8000 50  0000 L CNN
 F 2 "openLagerFootprints:C_0402" H 10538 7950 50  0001 C CNN
-F 3 "" H 10500 8100 50  0000 C CNN
+F 3 "http://datasheet.octopart.com/GRM155R70J104KA01D-Murata-datasheet-14400549.pdf" H 10500 8100 50  0001 C CNN
+F 4 "Murata" H 10500 8100 60  0001 C CNN "Mfg Name"
+F 5 "GRM155R70J104KA01D" H 10500 8100 60  0001 C CNN "Mfg PN"
+F 6 "https://octopart.com/grm155r70j104ka01d-murata-17930200" H 10500 8100 60  0001 C CNN "Link"
 	1    10500 8100
 	1    0    0    -1  
 $EndComp
@@ -995,7 +1070,10 @@ P 2500 7350
 F 0 "U2" H 2280 7741 50  0000 L CNN
 F 1 "SPX3819M5-L-3-3" H 2250 6700 50  0000 L CNN
 F 2 "openLagerFootprints:SOT95P280X145-5N" H 2500 7350 50  0001 L CNN
-F 3 "" H 2500 7350 60  0000 C CNN
+F 3 "http://datasheet.octopart.com/SPX3819M5-L-3-3-TR-Exar-datasheet-13046336.pdf" H 2500 7350 60  0001 C CNN
+F 4 "Exar" H 2500 7350 60  0001 C CNN "Mfg Name"
+F 5 "SPX3819M5-L-3-3/TR" H 2500 7350 60  0001 C CNN "Mfg PN"
+F 6 "https://octopart.com/spx3819m5-l-3-3%2Ftr-exar-9290124" H 2500 7350 60  0001 C CNN "Link"
 	1    2500 7350
 	1    0    0    -1  
 $EndComp
@@ -1020,7 +1098,10 @@ P 13750 7400
 F 0 "TP1" H 13750 7600 50  0000 C CNN
 F 1 "TEST_1P" H 13750 7600 50  0001 C CNN
 F 2 "openLagerFootprints:Socket_Strip_Straight_1x01" H 13950 7400 50  0001 C CNN
-F 3 "" H 13950 7400 50  0000 C CNN
+F 3 "DNP" H 13950 7400 50  0001 C CNN
+F 4 "DNP" H 13750 7400 60  0001 C CNN "Mfg Name"
+F 5 "DNP" H 13750 7400 60  0001 C CNN "Mfg PN"
+F 6 "DNP" H 13750 7400 60  0001 C CNN "Link"
 	1    13750 7400
 	1    0    0    -1  
 $EndComp
@@ -1031,7 +1112,10 @@ P 13950 7400
 F 0 "TP2" H 13950 7600 50  0000 C CNN
 F 1 "TEST_1P" H 13950 7600 50  0001 C CNN
 F 2 "openLagerFootprints:TP" H 14150 7400 50  0001 C CNN
-F 3 "" H 14150 7400 50  0000 C CNN
+F 3 "DNP" H 14150 7400 50  0001 C CNN
+F 4 "DNP" H 13950 7400 60  0001 C CNN "Mfg Name"
+F 5 "DNP" H 13950 7400 60  0001 C CNN "Mfg PN"
+F 6 "DNP" H 13950 7400 60  0001 C CNN "Link"
 	1    13950 7400
 	1    0    0    -1  
 $EndComp
@@ -1046,7 +1130,10 @@ P 13900 4350
 F 0 "TP3" H 13900 4550 50  0000 C CNN
 F 1 "TEST_1P" H 13900 4550 50  0001 C CNN
 F 2 "openLagerFootprints:TP" H 14100 4350 50  0001 C CNN
-F 3 "" H 14100 4350 50  0000 C CNN
+F 3 "DNP" H 14100 4350 50  0001 C CNN
+F 4 "DNP" H 13900 4350 60  0001 C CNN "Mfg Name"
+F 5 "DNP" H 13900 4350 60  0001 C CNN "Mfg PN"
+F 6 "DNP" H 13900 4350 60  0001 C CNN "Link"
 	1    13900 4350
 	1    0    0    -1  
 $EndComp

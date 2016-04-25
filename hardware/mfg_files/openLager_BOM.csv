@@ -1,0 +1,30 @@
+Reference, Value, Footprint, Datasheet, Mfg Name, Mfg PN, Link
+Y1,CSTCE8M00G15L99,openLagerFootprints:X3-SMD-3.6X1.3X0.8MM,http://datasheet.octopart.com/CSTCE8M00G15L99-R0-Murata-datasheet-13544362.pdf,Murata,CSTCE8M00G15L99-R0,https://octopart.com/cstce8m00g15l99-r0-murata-17751576
+C4,10uF,openLagerFootprints:C_0402,http://datasheet.octopart.com/CL05A106MP5NUNC-Samsung-datasheet-34153002.pdf,Samsung,CL05A106MP5NUNC,https://octopart.com/cl05a106mp5nunc-samsung-22457395
+C1,10uF,openLagerFootprints:C_0402,http://datasheet.octopart.com/CL05A106MP5NUNC-Samsung-datasheet-34153002.pdf,Samsung,CL05A106MP5NUNC,https://octopart.com/cl05a106mp5nunc-samsung-22457395
+R1,10k,openLagerFootprints:R_0402,http://datasheet.octopart.com/RC0402JR-0710KL-Yageo-datasheet-10408619.pdf,Yageo,RC0402JR-0710KL,https://octopart.com/rc0402jr-0710kl-yageo-55458470
+C5,1uF,openLagerFootprints:C_0402,http://datasheet.octopart.com/GRM-Series-Murata-datasheet-family-27.pdf,Murata,GRM155R70J105MA12D,https://octopart.com/grm155r70j105ma12d-murata-23261089
+R3,10k,openLagerFootprints:R_0402,http://datasheet.octopart.com/RC0402JR-0710KL-Yageo-datasheet-10408619.pdf,Yageo,RC0402JR-0710KL,https://octopart.com/rc0402jr-0710kl-yageo-55458470
+R2,DNP,openLagerFootprints:R_0402,DNP,DNP,DNP,DNP
+C6,4.7uF,openLagerFootprints:C_0402,http://www.samsungsem.com/kr/support/product-search/mlcc/__icsFiles/afieldfile/2015/08/14/S_CL05A475MQ5NQNC.pdf,Samsung,CL05A475MQ5NQNC,https://octopart.com/cl05a475mq5nqnc-samsung-24957780
+R4,10k,openLagerFootprints:R_0402,http://datasheet.octopart.com/RC0402JR-0710KL-Yageo-datasheet-10408619.pdf,Yageo,RC0402JR-0710KL,https://octopart.com/rc0402jr-0710kl-yageo-55458470
+R9,47k,openLagerFootprints:R_0402,http://datasheet.octopart.com/RC0402JR-0747KL-Yageo-datasheet-10408619.pdf,Yageo,RC0402JR-0747KL,https://octopart.com/rc0402jr-0747kl-yageo-39834460
+R10,47k,openLagerFootprints:R_0402,http://datasheet.octopart.com/RC0402JR-0747KL-Yageo-datasheet-10408619.pdf,Yageo,RC0402JR-0747KL,https://octopart.com/rc0402jr-0747kl-yageo-39834460
+C7,0.1uF,openLagerFootprints:C_0402,http://datasheet.octopart.com/GRM155R70J104KA01D-Murata-datasheet-14400549.pdf,Murata,GRM155R70J104KA01D,https://octopart.com/grm155r70j104ka01d-murata-17930200
+R7,22R,openLagerFootprints:R_0402,http://datasheet.octopart.com/RC0402JR-0722RL-Yageo-datasheet-10408619.pdf,Yageo,RC0402JR-0722RL,https://octopart.com/rc0402jr-0722rl-yageo-1173206
+R6,22R,openLagerFootprints:R_0402,http://datasheet.octopart.com/RC0402JR-0722RL-Yageo-datasheet-10408619.pdf,Yageo,RC0402JR-0722RL,https://octopart.com/rc0402jr-0722rl-yageo-1173206
+R5,22R,openLagerFootprints:R_0402,http://datasheet.octopart.com/RC0402JR-0722RL-Yageo-datasheet-10408619.pdf,Yageo,RC0402JR-0722RL,https://octopart.com/rc0402jr-0722rl-yageo-1173206
+R8,22R,openLagerFootprints:R_0402,http://datasheet.octopart.com/RC0402JR-0722RL-Yageo-datasheet-10408619.pdf,Yageo,RC0402JR-0722RL,https://octopart.com/rc0402jr-0722rl-yageo-1173206
+J1,CONN_01X06,openLagerFootprints:Socket_Strip_Straight_1x06,DNP,DNP,DNP,DNP
+D1,APHHS1005CGCK,openLagerFootprints:LED_0603,http://datasheet.octopart.com/APHHS1005CGCK-Kingbright-datasheet-17019150.pdf,Kingbright,APHHS1005CGCK,https://octopart.com/aphhs1005cgck-kingbright-5355571
+D2,APHHS1005SURCK,openLagerFootprints:LED_0603,http://datasheet.octopart.com/APHHS1005SURCK-Kingbright-datasheet-12529969.pdf,Kingbright,APHHS1005SURCK,https://octopart.com/aphhs1005surck-kingbright-3990646
+R12,330R,openLagerFootprints:R_0402,http://datasheet.octopart.com/RC0402JR-07330RL-Yageo-datasheet-10408619.pdf,Yageo,RC0402JR-07330RL,https://octopart.com/rc0402jr-07330rl-yageo-40021082
+R13,330R,openLagerFootprints:R_0402,http://datasheet.octopart.com/RC0402JR-07330RL-Yageo-datasheet-10408619.pdf,Yageo,RC0402JR-07330RL,https://octopart.com/rc0402jr-07330rl-yageo-40021082
+U1,STM32F411CEUx,openLagerFootprints:QFN-48-1EP_7x7mm_Pitch0.5mm,http://datasheet.octopart.com/STM32F411CEU6-STMicroelectronics-datasheet-27102711.pdf,ST Microelectronics,STM32F411CEU6,https://octopart.com/stm32f411ceu6-stmicroelectronics-47202664
+J2,DM3CS-SF,openLagerFootprints:HRS_DM3CS-SF,http://datasheet.octopart.com/DM3CS-SF-Hirose-datasheet-62290579.pdf,Hirose,DM3CS-SF,https://octopart.com/dm3cs-sf-hirose-44525751
+C3,0.1uF,openLagerFootprints:C_0402,http://datasheet.octopart.com/GRM155R70J104KA01D-Murata-datasheet-14400549.pdf,Murata,GRM155R70J104KA01D,https://octopart.com/grm155r70j104ka01d-murata-17930200
+C8,0.1uF,openLagerFootprints:C_0402,http://datasheet.octopart.com/GRM155R70J104KA01D-Murata-datasheet-14400549.pdf,Murata,GRM155R70J104KA01D,https://octopart.com/grm155r70j104ka01d-murata-17930200
+U2,SPX3819M5-L-3-3,openLagerFootprints:SOT95P280X145-5N,http://datasheet.octopart.com/SPX3819M5-L-3-3-TR-Exar-datasheet-13046336.pdf,Exar,SPX3819M5-L-3-3/TR,https://octopart.com/spx3819m5-l-3-3%2Ftr-exar-9290124
+TP1,TEST_1P,openLagerFootprints:Socket_Strip_Straight_1x01,DNP,DNP,DNP,DNP
+TP2,TEST_1P,openLagerFootprints:TP,DNP,DNP,DNP,DNP
+TP3,TEST_1P,openLagerFootprints:TP,DNP,DNP,DNP,DNP
