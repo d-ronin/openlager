@@ -71,7 +71,7 @@ static int sd_waitcomplete(uint32_t response_type) {
 		completion_mask |= SDIO_FLAG_CMDSENT;
 	}
 
-	int timeout=20000;
+	int timeout=1500000;
 
 	do {
 		status = SDIO->STA;
@@ -437,6 +437,7 @@ int sd_write(const uint8_t *data, uint32_t sect_num) {
 	sd_clearflags();
 
 	if (ret) {
+		sd_cmdtype1(MMC_STOP_TRANSMISSION, 0);
 		sd_send_morse("WFAIL ");
 	}
 
@@ -531,6 +532,7 @@ int sd_read(uint8_t *data, uint32_t sect_num) {
 	sd_clearflags();
 
 	if (ret) {
+		sd_cmdtype1(MMC_STOP_TRANSMISSION, 0);
 		sd_send_morse("FAIL ");
 	}
 

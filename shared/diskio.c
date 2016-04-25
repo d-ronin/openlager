@@ -58,9 +58,16 @@ DRESULT disk_read (
 	BYTE *rptr = buff;
 
 	for (UINT i = 0; i < count; i++) {
+		int retries=3;
+
+retry: ;
 		int ret = sd_read(rptr, sector + i);
 
 		if (ret) {
+			if (retries--) {
+				goto retry;
+			}
+
 			return RES_ERROR;
 		}
 
@@ -89,9 +96,16 @@ DRESULT disk_write (
 	const BYTE *wptr = buff;
 
 	for (UINT i = 0; i < count; i++) {
+		int retries = 3;
+
+retry: ;
 		int ret = sd_write(wptr, sector + i);
 
 		if (ret) {
+			if (retries--) {
+				goto retry;
+			}
+
 			return RES_ERROR;
 		}
 
