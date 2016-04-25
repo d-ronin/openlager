@@ -1,0 +1,7 @@
+### Module positions - created on 4/25/2016 1:46:14 PM ###
+### Printed by Pcbnew version kicad 4.0.2-stable
+## Unit = mm, Angle = deg.
+## Side : bottom
+# Ref     Val       Package                PosX       PosY       Rot  Side
+J2        DM3CS-SF  HRS_DM3CS-SF       201.1045  -111.1885    0.0000  bottom
+## End
