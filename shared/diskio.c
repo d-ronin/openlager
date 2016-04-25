@@ -113,9 +113,11 @@ DRESULT disk_ioctl (
 	void *buff		/* Buffer to send/receive control data */
 )
 {
-	/* Expected to implement-- CTRL_SYNC */
 	if (pdrv != CARD)
 		return RES_PARERR;
+
+	if (cmd == CTRL_SYNC)
+		return RES_OK;
 
 	return RES_PARERR;
 }

@@ -255,7 +255,10 @@ int sd_init(bool fourbit) {
 						// and 320KHz at 38.4MHz
 
 	// Tell the SDIO peripheral to stop the clock when FIFO empty/full
-	sd_settings.SDIO_HardwareFlowControl = SDIO_HardwareFlowControl_Enable;
+	// XXX this does not seem to work.. need to check clock sense etc
+	// sd_settings.SDIO_HardwareFlowControl = SDIO_HardwareFlowControl_Enable;
+	// sd_settings.SDIO_ClockPowerSave = SDIO_ClockPowerSave_Enable;
+	// sd_settings.SDIO_ClockEdge = SDIO_ClockEdge_Falling;
 
 	SDIO_Init(&sd_settings);
 
@@ -369,7 +372,7 @@ int sd_write(const uint8_t *data, uint32_t sect_num) {
 	}
 
 	SDIO_DataInitTypeDef data_xfer = {
-		.SDIO_DataTimeOut = 20000000,	/* 1 secondish */
+		.SDIO_DataTimeOut = 100000000,	/* 1 secondish at full clk */
 		.SDIO_DataLength = 512,
 		.SDIO_DataBlockSize = 9 << 4,
 		.SDIO_TransferDir = SDIO_TransferDir_ToCard,
@@ -389,6 +392,14 @@ int sd_write(const uint8_t *data, uint32_t sect_num) {
 				 SDIO_STA_CTIMEOUT | SDIO_STA_DTIMEOUT |
 				 SDIO_STA_TXUNDERR | SDIO_STA_RXOVERR |
 				 SDIO_STA_STBITERR)) {
+			if (status & SDIO_STA_DTIMEOUT) {
+				led_send_morse("DTIMEOUT");
+			} else if (status & SDIO_STA_CTIMEOUT) {
+				led_send_morse("CTIMEOUT");
+			} else if (status & SDIO_STA_DCRCFAIL) {
+				led_send_morse("DCRCFAIL");
+			}
+
 			led_send_morse("WFLAG ");
 			ret = -1;	/* we lose. */
 			break;
@@ -446,7 +457,7 @@ int sd_read(uint8_t *data, uint32_t sect_num) {
 
 	/* config data transfer and cue up the data xfer state machine */
 	SDIO_DataInitTypeDef data_xfer = {
-		.SDIO_DataTimeOut = 20000000,	/* 1 secondish */
+		.SDIO_DataTimeOut = 100000000,	/* 1 secondish at full clk */
 		.SDIO_DataLength = 512,
 		.SDIO_DataBlockSize = 9 << 4,
 		.SDIO_TransferDir = SDIO_TransferDir_ToSDIO,

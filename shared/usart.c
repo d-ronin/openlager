@@ -24,13 +24,23 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <stm32f4xx.h>
+#include <misc.h>
+
 #include <usart.h>
+#include <systick_handler.h>
 
 #define OUR_USART USART1
 #define TXPORT GPIOA
 #define TXPIN 15
 #define RXPORT GPIOB
 #define RXPIN 3
+
+static volatile char *usart_rx_buf;
+static unsigned int usart_rx_buf_len;
+static volatile unsigned int usart_rx_spilled;
+static volatile unsigned int usart_rx_buf_wpos;
+static volatile unsigned int usart_rx_buf_rpos;
+static unsigned int usart_rx_buf_next_rpos;
 
 static void usart_initpin(GPIO_TypeDef *gpio, uint16_t pin_pos) {
 	GPIO_InitTypeDef pin_def = {
@@ -45,22 +55,110 @@ static void usart_initpin(GPIO_TypeDef *gpio, uint16_t pin_pos) {
 	GPIO_PinAFConfig(gpio, pin_pos, GPIO_AF_USART1);
 }
 
+static inline unsigned int advance_pos(unsigned int cur_pos, unsigned int amt) {
+	cur_pos += amt;
+	if (cur_pos >= usart_rx_buf_len) {
+		cur_pos -= usart_rx_buf_len;
+	}
+
+	return cur_pos;
+}
+
 static void usart_rxint() {
+	// Receive the character ASAP.
+	unsigned char c = USART_ReceiveData(OUR_USART);
+
+#ifdef ECHO_CHARS
+	// And echo it, because hey.
+	USART_SendData(OUR_USART, c);
+#endif
+
+	unsigned int wpos = usart_rx_buf_wpos;
+	unsigned int next_wpos = advance_pos(wpos, 1);
+
+	if (next_wpos == usart_rx_buf_rpos) {
+		usart_rx_spilled++;
+		return;
+	}
+
+	usart_rx_buf[wpos] = c;
+	usart_rx_buf_wpos = next_wpos;
 }
 
 // RXNE is the interrupt flag
 // RXNEIE is the interrupt enable
 void usart_int_handler() {
-	if (USART_GetFlagStatus(OUR_USART, USART_FLAG_RXNE) == SET) {
+	if (USART_GetITStatus(OUR_USART, USART_IT_RXNE) == SET) {
 		usart_rxint();
 	}
 }
 
-void usart_init(uint32_t baud) {
+// Logic for return here is as follows:
+// 1) Always return in timeout time
+// 1a) can return early if the amount exceeds min_preferred_chunk
+// 1b) can also return early if we are at the end of the buffer
+// 2) If, after timeout, we have at least some we can return that keeps us
+// aligned with preferred_align, return it
+// 3) else, return everything we have
+// It's expected the buffer is a multiple of preferred_align.
+// min_preferred_chunk should be >= 2x preferred_align; that way, if we
+// are unaligned we can get a complete aligned chunk plus the offset
+const char *usart_receive_chunk(unsigned int timeout,
+		unsigned int preferred_align,
+		unsigned int min_preferred_chunk,
+		unsigned int *bytes_returned) {
+	unsigned int expiration = systick_cnt + timeout;
+
+	// Release the previously read chunk, so receiving can proceed into it
+	unsigned int rpos = usart_rx_buf_next_rpos;
+	usart_rx_buf_rpos = rpos;
+
+	unsigned int bytes;
+
+	unsigned int unalign = rpos % preferred_align;
+
+	// Busywait for a completion condition
+	do {
+		unsigned int wpos = usart_rx_buf_wpos;
+
+		if (wpos < rpos) {
+			bytes = usart_rx_buf_len - rpos;
+			break;	// case 1b
+		}
+
+		bytes = wpos - rpos;
+
+		if (bytes >= min_preferred_chunk) break;
+	} while (systick_cnt < expiration);
+
+	if ((bytes + unalign) >= preferred_align) {
+		// Fixup for align
+		bytes += unalign;
+
+		// Get integral number of align-sized chunks
+		bytes /= preferred_align;
+		bytes *= preferred_align;
+
+		// Unfixup for align
+		bytes -= unalign;
+	}
+
+	*bytes_returned = bytes;
+
+	// Next time, we'll release these returned bytes.
+	usart_rx_buf_next_rpos = advance_pos(rpos, bytes);
+
+	return (const char *) (usart_rx_buf + rpos);
+}
+
+void usart_init(uint32_t baud, void *rx_buf, unsigned int rx_buf_len) {
+	usart_rx_buf = rx_buf;
+	usart_rx_buf_len = rx_buf_len;
+
 	// program GPIOs
 	usart_initpin(TXPORT, TXPIN);
 	usart_initpin(RXPORT, RXPIN);
- 
+
 	// Fill out default parameters; stuff in our baudrate
 	USART_InitTypeDef usart_params;
 	USART_StructInit(&usart_params);
@@ -72,4 +170,17 @@ void usart_init(uint32_t baud) {
 
 	// Enable the USART
 	USART_Cmd(OUR_USART, ENABLE);
+
+	//USART_SendData(OUR_USART, 'Z');
+
+	// Enable the USART's interrupt on NVIC
+	NVIC_InitTypeDef intr = {
+		.NVIC_IRQChannel = USART1_IRQn,
+		.NVIC_IRQChannelCmd = ENABLE
+	};
+
+	NVIC_Init(&intr);
+
+	// And the received char interrupt
+	USART_ITConfig(OUR_USART, USART_IT_RXNE, ENABLE);
 }
