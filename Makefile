@@ -26,6 +26,7 @@ STDPERIPH_SRC += stm32f4xx_sdio.c
 STDPERIPH_SRC += stm32f4xx_spi.c
 STDPERIPH_SRC += stm32f4xx_tim.c
 STDPERIPH_SRC += stm32f4xx_usart.c
+STDPERIPH_SRC += misc.c
 
 STDPERIPH_SRC := $(patsubst %,libs/STM32F4xx_StdPeriph_Driver/src/%,$(STDPERIPH_SRC))
 FATFS_SRC := $(wildcard libs/fatfs/*.c)

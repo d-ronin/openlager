@@ -24,6 +24,7 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <stm32f4xx.h>
+#include <misc.h>
 
 #include <usart.h>
 #include <systick_handler.h>
@@ -66,6 +67,11 @@ static inline unsigned int advance_pos(unsigned int cur_pos, unsigned int amt) {
 static void usart_rxint() {
 	// Receive the character ASAP.
 	unsigned char c = USART_ReceiveData(OUR_USART);
+
+#ifdef ECHO_CHARS
+	// And echo it, because hey.
+	USART_SendData(OUR_USART, c);
+#endif
 
 	unsigned int wpos = usart_rx_buf_wpos;
 	unsigned int next_wpos = advance_pos(wpos, 1);
@@ -164,4 +170,17 @@ void usart_init(uint32_t baud, void *rx_buf, unsigned int rx_buf_len) {
 
 	// Enable the USART
 	USART_Cmd(OUR_USART, ENABLE);
+
+	//USART_SendData(OUR_USART, 'Z');
+
+	// Enable the USART's interrupt on NVIC
+	NVIC_InitTypeDef intr = {
+		.NVIC_IRQChannel = USART1_IRQn,
+		.NVIC_IRQChannelCmd = ENABLE
+	};
+
+	NVIC_Init(&intr);
+
+	// And the received char interrupt
+	USART_ITConfig(OUR_USART, USART_IT_RXNE, ENABLE);
 }
