@@ -15,7 +15,7 @@ R7,22R,openLagerFootprints:R_0402,http://datasheet.octopart.com/RC0402JR-0722RL-
 R6,22R,openLagerFootprints:R_0402,http://datasheet.octopart.com/RC0402JR-0722RL-Yageo-datasheet-10408619.pdf,Yageo,RC0402JR-0722RL,https://octopart.com/rc0402jr-0722rl-yageo-1173206
 R5,22R,openLagerFootprints:R_0402,http://datasheet.octopart.com/RC0402JR-0722RL-Yageo-datasheet-10408619.pdf,Yageo,RC0402JR-0722RL,https://octopart.com/rc0402jr-0722rl-yageo-1173206
 R8,22R,openLagerFootprints:R_0402,http://datasheet.octopart.com/RC0402JR-0722RL-Yageo-datasheet-10408619.pdf,Yageo,RC0402JR-0722RL,https://octopart.com/rc0402jr-0722rl-yageo-1173206
-J1,CONN_01X06,openLagerFootprints:Socket_Strip_Straight_1x06,DNP,DNP,DNP,
+J1,CONN_01X06,openLagerFootprints:Socket_Strip_Straight_1x06,DNP,DNP,DNP,DNP
 D1,APHHS1005CGCK,openLagerFootprints:LED_0603,http://datasheet.octopart.com/APHHS1005CGCK-Kingbright-datasheet-17019150.pdf,Kingbright,APHHS1005CGCK,https://octopart.com/aphhs1005cgck-kingbright-5355571
 D2,APHHS1005SURCK,openLagerFootprints:LED_0603,http://datasheet.octopart.com/APHHS1005SURCK-Kingbright-datasheet-12529969.pdf,Kingbright,APHHS1005SURCK,https://octopart.com/aphhs1005surck-kingbright-3990646
 R12,330R,openLagerFootprints:R_0402,http://datasheet.octopart.com/RC0402JR-07330RL-Yageo-datasheet-10408619.pdf,Yageo,RC0402JR-07330RL,https://octopart.com/rc0402jr-07330rl-yageo-40021082
@@ -25,6 +25,6 @@ J2,DM3CS-SF,openLagerFootprints:HRS_DM3CS-SF,http://datasheet.octopart.com/DM3CS
 C3,0.1uF,openLagerFootprints:C_0402,http://datasheet.octopart.com/GRM155R70J104KA01D-Murata-datasheet-14400549.pdf,Murata,GRM155R70J104KA01D,https://octopart.com/grm155r70j104ka01d-murata-17930200
 C8,0.1uF,openLagerFootprints:C_0402,http://datasheet.octopart.com/GRM155R70J104KA01D-Murata-datasheet-14400549.pdf,Murata,GRM155R70J104KA01D,https://octopart.com/grm155r70j104ka01d-murata-17930200
 U2,SPX3819M5-L-3-3,openLagerFootprints:SOT95P280X145-5N,http://datasheet.octopart.com/SPX3819M5-L-3-3-TR-Exar-datasheet-13046336.pdf,Exar,SPX3819M5-L-3-3/TR,https://octopart.com/spx3819m5-l-3-3%2Ftr-exar-9290124
-TP1,TEST_1P,openLagerFootprints:Socket_Strip_Straight_1x01,DNP,DNP,DNP,
-TP2,TEST_1P,openLagerFootprints:TP,DNP,DNP,DNP,
-TP3,TEST_1P,openLagerFootprints:TP,DNP,DNP,DNP,
+TP1,TEST_1P,openLagerFootprints:Socket_Strip_Straight_1x01,DNP,DNP,DNP,DNP
+TP2,TEST_1P,openLagerFootprints:TP,DNP,DNP,DNP,DNP
+TP3,TEST_1P,openLagerFootprints:TP,DNP,DNP,DNP,DNP

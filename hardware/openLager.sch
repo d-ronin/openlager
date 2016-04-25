@@ -919,6 +919,7 @@ F 2 "openLagerFootprints:Socket_Strip_Straight_1x06" H 7250 7550 50  0001 C CNN
 F 3 "DNP" H 7250 7550 50  0001 C CNN
 F 4 "DNP" H 7250 7550 60  0001 C CNN "Mfg Name"
 F 5 "DNP" H 7250 7550 60  0001 C CNN "Mfg PN"
+F 6 "DNP" H 7250 7550 60  0001 C CNN "Link"
 	1    7250 7550
 	1    0    0    -1  
 $EndComp
@@ -1100,6 +1101,7 @@ F 2 "openLagerFootprints:Socket_Strip_Straight_1x01" H 13950 7400 50  0001 C CNN
 F 3 "DNP" H 13950 7400 50  0001 C CNN
 F 4 "DNP" H 13750 7400 60  0001 C CNN "Mfg Name"
 F 5 "DNP" H 13750 7400 60  0001 C CNN "Mfg PN"
+F 6 "DNP" H 13750 7400 60  0001 C CNN "Link"
 	1    13750 7400
 	1    0    0    -1  
 $EndComp
@@ -1113,6 +1115,7 @@ F 2 "openLagerFootprints:TP" H 14150 7400 50  0001 C CNN
 F 3 "DNP" H 14150 7400 50  0001 C CNN
 F 4 "DNP" H 13950 7400 60  0001 C CNN "Mfg Name"
 F 5 "DNP" H 13950 7400 60  0001 C CNN "Mfg PN"
+F 6 "DNP" H 13950 7400 60  0001 C CNN "Link"
 	1    13950 7400
 	1    0    0    -1  
 $EndComp
@@ -1130,6 +1133,7 @@ F 2 "openLagerFootprints:TP" H 14100 4350 50  0001 C CNN
 F 3 "DNP" H 14100 4350 50  0001 C CNN
 F 4 "DNP" H 13900 4350 60  0001 C CNN "Mfg Name"
 F 5 "DNP" H 13900 4350 60  0001 C CNN "Mfg PN"
+F 6 "DNP" H 13900 4350 60  0001 C CNN "Link"
 	1    13900 4350
 	1    0    0    -1  
 $EndComp
