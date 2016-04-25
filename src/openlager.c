@@ -174,7 +174,7 @@ static void do_usart_logging(void) {
 
 		led_set(true);	// Illuminate LED during IO
 
-		FRESULT(res);
+		FRESULT res;
 
 		if (!amt) {
 			// If nothing has happened in 200ms, flush our
@@ -183,7 +183,7 @@ static void do_usart_logging(void) {
 
 			if (res != FR_OK) {
 				// . .-. .-.
-				led_panic("ERR");
+				led_panic("SERR");
 			}
 		} else {
 			UINT written;
@@ -192,7 +192,7 @@ static void do_usart_logging(void) {
 
 			if (res != FR_OK) {
 				// . .-. .-.
-				led_panic("ERR");
+				led_panic("WERR");
 			}
 
 			if (written != amt) {
