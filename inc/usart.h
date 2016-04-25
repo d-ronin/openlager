@@ -30,6 +30,10 @@
 #include <stdint.h>
 
 void usart_init(uint32_t baud, void *rx_buf, unsigned int rx_buf_len);
+const char *usart_receive_chunk(unsigned int timeout,
+		unsigned int preferred_align,
+		unsigned int min_preferred_chunk,
+		unsigned int *bytes_returned) ;
 
 void usart_int_handler() __attribute__((interrupt));
 
