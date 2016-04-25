@@ -261,10 +261,18 @@ int sd_init(bool fourbit) {
 						// and 320KHz at 38.4MHz
 
 	// Tell the SDIO peripheral to stop the clock when FIFO empty/full
-	// XXX this does not seem to work.. need to check clock sense etc
+	//
+	// Can't right now, per ST errata:
+	// 2.7.1 SDIO HW flow control
+	// When enabling the HW flow control by setting bit 14 of the SDIO_CLKCR
+	// register to ‘1’, glitches can occur on the SDIOCLK output clock
+	// resulting in wrong data to be written into the SD/MMC card or into
+	// the SDIO device. As a consequence, a CRC error will be reported to
+	// the SD/SDIO MMC host interface (DCRCFAIL bit set to ‘1’ in SDIO_STA
+	// register).
+	//
 	// sd_settings.SDIO_HardwareFlowControl = SDIO_HardwareFlowControl_Enable;
 	// sd_settings.SDIO_ClockPowerSave = SDIO_ClockPowerSave_Enable;
-	// sd_settings.SDIO_ClockEdge = SDIO_ClockEdge_Falling;
 
 	SDIO_Init(&sd_settings);
 

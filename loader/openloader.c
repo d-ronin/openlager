@@ -222,7 +222,6 @@ int main() {
 			RCC_APB2Periph_SDIO,
 			ENABLE);
 
-#if 0
 	/* Seize PA14/PA13 from SWD. */
 	GPIO_InitTypeDef swd_def = {
 		.GPIO_Pin = GPIO_Pin_14 | GPIO_Pin_13,
@@ -233,7 +232,6 @@ int main() {
 	};
 
 	GPIO_Init(GPIOA, &swd_def);
-#endif
 
 	SysTick_Config(16000000/250);	/* 250Hz systick */
 
