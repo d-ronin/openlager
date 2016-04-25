@@ -233,6 +233,12 @@ static int sd_checkbusy() {
 	return sd_cmdtype1(MMC_SEND_STATUS, sd_rca << 16);
 }
 
+static void sd_send_morse(char *morse) {
+#if 0
+	led_send_morse(morse);
+#endif
+}
+
 int sd_init(bool fourbit) {
 	// Clocks programmed elsewhere and peripheral/GPIO clock enabled already
 
@@ -360,14 +366,14 @@ int sd_write(const uint8_t *data, uint32_t sect_num) {
 	int ret = sd_cmdtype1(MMC_SET_BLOCKLEN, 512);
 
 	if (ret) {
-		led_send_morse("BLKLEN ");
+		sd_send_morse("BLKLEN ");
 		return ret;
 	}
 
 	ret = sd_cmdtype1(MMC_WRITE_BLOCK, sect_num);
 
 	if (ret) {
-		led_send_morse("WRCMDFAIL ");
+		sd_send_morse("WRCMDFAIL ");
 		return ret;
 	}
 
@@ -393,14 +399,14 @@ int sd_write(const uint8_t *data, uint32_t sect_num) {
 				 SDIO_STA_TXUNDERR | SDIO_STA_RXOVERR |
 				 SDIO_STA_STBITERR)) {
 			if (status & SDIO_STA_DTIMEOUT) {
-				led_send_morse("DTIMEOUT");
+				sd_send_morse("DTIMEOUT");
 			} else if (status & SDIO_STA_CTIMEOUT) {
-				led_send_morse("CTIMEOUT");
+				sd_send_morse("CTIMEOUT");
 			} else if (status & SDIO_STA_DCRCFAIL) {
-				led_send_morse("DCRCFAIL");
+				sd_send_morse("DCRCFAIL");
 			}
 
-			led_send_morse("WFLAG ");
+			sd_send_morse("WFLAG ");
 			ret = -1;	/* we lose. */
 			break;
 		}
@@ -431,7 +437,7 @@ int sd_write(const uint8_t *data, uint32_t sect_num) {
 	sd_clearflags();
 
 	if (ret) {
-		led_send_morse("WFAIL ");
+		sd_send_morse("WFAIL ");
 	}
 
 	return ret;
@@ -451,7 +457,7 @@ int sd_read(uint8_t *data, uint32_t sect_num) {
 	int ret = sd_cmdtype1(MMC_SET_BLOCKLEN, 512);
 
 	if (ret < 0) {
-		led_send_morse("BLKLEN ");
+		sd_send_morse("BLKLEN ");
 		return ret;
 	}
 
@@ -470,7 +476,7 @@ int sd_read(uint8_t *data, uint32_t sect_num) {
 	ret = sd_cmdtype1(MMC_READ_SINGLE_BLOCK, sect_num);
 
 	if (ret < 0) {
-		led_send_morse("CMDFAIL ");
+		sd_send_morse("CMDFAIL ");
 		return ret;
 	}
 
@@ -484,14 +490,14 @@ int sd_read(uint8_t *data, uint32_t sect_num) {
 				 SDIO_STA_CTIMEOUT | SDIO_STA_DTIMEOUT |
 				 SDIO_STA_TXUNDERR | SDIO_STA_RXOVERR |
 				 SDIO_STA_STBITERR)) {
-			led_send_morse("FLAG ");
+			sd_send_morse("FLAG ");
 			ret = -1;	/* we lose. */
 			break;
 		}
 
 		if (status & SDIO_STA_RXDAVL) {
 			if (i <= 0) {
-				led_send_morse("TOOMUCH ");
+				sd_send_morse("TOOMUCH ");
 				ret = -1;	/* Too much data? */
 				break;
 			}
@@ -513,7 +519,7 @@ int sd_read(uint8_t *data, uint32_t sect_num) {
 					break;
 				}
 
-				led_send_morse("MISSING ");
+				sd_send_morse("MISSING ");
 
 				/* What??? Finished before we got all the data */
 				ret = -1;
@@ -525,7 +531,7 @@ int sd_read(uint8_t *data, uint32_t sect_num) {
 	sd_clearflags();
 
 	if (ret) {
-		led_send_morse("FAIL ");
+		sd_send_morse("FAIL ");
 	}
 
 	return ret;
