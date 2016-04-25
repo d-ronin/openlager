@@ -122,7 +122,7 @@ const char *usart_receive_chunk(unsigned int timeout,
 
 		bytes = wpos - rpos;
 
-		if (bytes > min_preferred_chunk) break;
+		if (bytes >= min_preferred_chunk) break;
 	} while (systick_cnt < expiration);
 
 	if ((bytes + unalign) >= preferred_align) {

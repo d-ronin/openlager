@@ -44,7 +44,7 @@ const void *_interrupt_vectors[FPU_IRQn] __attribute((section(".interrupt_vector
 
 static FATFS fatfs;
 
-static uint32_t cfg_baudrate = 115200;
+static uint32_t cfg_baudrate = 230400;
 
 #define CFGFILE_NAME "0:lager.cfg"
 
@@ -162,7 +162,46 @@ static void do_usart_logging(void) {
 	open_log(&log_file);
 
 	while (1) {
-		led_send_morse("HI ");
+		const char *pos;
+		unsigned int amt;
+
+		// 50 ticks == 200ms, prefer 512 byte sector alignment,
+		// and >= 2560 byte chunks are best
+		pos = usart_receive_chunk(50, 512, 5*512, &amt);
+
+		// Could consider if pos is short, waiting a little longer
+		// (400-600ms?) next time...
+
+		led_set(true);	// Illuminate LED during IO
+
+		FRESULT(res);
+
+		if (!amt) {
+			// If nothing has happened in 200ms, flush our
+			// buffers.
+			res = f_sync(&log_file);
+
+			if (res != FR_OK) {
+				// . .-. .-.
+				led_panic("ERR");
+			}
+		} else {
+			UINT written;
+
+			res = f_write(&log_file, pos, amt, &written);
+
+			if (res != FR_OK) {
+				// . .-. .-.
+				led_panic("ERR");
+			}
+
+			if (written != amt) {
+				// ..-. ..- .-.. .-..
+				led_panic("FULL");
+			}
+		}
+
+		led_set(false);
 	}
 }
 
