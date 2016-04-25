@@ -212,7 +212,9 @@ int main() {
 
 	process_config();
 
-	usart_init(cfg_baudrate);
+	char buf[4096];
+
+	usart_init(cfg_baudrate, buf, sizeof(buf));
 
 	while (1) {
 		led_send_morse("HI ");

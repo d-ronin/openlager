@@ -29,7 +29,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-void usart_init(uint32_t baud);
+void usart_init(uint32_t baud, void *rx_buf, unsigned int rx_buf_len);
 
 void usart_int_handler() __attribute__((interrupt));
 

@@ -32,6 +32,12 @@
 #define RXPORT GPIOB
 #define RXPIN 3
 
+static volatile char *usart_rx_buf;
+static unsigned int usart_rx_buf_len;
+static volatile unsigned int usart_rx_spilled;
+static volatile unsigned int usart_rx_buf_wpos;
+static volatile unsigned int usart_rx_buf_rpos;
+
 static void usart_initpin(GPIO_TypeDef *gpio, uint16_t pin_pos) {
 	GPIO_InitTypeDef pin_def = {
 		.GPIO_Pin = 1 << (pin_pos),
@@ -45,18 +51,43 @@ static void usart_initpin(GPIO_TypeDef *gpio, uint16_t pin_pos) {
 	GPIO_PinAFConfig(gpio, pin_pos, GPIO_AF_USART1);
 }
 
+static inline unsigned int advance_pos(unsigned int cur_pos, unsigned int amt) {
+	cur_pos += amt;
+	if (cur_pos > usart_rx_buf_len) {
+		cur_pos -= usart_rx_buf_len;
+	}
+
+	return cur_pos;
+}
+
 static void usart_rxint() {
+	// Receive the character ASAP.
+	unsigned char c = USART_ReceiveData(OUR_USART);
+
+	unsigned int wpos = usart_rx_buf_wpos;
+	unsigned int next_wpos = advance_pos(wpos, 1);
+
+	if (next_wpos == usart_rx_buf_rpos) {
+		usart_rx_spilled++;
+		return;
+	}
+
+	usart_rx_buf[wpos] = c;
+	usart_rx_buf_wpos = next_wpos;
 }
 
 // RXNE is the interrupt flag
 // RXNEIE is the interrupt enable
 void usart_int_handler() {
-	if (USART_GetFlagStatus(OUR_USART, USART_FLAG_RXNE) == SET) {
+	if (USART_GetITStatus(OUR_USART, USART_IT_RXNE) == SET) {
 		usart_rxint();
 	}
 }
 
-void usart_init(uint32_t baud) {
+void usart_init(uint32_t baud, void *rx_buf, unsigned int rx_buf_len) {
+	usart_rx_buf = rx_buf;
+	usart_rx_buf_len = rx_buf_len;
+
 	// program GPIOs
 	usart_initpin(TXPORT, TXPIN);
 	usart_initpin(RXPORT, RXPIN);
