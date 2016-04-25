@@ -57,7 +57,7 @@ static void usart_initpin(GPIO_TypeDef *gpio, uint16_t pin_pos) {
 
 static inline unsigned int advance_pos(unsigned int cur_pos, unsigned int amt) {
 	cur_pos += amt;
-	if (cur_pos > usart_rx_buf_len) {
+	if (cur_pos >= usart_rx_buf_len) {
 		cur_pos -= usart_rx_buf_len;
 	}
 
