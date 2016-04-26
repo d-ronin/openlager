@@ -36,7 +36,16 @@
 #include <stm32f4xx_rcc.h>
 #include <systick_handler.h>
 
+#include <jsmn.h>
+
 #include <lagercfg.h>
+
+#ifndef MIN
+#define MIN(a,b) \
+	({ __typeof__ (a) _a = (a); \
+	 __typeof__ (b) _b = (b); \
+	 _a < _b ? _a : _b; })
+#endif
 
 const void *_interrupt_vectors[FPU_IRQn] __attribute((section(".interrupt_vectors"))) = {
 	[USART1_IRQn] = usart_int_handler
@@ -44,12 +53,62 @@ const void *_interrupt_vectors[FPU_IRQn] __attribute((section(".interrupt_vector
 
 static FATFS fatfs;
 
-static uint32_t cfg_baudrate = 500000;
+static uint32_t cfg_baudrate = 115200;
 
-#define CFGFILE_NAME "0:lager.cfg"
+#define CFGFILE_NAME "lager.cfg"
 
 // Must have non-digit characters before the digit characters.
 #define LOGNAME_FMT "log000.txt"
+
+/* Configuration functions */
+static int parse_num(const char *cfg_buf, jsmntok_t *t) {
+	int value = 0;
+	bool neg = false;
+
+	for (int pos = t->start; pos < t->end; pos++) {
+		char c = cfg_buf[pos];
+
+		if ((c == '-') && (pos == t->start)) {
+			neg = true;
+			continue;
+		}
+
+		if ((c < '0') || (c > '9')) {
+			led_panic("?");
+		}
+
+		value *= 10;
+
+		value += c - '0';
+	}
+
+	if (neg) {
+		return -value;
+	}
+
+	return value;
+}
+
+static inline bool compare_key(const char *cfg_buf, jsmntok_t *t,
+		const char *value, jsmntype_t typ) {
+	if ((t->end - t->start) != strlen(value)) {
+		return false;
+	}
+
+	// Technically we should be case sensitive, but.. Meh!
+	if (strncasecmp(value, cfg_buf + t->start,
+				t->end - t->start)) {
+		return false;
+	}
+
+	// OK, the key matches.  Is the value of the expected type? 
+	// if not, panic (invalid config)
+	if (typ != t[1].type) {
+		led_panic("?");
+	}
+
+	return true;
+}
 
 // Try to load a config file.  If it doesn't exist, create it.
 // If we can't load after that, PANNNNIC.
@@ -82,9 +141,84 @@ void process_config() {
 		led_panic("RCFG");
 	}
 
-	/* XXX parse config */
+	char cfg_buf[4096];
+
+	char cfg_morse[128];
+	cfg_morse[0] = 0;
+
+	UINT amount;
+
+        if (FR_OK != f_read(&cfg_file, cfg_buf, sizeof(cfg_buf), &amount)) {
+		led_panic("RCFG");
+	}
+
+	if (amount == 0 || amount >= sizeof(cfg_buf)) {
+		led_panic("RCFG");
+	}
+
+	jsmntok_t tokens[100];
+	jsmn_parser parser;
+
+	jsmn_init(&parser);
+
+	/* parse config */
+	int num_tokens = jsmn_parse(&parser, cfg_buf, amount, tokens, 100);
+
+	// Minimal should be JSMN_OBJECT 
+	if (num_tokens < 1) {
+		// ..--..
+		led_panic("?");
+	}
+
+	int skip_count = 0;
+
+	if (tokens[0].type != JSMN_OBJECT) {
+		// ..--..
+		led_panic("?");
+	}
+
+	// tokens-1 to guarantee that there's always room for a value after
+	// our string key..
+	for (int i=1; i<(num_tokens-1); i++) {
+		jsmntok_t *t = tokens + i;
+		jsmntok_t *next = t + 1;
+
+		if (skip_count) {
+			skip_count--;
+
+			if ((t->type == JSMN_ARRAY) ||
+					(t->type == JSMN_OBJECT)) {
+				skip_count += t->size;
+			}
+
+			continue;
+		}
+
+		if (t->type != JSMN_STRING) {
+			led_panic("?");
+		}
+
+		/* OK, it's a string. */
+
+		if (compare_key(cfg_buf, t, "startupMorse", JSMN_STRING)) {
+			int len = MIN(next->end - next->start, sizeof(cfg_morse)-1);
+
+			memcpy(cfg_morse, cfg_buf + next->start, len);
+			cfg_morse[len] = 0;
+		} else if (compare_key(cfg_buf, t, "useSPI", JSMN_PRIMITIVE)) {
+			// XXX SPI not supported yet
+		} else if (compare_key(cfg_buf, t, "baudRate", JSMN_PRIMITIVE)) {
+			cfg_baudrate = parse_num(cfg_buf, next);
+		}
+
+		i++;	// Skip the value too on next iter.
+	}
 
 	f_close(&cfg_file);
+
+	if (cfg_morse[0]) {
+		led_send_morse(cfg_morse);
+	}
 }
 
 static bool is_digit(char c) {
@@ -212,9 +346,6 @@ int main() {
 
 	// Wait for internal oscillator settle.
 	while (RCC_GetFlagStatus(RCC_FLAG_HSIRDY) == RESET);
-
-	// XXX On real hardware: need to start external oscillator,
-	// set the PLL source to ext osc.
 
 	// Turn on the external oscillator
 	RCC_HSEConfig(RCC_HSE_ON);

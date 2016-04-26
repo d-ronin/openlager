@@ -21,6 +21,8 @@
 #ifndef __JSMN_H_
 #define __JSMN_H_
 
+#define JSMN_STRICT
+
 #include <stddef.h>
 
 #ifdef __cplusplus
