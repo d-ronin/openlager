@@ -2,16 +2,16 @@
 //
 // Copyright (c) 2016, dRonin
 // All rights reserved.
-// 
+//
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
-// 
+//
 // 1. Redistributions of source code must retain the above copyright notice, this
 //    list of conditions and the following disclaimer.
 // 2. Redistributions in binary form must reproduce the above copyright notice,
 //    this list of conditions and the following disclaimer in the documentation
 //    and/or other materials provided with the distribution.
-// 
+//
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 // ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 // WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -36,31 +36,34 @@ static bool sd_high_cap;
 
 // XXX / todo error codes
 
-static void sd_initpin(GPIO_TypeDef *gpio, uint16_t pin_pos) {
+static void sd_initpin(GPIO_TypeDef *gpio, uint16_t pin_pos)
+{
 	GPIO_InitTypeDef pin_def = {
 		.GPIO_Pin = 1 << (pin_pos),
-		.GPIO_Mode = GPIO_Mode_AF,
-		.GPIO_Speed = GPIO_Fast_Speed,
-		.GPIO_OType = GPIO_OType_PP,
-		.GPIO_PuPd = GPIO_PuPd_UP
+			.GPIO_Mode = GPIO_Mode_AF,
+			.GPIO_Speed = GPIO_Fast_Speed,
+			.GPIO_OType = GPIO_OType_PP,
+			.GPIO_PuPd = GPIO_PuPd_UP
 	};
 
 	GPIO_Init(gpio, &pin_def);
 	GPIO_PinAFConfig(gpio, pin_pos, GPIO_AF_SDIO);
 }
 
-static void sd_clearflags() {
+static void sd_clearflags()
+{
 	// clear & check physical layer status, flags
 	SDIO->ICR = SDIO_ICR_CCRCFAILC | SDIO_ICR_DCRCFAILC |
-		SDIO_ICR_CTIMEOUTC | SDIO_ICR_DTIMEOUTC |
-		SDIO_ICR_TXUNDERRC | SDIO_ICR_RXOVERRC |
-		SDIO_ICR_CMDRENDC | SDIO_ICR_CMDSENTC |
-		SDIO_ICR_DATAENDC | SDIO_ICR_STBITERRC |
-		SDIO_ICR_DBCKENDC | SDIO_ICR_SDIOITC |
-		SDIO_ICR_CEATAENDC;
+			SDIO_ICR_CTIMEOUTC | SDIO_ICR_DTIMEOUTC |
+			SDIO_ICR_TXUNDERRC | SDIO_ICR_RXOVERRC |
+			SDIO_ICR_CMDRENDC | SDIO_ICR_CMDSENTC |
+			SDIO_ICR_DATAENDC | SDIO_ICR_STBITERRC |
+			SDIO_ICR_DBCKENDC | SDIO_ICR_SDIOITC |
+			SDIO_ICR_CEATAENDC;
 }
 
-static int sd_waitcomplete(uint32_t response_type) {
+static int sd_waitcomplete(uint32_t response_type)
+{
 	uint32_t status;
 
 	uint32_t completion_mask = SDIO_FLAG_CCRCFAIL | SDIO_FLAG_CMDREND | SDIO_FLAG_CTIMEOUT;
@@ -71,7 +74,7 @@ static int sd_waitcomplete(uint32_t response_type) {
 		completion_mask |= SDIO_FLAG_CMDSENT;
 	}
 
-	int timeout=1500000;
+	int timeout = 1500000;
 
 	do {
 		status = SDIO->STA;
@@ -90,16 +93,17 @@ static int sd_waitcomplete(uint32_t response_type) {
 
 	if (status &
 			(SDIO_STA_CCRCFAIL | SDIO_STA_DCRCFAIL |
-			 SDIO_STA_CTIMEOUT | SDIO_STA_DTIMEOUT |
-			 SDIO_STA_TXUNDERR | SDIO_STA_RXOVERR |
-			 SDIO_STA_STBITERR)) {
+			SDIO_STA_CTIMEOUT | SDIO_STA_DTIMEOUT |
+			SDIO_STA_TXUNDERR | SDIO_STA_RXOVERR |
+			SDIO_STA_STBITERR)) {
 		return -1;
 	}
 
 	return 0;
 }
 
-static int sd_sendcmd(uint8_t cmd_idx, uint32_t arg, uint32_t response_type) {
+static int sd_sendcmd(uint8_t cmd_idx, uint32_t arg, uint32_t response_type)
+{
 	uint32_t response = SDIO_Response_No;
 
 	if (response_type & MMC_RSP_136) {
@@ -130,7 +134,8 @@ static int sd_sendcmd(uint8_t cmd_idx, uint32_t arg, uint32_t response_type) {
 	return 0;
 }
 
-static int sd_cmdtype1(uint8_t cmd_idx, uint32_t arg) {
+static int sd_cmdtype1(uint8_t cmd_idx, uint32_t arg)
+{
 	int ret = sd_sendcmd(cmd_idx, arg, MMC_RSP_R1);
 
 	if (ret) return ret;
@@ -147,10 +152,11 @@ static int sd_cmdtype1(uint8_t cmd_idx, uint32_t arg) {
 		return 0;
 	}
 
-	return 1;		// OK, but not ready for data.
+	return 1;               // OK, but not ready for data.
 }
 
-static int sd_cmd8() {
+static int sd_cmd8()
+{
 	/* 3.3V, 'DA' check pattern */
 	uint32_t arg = 0x000001DA;
 
@@ -167,7 +173,8 @@ static int sd_cmd8() {
 	return 0;
 }
 
-static int sd_appcmdtype1(uint8_t cmd_idx, uint32_t arg) {
+static int sd_appcmdtype1(uint8_t cmd_idx, uint32_t arg)
+{
 	int ret;
 
 	ret = sd_cmdtype1(MMC_APP_CMD, sd_rca << 16);
@@ -180,7 +187,8 @@ static int sd_appcmdtype1(uint8_t cmd_idx, uint32_t arg) {
 }
 
 /* Sends ACMD41, gets resp3, returns op condition register */
-static int sd_acmd41(uint32_t *ocr, bool hicap){
+static int sd_acmd41(uint32_t *ocr, bool hicap)
+{
 	int ret;
 
 	ret = sd_cmdtype1(MMC_APP_CMD, 0 /* No RCA yet */);
@@ -206,9 +214,9 @@ static int sd_acmd41(uint32_t *ocr, bool hicap){
 	return 0;
 }
 
-
 /* Sends CMD3, SD_SEND_RELATIVE_ADDR. */
-static int sd_getrca(uint16_t *rca) {
+static int sd_getrca(uint16_t *rca)
+{
 	int ret = sd_sendcmd(SD_SEND_RELATIVE_ADDR, 0, MMC_RSP_R6);
 
 	if (ret < 0) return -1;
@@ -229,17 +237,20 @@ static int sd_getrca(uint16_t *rca) {
 	return 0;
 }
 
-static int sd_checkbusy() {
+static int sd_checkbusy()
+{
 	return sd_cmdtype1(MMC_SEND_STATUS, sd_rca << 16);
 }
 
-static void sd_send_morse(char *morse) {
+static void sd_send_morse(char *morse)
+{
 #if 0
 	led_send_morse(morse);
 #endif
 }
 
-int sd_init(bool fourbit) {
+int sd_init(bool fourbit)
+{
 	// Clocks programmed elsewhere and peripheral/GPIO clock enabled already
 
 	// program GPIO / PinAF
@@ -257,8 +268,8 @@ int sd_init(bool fourbit) {
 	SDIO_InitTypeDef sd_settings;
 	SDIO_StructInit(&sd_settings);
 
-	sd_settings.SDIO_ClockDiv = 118;	// /120; = 400KHz at 48MHz
-						// and 320KHz at 38.4MHz
+	sd_settings.SDIO_ClockDiv = 118;        // /120; = 400KHz at 48MHz
+	                                        // and 320KHz at 38.4MHz
 
 	// Tell the SDIO peripheral to stop the clock when FIFO empty/full
 	//
@@ -300,7 +311,7 @@ int sd_init(bool fourbit) {
 
 	// A-CMD41 SD_SEND_OP_COND -- may return busy, need to loop
 	uint32_t ocr;
-	int tries=10000;
+	int tries = 10000;
 
 	do {
 		if (tries-- < 0) {
@@ -333,8 +344,8 @@ int sd_init(bool fourbit) {
 	}
 
 	// Now that the card is inited.. crank the bus speed up!
-	sd_settings.SDIO_ClockDiv = 0;		// /2; = 24MHz at 48MHz
-						// and 19.2MHz at 38.4MHz
+	sd_settings.SDIO_ClockDiv = 0;          // /2; = 24MHz at 48MHz
+	                                        // and 19.2MHz at 38.4MHz
 
 	SDIO_Init(&sd_settings);
 
@@ -360,7 +371,8 @@ int sd_init(bool fourbit) {
 	return 0;
 }
 
-int sd_write(const uint8_t *data, uint32_t sect_num) {
+int sd_write(const uint8_t *data, uint32_t sect_num)
+{
 	if (!(sd_high_cap)) {
 		if (sect_num > 0x7fffff) {
 			return -1;
@@ -386,12 +398,12 @@ int sd_write(const uint8_t *data, uint32_t sect_num) {
 	}
 
 	SDIO_DataInitTypeDef data_xfer = {
-		.SDIO_DataTimeOut = 100000000,	/* 1 secondish at full clk */
+		.SDIO_DataTimeOut = 100000000,  /* 1 secondish at full clk */
 		.SDIO_DataLength = 512,
 		.SDIO_DataBlockSize = 9 << 4,
-		.SDIO_TransferDir = SDIO_TransferDir_ToCard,
-		.SDIO_TransferMode = SDIO_TransferMode_Block,
-		.SDIO_DPSM = SDIO_DPSM_Enable
+			.SDIO_TransferDir = SDIO_TransferDir_ToCard,
+			.SDIO_TransferMode = SDIO_TransferMode_Block,
+			.SDIO_DPSM = SDIO_DPSM_Enable
 	};
 
 	SDIO_DataConfig(&data_xfer);
@@ -403,9 +415,9 @@ int sd_write(const uint8_t *data, uint32_t sect_num) {
 
 		if (status &
 				(SDIO_STA_CCRCFAIL | SDIO_STA_DCRCFAIL |
-				 SDIO_STA_CTIMEOUT | SDIO_STA_DTIMEOUT |
-				 SDIO_STA_TXUNDERR | SDIO_STA_RXOVERR |
-				 SDIO_STA_STBITERR)) {
+				SDIO_STA_CTIMEOUT | SDIO_STA_DTIMEOUT |
+				SDIO_STA_TXUNDERR | SDIO_STA_RXOVERR |
+				SDIO_STA_STBITERR)) {
 			if (status & SDIO_STA_DTIMEOUT) {
 				sd_send_morse("DTIMEOUT");
 			} else if (status & SDIO_STA_CTIMEOUT) {
@@ -415,7 +427,7 @@ int sd_write(const uint8_t *data, uint32_t sect_num) {
 			}
 
 			sd_send_morse("WFLAG ");
-			ret = -1;	/* we lose. */
+			ret = -1;       /* we lose. */
 			break;
 		}
 
@@ -436,7 +448,7 @@ int sd_write(const uint8_t *data, uint32_t sect_num) {
 			}
 		} else {
 			if (status & SDIO_STA_DBCKEND) {
-				ret = 0;	/* Sounds good! */
+				ret = 0;        /* Sounds good! */
 				break;
 			}
 		}
@@ -452,7 +464,8 @@ int sd_write(const uint8_t *data, uint32_t sect_num) {
 	return ret;
 }
 
-int sd_read(uint8_t *data, uint32_t sect_num) {
+int sd_read(uint8_t *data, uint32_t sect_num)
+{
 	while (sd_checkbusy() > 0);
 
 	if (!(sd_high_cap)) {
@@ -472,12 +485,12 @@ int sd_read(uint8_t *data, uint32_t sect_num) {
 
 	/* config data transfer and cue up the data xfer state machine */
 	SDIO_DataInitTypeDef data_xfer = {
-		.SDIO_DataTimeOut = 100000000,	/* 1 secondish at full clk */
+		.SDIO_DataTimeOut = 100000000,  /* 1 secondish at full clk */
 		.SDIO_DataLength = 512,
 		.SDIO_DataBlockSize = 9 << 4,
-		.SDIO_TransferDir = SDIO_TransferDir_ToSDIO,
-		.SDIO_TransferMode = SDIO_TransferMode_Block,
-		.SDIO_DPSM = SDIO_DPSM_Enable
+			.SDIO_TransferDir = SDIO_TransferDir_ToSDIO,
+			.SDIO_TransferMode = SDIO_TransferMode_Block,
+			.SDIO_DPSM = SDIO_DPSM_Enable
 	};
 
 	SDIO_DataConfig(&data_xfer);
@@ -496,18 +509,18 @@ int sd_read(uint8_t *data, uint32_t sect_num) {
 
 		if (status &
 				(SDIO_STA_CCRCFAIL | SDIO_STA_DCRCFAIL |
-				 SDIO_STA_CTIMEOUT | SDIO_STA_DTIMEOUT |
-				 SDIO_STA_TXUNDERR | SDIO_STA_RXOVERR |
-				 SDIO_STA_STBITERR)) {
+				SDIO_STA_CTIMEOUT | SDIO_STA_DTIMEOUT |
+				SDIO_STA_TXUNDERR | SDIO_STA_RXOVERR |
+				SDIO_STA_STBITERR)) {
 			sd_send_morse("FLAG ");
-			ret = -1;	/* we lose. */
+			ret = -1;       /* we lose. */
 			break;
 		}
 
 		if (status & SDIO_STA_RXDAVL) {
 			if (i <= 0) {
 				sd_send_morse("TOOMUCH ");
-				ret = -1;	/* Too much data? */
+				ret = -1;       /* Too much data? */
 				break;
 			}
 
@@ -524,7 +537,7 @@ int sd_read(uint8_t *data, uint32_t sect_num) {
 		} else {
 			if (status & SDIO_STA_DBCKEND) {
 				if (i == 0) {
-					ret = 0;	/* Sounds good! */
+					ret = 0;        /* Sounds good! */
 					break;
 				}
 

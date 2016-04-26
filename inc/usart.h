@@ -1,17 +1,17 @@
-// STM32F4xx USART support functions headers 
+// STM32F4xx USART support functions headers
 //
 // Copyright (c) 2016, dRonin
 // All rights reserved.
-// 
+//
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
-// 
+//
 // 1. Redistributions of source code must retain the above copyright notice, this
 //    list of conditions and the following disclaimer.
 // 2. Redistributions in binary form must reproduce the above copyright notice,
 //    this list of conditions and the following disclaimer in the documentation
 //    and/or other materials provided with the distribution.
-// 
+//
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 // ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 // WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -33,9 +33,8 @@ void usart_init(uint32_t baud, void *rx_buf, unsigned int rx_buf_len);
 const char *usart_receive_chunk(unsigned int timeout,
 		unsigned int preferred_align,
 		unsigned int min_preferred_chunk,
-		unsigned int *bytes_returned) ;
+		unsigned int *bytes_returned);
 
 void usart_int_handler() __attribute__((interrupt));
 
 #endif
-

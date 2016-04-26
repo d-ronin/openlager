@@ -3,16 +3,16 @@
 //
 // Copyright (c) 2016, dRonin
 // All rights reserved.
-// 
+//
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
-// 
+//
 // 1. Redistributions of source code must retain the above copyright notice, this
 //    list of conditions and the following disclaimer.
 // 2. Redistributions in binary form must reproduce the above copyright notice,
 //    this list of conditions and the following disclaimer in the documentation
 //    and/or other materials provided with the distribution.
-// 
+//
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 // ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 // WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -145,7 +145,8 @@ static const uint8_t morse_table[] = {
 	/*   --..	Z */
 };
 
-static uint8_t morse_expand(uint8_t raw, uint8_t *len) {
+static uint8_t morse_expand(uint8_t raw, uint8_t *len)
+{
 	/* Special 6 punctuation signifier */
 	if ((raw & 0B11000000) == 0B11000000) {
 		*len = 6;
@@ -157,7 +158,8 @@ static uint8_t morse_expand(uint8_t raw, uint8_t *len) {
 	return raw << 3;
 }
 
-static uint8_t morse_lookup(char c, uint8_t *len) {
+static uint8_t morse_lookup(char c, uint8_t *len)
+{
 	*len = 0;
 
 	if (c < 40) {
@@ -182,95 +184,96 @@ static uint8_t morse_lookup(char c, uint8_t *len) {
 }
 
 enum __attribute__ ((__packed__)) character_state {
-	STATE_NEXTCHAR=0,	// 1 time of nil, prime next character -> NEXTSYM/SPACEWAIT
-	STATE_SPACEWAIT,	// 1 time of nil -> STATE_SPACEWAIT_B
-	STATE_SPACEWAIT_B,	// 1 time of nil -> STATE_SPACEWAIT_C
-	STATE_SPACEWAIT_C,	// 1 time of nil -> STATE_NEXTCHAR
-	STATE_NEXTSYM,		// Prime next symbol, 1 time of nil -> NEXTCHAR/DOT/DASH
-	STATE_DOT,		// Send a dot -> NEXTSYM
-	STATE_DASH,		// Send a dash -> DASH_B
-	STATE_DASH_B,		// Send a dash -> DASH_C
-	STATE_DASH_C		// Send a dash -> NEXTSYM
+	STATE_NEXTCHAR = 0,       // 1 time of nil, prime next character -> NEXTSYM/SPACEWAIT
+	STATE_SPACEWAIT,        // 1 time of nil -> STATE_SPACEWAIT_B
+	STATE_SPACEWAIT_B,      // 1 time of nil -> STATE_SPACEWAIT_C
+	STATE_SPACEWAIT_C,      // 1 time of nil -> STATE_NEXTCHAR
+	STATE_NEXTSYM,          // Prime next symbol, 1 time of nil -> NEXTCHAR/DOT/DASH
+	STATE_DOT,              // Send a dot -> NEXTSYM
+	STATE_DASH,             // Send a dash -> DASH_B
+	STATE_DASH_B,           // Send a dash -> DASH_C
+	STATE_DASH_C            // Send a dash -> NEXTSYM
 };
 
 /* Returns 0 for off, 1 for on, -1 for completed */
-int morse_send(char **c, uint32_t *state) {
+int morse_send(char **c, uint32_t *state)
+{
 	uint8_t *len = ((uint8_t *) state);
 	uint8_t *data = len + 1;
 	enum character_state *char_state = (enum character_state *) (len + 2);
 
 	switch (*char_state) {
-		case STATE_NEXTCHAR:
-			if (!**c) {
-				return -1;
-			}
+	case STATE_NEXTCHAR:
+		if (!**c) {
+			return -1;
+		}
 
-			*data = morse_lookup(**c, len);
-			(*c)++;
+		*data = morse_lookup(**c, len);
+		(*c)++;
 
-			if (*len) {
-				*char_state = STATE_NEXTSYM;
-			} else {
-				*char_state = STATE_SPACEWAIT;
-			}
+		if (*len) {
+			*char_state = STATE_NEXTSYM;
+		} else {
+			*char_state = STATE_SPACEWAIT;
+		}
 
-			return 0;
+		return 0;
 
-		case STATE_SPACEWAIT:
-			*char_state = STATE_SPACEWAIT_B;
+	case STATE_SPACEWAIT:
+		*char_state = STATE_SPACEWAIT_B;
 
-			return 0;
+		return 0;
 
-		case STATE_SPACEWAIT_B:
-			*char_state = STATE_SPACEWAIT_C;
+	case STATE_SPACEWAIT_B:
+		*char_state = STATE_SPACEWAIT_C;
 
-			return 0;
+		return 0;
 
-		case STATE_SPACEWAIT_C:
+	case STATE_SPACEWAIT_C:
+		*char_state = STATE_NEXTCHAR;
+
+		return 0;
+
+	case STATE_NEXTSYM:
+		if (!(*len)) {
 			*char_state = STATE_NEXTCHAR;
 
 			return 0;
+		}
 
-		case STATE_NEXTSYM:
-			if (!(*len)) {
-				*char_state = STATE_NEXTCHAR;
+		if ((*data) & 0B10000000) {
+			*char_state = STATE_DASH;
+		} else {
+			*char_state = STATE_DOT;
+		}
 
-				return 0;
-			}
+		*data = (*data) << 1;
 
-			if ((*data) & 0B10000000) {
-				*char_state = STATE_DASH;
-			} else {
-				*char_state = STATE_DOT;
-			}
+		(*len)--;
 
-			*data = (*data) << 1;
+		return 0;
 
-			(*len)--;
+	case STATE_DASH:
+		*char_state = STATE_DASH_B;
+		return 1;
 
-			return 0;
+	case STATE_DASH_B:
+		*char_state = STATE_DASH_C;
+		return 1;
 
-		case STATE_DASH:
-			*char_state = STATE_DASH_B;
-			return 1;
+	case STATE_DOT:
+	case STATE_DASH_C:
+		*char_state = STATE_NEXTSYM;
+		return 1;
 
-		case STATE_DASH_B:
-			*char_state = STATE_DASH_C;
-			return 1;
-
-		case STATE_DOT:
-		case STATE_DASH_C:
-			*char_state = STATE_NEXTSYM;
-			return 1;
-
-		default:		/* illegal state */
-			return 1;
+	default:                        /* illegal state */
+		return 1;
 	}
 }
 
 #if 0
 main() {
-	char *a="Hello my only friend?! 1234";
+	char *a = "Hello my only friend?! 1234";
 
 	int val;
 	uint32_t state = 0;

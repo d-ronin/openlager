@@ -7,11 +7,13 @@ static uint16_t led_pin;
 static bool led_sense;
 static int led_time_per_dot = 36;
 
-void led_toggle() {
+void led_toggle()
+{
 	GPIO_ToggleBits(led_gpio, led_pin);
 }
 
-void led_set(bool light) {
+void led_set(bool light)
+{
 	if (led_sense ^ light) {
 		GPIO_SetBits(led_gpio, led_pin);
 	} else {
@@ -19,7 +21,8 @@ void led_set(bool light) {
 	}
 }
 
-void led_send_morse(char *string) {
+void led_send_morse(char *string)
+{
 	char *pos = string;
 	int val;
 
@@ -36,18 +39,21 @@ void led_send_morse(char *string) {
 	}
 }
 
-void led_panic(char *string) {
+void led_panic(char *string)
+{
 	while (true) {
 		led_send_morse(string);
 		led_send_morse("  ");
 	}
 }
 
-void led_set_morse_speed(int time_per_dot) {
+void led_set_morse_speed(int time_per_dot)
+{
 	led_time_per_dot = time_per_dot;
 }
 
-void led_init_pin(GPIO_TypeDef *GPIOx, uint16_t GPIO_pin, bool sense) {
+void led_init_pin(GPIO_TypeDef *GPIOx, uint16_t GPIO_pin, bool sense)
+{
 	GPIO_InitTypeDef led_def;
 
 	GPIO_StructInit(&led_def);
