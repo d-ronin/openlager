@@ -2,16 +2,16 @@
 //
 // Copyright (c) 2016, dRonin
 // All rights reserved.
-// 
+//
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
-// 
+//
 // 1. Redistributions of source code must retain the above copyright notice, this
 //    list of conditions and the following disclaimer.
 // 2. Redistributions in binary form must reproduce the above copyright notice,
 //    this list of conditions and the following disclaimer in the documentation
 //    and/or other materials provided with the distribution.
-// 
+//
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 // ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 // WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -42,20 +42,22 @@ static volatile unsigned int usart_rx_buf_wpos;
 static volatile unsigned int usart_rx_buf_rpos;
 static unsigned int usart_rx_buf_next_rpos;
 
-static void usart_initpin(GPIO_TypeDef *gpio, uint16_t pin_pos) {
+static void usart_initpin(GPIO_TypeDef *gpio, uint16_t pin_pos)
+{
 	GPIO_InitTypeDef pin_def = {
 		.GPIO_Pin = 1 << (pin_pos),
-		.GPIO_Mode = GPIO_Mode_AF,
-		.GPIO_Speed = GPIO_Fast_Speed,
-		.GPIO_OType = GPIO_OType_PP,
-		.GPIO_PuPd = GPIO_PuPd_UP
+			.GPIO_Mode = GPIO_Mode_AF,
+			.GPIO_Speed = GPIO_Fast_Speed,
+			.GPIO_OType = GPIO_OType_PP,
+			.GPIO_PuPd = GPIO_PuPd_UP
 	};
 
 	GPIO_Init(gpio, &pin_def);
 	GPIO_PinAFConfig(gpio, pin_pos, GPIO_AF_USART1);
 }
 
-static inline unsigned int advance_pos(unsigned int cur_pos, unsigned int amt) {
+static inline unsigned int advance_pos(unsigned int cur_pos, unsigned int amt)
+{
 	cur_pos += amt;
 	if (cur_pos >= usart_rx_buf_len) {
 		cur_pos -= usart_rx_buf_len;
@@ -64,7 +66,8 @@ static inline unsigned int advance_pos(unsigned int cur_pos, unsigned int amt) {
 	return cur_pos;
 }
 
-static void usart_rxint() {
+static void usart_rxint()
+{
 	// Receive the character ASAP.
 	unsigned char c = USART_ReceiveData(OUR_USART);
 
@@ -87,7 +90,8 @@ static void usart_rxint() {
 
 // RXNE is the interrupt flag
 // RXNEIE is the interrupt enable
-void usart_int_handler() {
+void usart_int_handler()
+{
 	if (USART_GetITStatus(OUR_USART, USART_IT_RXNE) == SET) {
 		usart_rxint();
 	}
@@ -106,7 +110,8 @@ void usart_int_handler() {
 const char *usart_receive_chunk(unsigned int timeout,
 		unsigned int preferred_align,
 		unsigned int min_preferred_chunk,
-		unsigned int *bytes_returned) {
+		unsigned int *bytes_returned)
+{
 	unsigned int expiration = systick_cnt + timeout;
 
 	// Release the previously read chunk, so receiving can proceed into it
@@ -123,7 +128,7 @@ const char *usart_receive_chunk(unsigned int timeout,
 
 		if (wpos < rpos) {
 			bytes = usart_rx_buf_len - rpos;
-			break;	// case 1b
+			break;  // case 1b
 		}
 
 		bytes = wpos - rpos;
@@ -151,7 +156,8 @@ const char *usart_receive_chunk(unsigned int timeout,
 	return (const char *) (usart_rx_buf + rpos);
 }
 
-void usart_init(uint32_t baud, void *rx_buf, unsigned int rx_buf_len) {
+void usart_init(uint32_t baud, void *rx_buf, unsigned int rx_buf_len)
+{
 	usart_rx_buf = rx_buf;
 	usart_rx_buf_len = rx_buf_len;
 
