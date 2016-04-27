@@ -1,4 +1,4 @@
-## Footprint report - date 4/25/2016 1:45:39 PM
+## Footprint report - date 4/26/2016 9:53:39 PM
 ## Created by Pcbnew version kicad 4.0.2-stable
 ## Unit = mm, Angle = deg.
 
@@ -14,7 +14,7 @@ reference "C1"
 value "10uF"
 footprint "openLagerFootprints:C_0402"
 attribut smd
-position 200.660000 111.696500  orientation 0.00
+position 200.787000 111.696500  orientation 0.00
 layer front
 $PAD "1"
 Shape Rect Layer front
@@ -35,7 +35,7 @@ reference "C3"
 value "0.1uF"
 footprint "openLagerFootprints:C_0402"
 attribut smd
-position 196.469000 110.490000  orientation 270.00
+position 196.151500 110.426500  orientation 270.00
 layer front
 $PAD "1"
 Shape Rect Layer front
@@ -56,7 +56,7 @@ reference "C4"
 value "10uF"
 footprint "openLagerFootprints:C_0402"
 attribut smd
-position 195.580000 110.490000  orientation 270.00
+position 195.199000 110.426500  orientation 270.00
 layer front
 $PAD "1"
 Shape Rect Layer front
@@ -119,7 +119,7 @@ reference "C7"
 value "0.1uF"
 footprint "openLagerFootprints:C_0402"
 attribut smd
-position 200.660000 112.585500  orientation 0.00
+position 200.787000 112.649000  orientation 0.00
 layer front
 $PAD "1"
 Shape Rect Layer front
@@ -269,7 +269,7 @@ reference "R2"
 value "DNP"
 footprint "openLagerFootprints:R_0402"
 attribut smd
-position 204.533500 98.234500  orientation 180.00
+position 204.597000 98.234500  orientation 180.00
 layer front
 $PAD "1"
 Shape Rect Layer front
@@ -290,7 +290,7 @@ reference "R3"
 value "10k"
 footprint "openLagerFootprints:R_0402"
 attribut smd
-position 204.533500 99.187000  orientation 0.00
+position 204.597000 99.187000  orientation 0.00
 layer front
 $PAD "1"
 Shape Rect Layer front
@@ -311,7 +311,7 @@ reference "R4"
 value "10k"
 footprint "openLagerFootprints:R_0402"
 attribut smd
-position 200.406000 109.728000  orientation 0.00
+position 200.660000 109.855000  orientation 0.00
 layer front
 $PAD "1"
 Shape Rect Layer front
@@ -353,7 +353,7 @@ reference "R6"
 value "22R"
 footprint "openLagerFootprints:R_0402"
 attribut smd
-position 194.500500 112.268000  orientation 90.00
+position 194.437000 112.268000  orientation 90.00
 layer front
 $PAD "1"
 Shape Rect Layer front
@@ -374,7 +374,7 @@ reference "R7"
 value "22R"
 footprint "openLagerFootprints:R_0402"
 attribut smd
-position 196.405500 112.268000  orientation 90.00
+position 196.151500 112.268000  orientation 90.00
 layer front
 $PAD "1"
 Shape Rect Layer front
@@ -416,7 +416,7 @@ reference "R9"
 value "47k"
 footprint "openLagerFootprints:R_0402"
 attribut smd
-position 195.199000 108.839000  orientation 0.00
+position 195.199000 108.902500  orientation 0.00
 layer front
 $PAD "1"
 Shape Rect Layer front
@@ -918,45 +918,6 @@ shape_offset  0.000000  0.000000
 $EndPAD
 $EndMODULE  U1
 
-$MODULE "U2"
-reference "U2"
-value "SPX3819M5-L-3-3"
-footprint "openLagerFootprints:SOT95P280X145-5N"
-attribut smd
-position 198.247000 111.061500  orientation 90.00
-layer front
-$PAD "1"
-Shape Rect Layer front
-position -1.168400 -0.939800  size  1.320800  0.558800  orientation 0.00
-drill  0.000000
-shape_offset  0.000000  0.000000
-$EndPAD
-$PAD "2"
-Shape Rect Layer front
-position -1.168400  0.000000  size  1.320800  0.558800  orientation 0.00
-drill  0.000000
-shape_offset  0.000000  0.000000
-$EndPAD
-$PAD "3"
-Shape Rect Layer front
-position -1.168400  0.939800  size  1.320800  0.558800  orientation 0.00
-drill  0.000000
-shape_offset  0.000000  0.000000
-$EndPAD
-$PAD "4"
-Shape Rect Layer front
-position  1.168400  0.939800  size  1.320800  0.558800  orientation 0.00
-drill  0.000000
-shape_offset  0.000000  0.000000
-$EndPAD
-$PAD "5"
-Shape Rect Layer front
-position  1.168400 -0.939800  size  1.320800  0.558800  orientation 0.00
-drill  0.000000
-shape_offset  0.000000  0.000000
-$EndPAD
-$EndMODULE  U2
-
 $MODULE "Y1"
 reference "Y1"
 value "CSTCE8M00G15L99"
@@ -983,21 +944,6 @@ drill  0.000000
 shape_offset  0.000000  0.000000
 $EndPAD
 $EndMODULE  Y1
-
-$MODULE "TP1"
-reference "TP1"
-value "TEST_1P"
-footprint "openLagerFootprints:Socket_Strip_Straight_1x01"
-attribut none
-position 191.770000 111.760000  orientation 0.00
-layer front
-$PAD "1"
-Shape Rect Layer both
-position  0.000000  0.000000  size  1.727200  2.032000  orientation 0.00
-drill  1.016000
-shape_offset  0.000000  0.000000
-$EndPAD
-$EndMODULE  TP1
 
 $MODULE "J1"
 reference "J1"
@@ -1085,5 +1031,59 @@ drill  0.000000
 shape_offset  0.000000  0.000000
 $EndPAD
 $EndMODULE  D2
+
+$MODULE "TP1"
+reference "TP1"
+value "TEST_1P"
+footprint "openLagerFootprints:Socket_Strip_Straight_1x01"
+attribut none
+position 191.770000 111.760000  orientation 0.00
+layer front
+$PAD "1"
+Shape Rect Layer both
+position  0.000000  0.000000  size  1.727200  2.032000  orientation 0.00
+drill  1.016000
+shape_offset  0.000000  0.000000
+$EndPAD
+$EndMODULE  TP1
+
+$MODULE "U2"
+reference "U2"
+value "SPX3819M5-L-3-3"
+footprint "openLagerFootprints:SOT95P280X145-5N"
+attribut smd
+position 198.247000 111.061500  orientation 90.00
+layer front
+$PAD "1"
+Shape Rect Layer front
+position -1.168400 -0.939800  size  1.320800  0.558800  orientation 0.00
+drill  0.000000
+shape_offset  0.000000  0.000000
+$EndPAD
+$PAD "2"
+Shape Rect Layer front
+position -1.168400  0.000000  size  1.320800  0.558800  orientation 0.00
+drill  0.000000
+shape_offset  0.000000  0.000000
+$EndPAD
+$PAD "3"
+Shape Rect Layer front
+position -1.168400  0.939800  size  1.320800  0.558800  orientation 0.00
+drill  0.000000
+shape_offset  0.000000  0.000000
+$EndPAD
+$PAD "4"
+Shape Rect Layer front
+position  1.168400  0.939800  size  1.320800  0.558800  orientation 0.00
+drill  0.000000
+shape_offset  0.000000  0.000000
+$EndPAD
+$PAD "5"
+Shape Rect Layer front
+position  1.168400 -0.939800  size  1.320800  0.558800  orientation 0.00
+drill  0.000000
+shape_offset  0.000000  0.000000
+$EndPAD
+$EndMODULE  U2
 
 $EndDESCRIPTION
