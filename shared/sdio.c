@@ -354,6 +354,11 @@ int sd_init(bool fourbit)
 		return -1;
 	}
 
+	if (sd_cmdtype1(MMC_SET_BLOCKLEN, 512)) {
+		sd_send_morse("BLKLEN ");
+		return -1;
+	}
+
 	// Interrupt configuration would go here... but we don't use it now.
 	// DMA configuration would go here... but we don't use it now.
 
@@ -425,8 +430,7 @@ static void sd_config_dma_tx(const void *src, uint32_t buf_size) {
 	DMA_Cmd(DMA2_Stream6, ENABLE);
 }
 
-
-int sd_write(const uint8_t *data, uint32_t sect_num)
+int sd_write(const uint8_t *data, uint32_t sect_num, uint16_t num_to_write)
 {
 	if (!(sd_high_cap)) {
 		if (sect_num > 0x7fffff) {
@@ -438,27 +442,38 @@ int sd_write(const uint8_t *data, uint32_t sect_num)
 
 	while (sd_checkbusy() > 0);
 
-	int ret = sd_cmdtype1(MMC_SET_BLOCKLEN, 512);
+	int ret;
 
-	if (ret) {
-		sd_send_morse("BLKLEN ");
-		return ret;
+	if (num_to_write == 1) {
+		ret = sd_cmdtype1(MMC_WRITE_BLOCK, sect_num);
+
+		if (ret) {
+			sd_send_morse("WRCMD ");
+			return ret;
+		}
+	} else {
+		ret = sd_appcmdtype1(MMC_SET_BLOCK_COUNT, num_to_write);
+
+		if (ret) {
+			sd_send_morse("BLKCNT ");
+			return ret;
+		}
+
+		ret = sd_cmdtype1(MMC_WRITE_MULTIPLE_BLOCK, sect_num);
+
+		if (ret) {
+			sd_send_morse("WRMULTI ");
+			return ret;
+		}
 	}
 
-	ret = sd_cmdtype1(MMC_WRITE_BLOCK, sect_num);
-
-	if (ret) {
-		sd_send_morse("WRCMDFAIL ");
-		return ret;
-	}
-
-	// Ref manual suggests we should do this imemdiately above but here
+	// Ref manual suggests we should do this immediately above but here
 	// makes more sense to me.
-	sd_config_dma_tx(data, 512);
+	sd_config_dma_tx(data, num_to_write * 512);
 
 	SDIO_DataInitTypeDef data_xfer = {
 		.SDIO_DataTimeOut = 50000000,  /* 1 secondish at full clk */
-		.SDIO_DataLength = 512,
+		.SDIO_DataLength = num_to_write * 512,
 		.SDIO_DataBlockSize = 9 << 4,
 		.SDIO_TransferDir = SDIO_TransferDir_ToCard,
 		.SDIO_TransferMode = SDIO_TransferMode_Block,
@@ -489,7 +504,7 @@ int sd_write(const uint8_t *data, uint32_t sect_num)
 			break;
 		}
 
-		if (status & SDIO_STA_DBCKEND) {
+		if (status & SDIO_STA_DATAEND) {
 			ret = 0;        /* Sounds good! */
 			break;
 		}
@@ -501,9 +516,11 @@ int sd_write(const uint8_t *data, uint32_t sect_num)
 
 	if (ret) {
 		sd_cmdtype1(MMC_STOP_TRANSMISSION, 0);
-		//sd_send_morse("WFAIL ");
 	} else {
-		sd_send_morse("HI");
+		if (num_to_write > 1) {
+			sd_cmdtype1(MMC_STOP_TRANSMISSION, 0);
+		}
+		//sd_send_morse("HI");
 	}
 
 	return ret;
@@ -521,13 +538,6 @@ int sd_read(uint8_t *data, uint32_t sect_num)
 		sect_num *= 512;
 	}
 
-	int ret = sd_cmdtype1(MMC_SET_BLOCKLEN, 512);
-
-	if (ret < 0) {
-		sd_send_morse("BLKLEN ");
-		return ret;
-	}
-
 	/* config data transfer and cue up the data xfer state machine */
 	SDIO_DataInitTypeDef data_xfer = {
 		.SDIO_DataTimeOut = 50000000,  /* 1 secondish at full clk */
@@ -540,7 +550,7 @@ int sd_read(uint8_t *data, uint32_t sect_num)
 
 	SDIO_DataConfig(&data_xfer);
 
-	ret = sd_cmdtype1(MMC_READ_SINGLE_BLOCK, sect_num);
+	int ret = sd_cmdtype1(MMC_READ_SINGLE_BLOCK, sect_num);
 
 	if (ret < 0) {
 		sd_send_morse("CMDFAIL ");

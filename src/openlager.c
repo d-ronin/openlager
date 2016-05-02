@@ -301,7 +301,10 @@ static void do_usart_logging(void) {
 
 		// 50 ticks == 200ms, prefer 512 byte sector alignment,
 		// and >= 2560 byte chunks are best
-		pos = usart_receive_chunk(50, 512, 5*512, &amt);
+		// Never get more than about 2/5 of the buffer (40 * 1024)--
+		// because we want to finish the IO and free it up
+		pos = usart_receive_chunk(50, 512, 5*512,
+				40*1024, &amt);
 
 		// Could consider if pos is short, waiting a little longer
 		// (400-600ms?) next time...
