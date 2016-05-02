@@ -242,7 +242,7 @@ static int sd_checkbusy()
 	return sd_cmdtype1(MMC_SEND_STATUS, sd_rca << 16);
 }
 
-static void sd_send_morse(char *morse)
+static inline void sd_send_morse(char *morse)
 {
 #if 0
 	led_send_morse(morse);
@@ -371,6 +371,61 @@ int sd_init(bool fourbit)
 	return 0;
 }
 
+static void sd_config_dma_tx(const void *src, uint32_t buf_size) {
+	uintptr_t raw_src = (uintptr_t) src;
+	bool aligned = true;
+
+	if ((raw_src & 3) || (buf_size & 3))  {
+		aligned = false;
+	}
+
+	DMA_ClearFlag(DMA2_Stream6, DMA_FLAG_FEIF6 | DMA_FLAG_DMEIF6 |
+			DMA_FLAG_TEIF6 | DMA_FLAG_HTIF6 | DMA_FLAG_TCIF6);
+
+	DMA_DeInit(DMA2_Stream6);
+
+	DMA_Cmd(DMA2_Stream6, DISABLE);
+
+	DMA_InitTypeDef dma_init;
+
+	dma_init.DMA_Channel = DMA_Channel_4;
+	dma_init.DMA_PeripheralBaseAddr = (uintptr_t) &SDIO->FIFO;
+	dma_init.DMA_Memory0BaseAddr = raw_src;
+	dma_init.DMA_DIR = DMA_DIR_MemoryToPeripheral;
+	dma_init.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+	dma_init.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Word;
+	dma_init.DMA_MemoryInc = DMA_MemoryInc_Enable;
+
+	if (aligned) {
+		dma_init.DMA_MemoryDataSize = DMA_MemoryDataSize_Word;
+		// These are not actually used when we're using
+		// peripheral "flow control"
+		dma_init.DMA_BufferSize = buf_size / 4;
+	} else {
+		dma_init.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;
+		dma_init.DMA_BufferSize = buf_size / 4;
+	}
+
+	dma_init.DMA_Mode = DMA_Mode_Normal;
+	dma_init.DMA_Priority = DMA_Priority_VeryHigh;
+	dma_init.DMA_FIFOMode = DMA_FIFOMode_Enable;
+	dma_init.DMA_FIFOThreshold = DMA_FIFOThreshold_HalfFull;
+
+	// Can't cross a 1k barrier with this, and we can't promise that.
+	// So don't burst on memory side.
+	dma_init.DMA_MemoryBurst = DMA_MemoryBurst_Single;
+
+	// Reference manual says-- if we don't use peripheral autoinc,
+	// don't configure a peripheral burst.  But experimentation shows
+	// this is actually necessary to successfully use SDIO peripheral.
+	dma_init.DMA_PeripheralBurst = DMA_PeripheralBurst_INC4;
+	DMA_Init(DMA2_Stream6, &dma_init);
+	DMA_FlowControllerConfig(DMA2_Stream6, DMA_FlowCtrl_Peripheral);
+
+	DMA_Cmd(DMA2_Stream6, ENABLE);
+}
+
+
 int sd_write(const uint8_t *data, uint32_t sect_num)
 {
 	if (!(sd_high_cap)) {
@@ -397,18 +452,21 @@ int sd_write(const uint8_t *data, uint32_t sect_num)
 		return ret;
 	}
 
+	// Ref manual suggests we should do this imemdiately above but here
+	// makes more sense to me.
+	sd_config_dma_tx(data, 512);
+
 	SDIO_DataInitTypeDef data_xfer = {
-		.SDIO_DataTimeOut = 100000000,  /* 1 secondish at full clk */
+		.SDIO_DataTimeOut = 50000000,  /* 1 secondish at full clk */
 		.SDIO_DataLength = 512,
 		.SDIO_DataBlockSize = 9 << 4,
-			.SDIO_TransferDir = SDIO_TransferDir_ToCard,
-			.SDIO_TransferMode = SDIO_TransferMode_Block,
-			.SDIO_DPSM = SDIO_DPSM_Enable
+		.SDIO_TransferDir = SDIO_TransferDir_ToCard,
+		.SDIO_TransferMode = SDIO_TransferMode_Block,
+		.SDIO_DPSM = SDIO_DPSM_Enable
 	};
 
 	SDIO_DataConfig(&data_xfer);
-
-	int i = 512 / 4;
+	SDIO_DMACmd(ENABLE);
 
 	while (true) {
 		uint32_t status = SDIO->STA;
@@ -419,46 +477,33 @@ int sd_write(const uint8_t *data, uint32_t sect_num)
 				SDIO_STA_TXUNDERR | SDIO_STA_RXOVERR |
 				SDIO_STA_STBITERR)) {
 			if (status & SDIO_STA_DTIMEOUT) {
-				sd_send_morse("DTIMEOUT");
+				sd_send_morse("DTM");
 			} else if (status & SDIO_STA_CTIMEOUT) {
-				sd_send_morse("CTIMEOUT");
+				sd_send_morse("CTM");
 			} else if (status & SDIO_STA_DCRCFAIL) {
 				sd_send_morse("DCRCFAIL");
+			} else {
+				sd_send_morse("WFLAG ");
 			}
-
-			sd_send_morse("WFLAG ");
 			ret = -1;       /* we lose. */
 			break;
 		}
 
-		if (i > 0) {
-			if (!(status & SDIO_STA_TXFIFOF)) {
-				i--;
-
-				uint32_t temp;
-
-				// LE pack the data from RAM, in case data is
-				// unaligned.
-				temp = *(data++);
-				temp |= *(data++) << 8;
-				temp |= *(data++) << 16;
-				temp |= *(data++) << 24;
-
-				SDIO->FIFO = temp;
-			}
-		} else {
-			if (status & SDIO_STA_DBCKEND) {
-				ret = 0;        /* Sounds good! */
-				break;
-			}
+		if (status & SDIO_STA_DBCKEND) {
+			ret = 0;        /* Sounds good! */
+			break;
 		}
 	}
+
+	DMA_Cmd(DMA2_Stream6, DISABLE);
 
 	sd_clearflags();
 
 	if (ret) {
 		sd_cmdtype1(MMC_STOP_TRANSMISSION, 0);
-		sd_send_morse("WFAIL ");
+		//sd_send_morse("WFAIL ");
+	} else {
+		sd_send_morse("HI");
 	}
 
 	return ret;
@@ -485,7 +530,7 @@ int sd_read(uint8_t *data, uint32_t sect_num)
 
 	/* config data transfer and cue up the data xfer state machine */
 	SDIO_DataInitTypeDef data_xfer = {
-		.SDIO_DataTimeOut = 100000000,  /* 1 secondish at full clk */
+		.SDIO_DataTimeOut = 50000000,  /* 1 secondish at full clk */
 		.SDIO_DataLength = 512,
 		.SDIO_DataBlockSize = 9 << 4,
 			.SDIO_TransferDir = SDIO_TransferDir_ToSDIO,
