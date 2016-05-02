@@ -404,7 +404,8 @@ int main() {
 			RCC_AHB1Periph_GPIOB |
 			RCC_AHB1Periph_GPIOC |
 			RCC_AHB1Periph_GPIOD |
-			RCC_AHB1Periph_GPIOE,
+			RCC_AHB1Periph_GPIOE |
+			RCC_AHB1Periph_DMA2,
 			ENABLE);
 
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2 |
