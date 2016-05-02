@@ -88,11 +88,23 @@ DRESULT disk_write(
 
 	const BYTE *wptr = buff;
 
-	for (UINT i = 0; i < count; i++) {
+	/* never do more than 3072 bytes in a txn for now.
+	 * This is enough to get a significant boost over doing 512 at a
+	 * time.
+	 */
+	uint16_t writing = 6;
+
+	for (UINT i = 0; i < count; i += writing) {
 		int retries = 3;
 
+		uint16_t left = count - i;
+
+		if (writing > left) {
+			writing = left;
+		}
+
 retry:;
-		int ret = sd_write(wptr, sector + i);
+		int ret = sd_write(wptr, sector + i, writing);
 
 		if (ret) {
 			if (retries--) {
@@ -102,7 +114,7 @@ retry:;
 			return RES_ERROR;
 		}
 
-		wptr += 512;
+		wptr += 512 * writing;
 	}
 
 	return RES_OK;
