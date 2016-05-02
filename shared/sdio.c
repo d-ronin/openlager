@@ -354,6 +354,11 @@ int sd_init(bool fourbit)
 		return -1;
 	}
 
+	if (sd_cmdtype1(MMC_SET_BLOCKLEN, 512)) {
+		sd_send_morse("BLKLEN ");
+		return -1;
+	}
+
 	// Interrupt configuration would go here... but we don't use it now.
 	// DMA configuration would go here... but we don't use it now.
 
@@ -425,7 +430,6 @@ static void sd_config_dma_tx(const void *src, uint32_t buf_size) {
 	DMA_Cmd(DMA2_Stream6, ENABLE);
 }
 
-
 int sd_write(const uint8_t *data, uint32_t sect_num)
 {
 	if (!(sd_high_cap)) {
@@ -438,14 +442,7 @@ int sd_write(const uint8_t *data, uint32_t sect_num)
 
 	while (sd_checkbusy() > 0);
 
-	int ret = sd_cmdtype1(MMC_SET_BLOCKLEN, 512);
-
-	if (ret) {
-		sd_send_morse("BLKLEN ");
-		return ret;
-	}
-
-	ret = sd_cmdtype1(MMC_WRITE_BLOCK, sect_num);
+	int ret = sd_cmdtype1(MMC_WRITE_BLOCK, sect_num);
 
 	if (ret) {
 		sd_send_morse("WRCMDFAIL ");
@@ -501,7 +498,6 @@ int sd_write(const uint8_t *data, uint32_t sect_num)
 
 	if (ret) {
 		sd_cmdtype1(MMC_STOP_TRANSMISSION, 0);
-		//sd_send_morse("WFAIL ");
 	} else {
 		sd_send_morse("HI");
 	}
@@ -521,13 +517,6 @@ int sd_read(uint8_t *data, uint32_t sect_num)
 		sect_num *= 512;
 	}
 
-	int ret = sd_cmdtype1(MMC_SET_BLOCKLEN, 512);
-
-	if (ret < 0) {
-		sd_send_morse("BLKLEN ");
-		return ret;
-	}
-
 	/* config data transfer and cue up the data xfer state machine */
 	SDIO_DataInitTypeDef data_xfer = {
 		.SDIO_DataTimeOut = 50000000,  /* 1 secondish at full clk */
@@ -540,7 +529,7 @@ int sd_read(uint8_t *data, uint32_t sect_num)
 
 	SDIO_DataConfig(&data_xfer);
 
-	ret = sd_cmdtype1(MMC_READ_SINGLE_BLOCK, sect_num);
+	int ret = sd_cmdtype1(MMC_READ_SINGLE_BLOCK, sect_num);
 
 	if (ret < 0) {
 		sd_send_morse("CMDFAIL ");
