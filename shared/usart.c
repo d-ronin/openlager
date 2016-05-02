@@ -110,6 +110,7 @@ void usart_int_handler()
 const char *usart_receive_chunk(unsigned int timeout,
 		unsigned int preferred_align,
 		unsigned int min_preferred_chunk,
+		unsigned int max_preferred_chunk,
 		unsigned int *bytes_returned)
 {
 	unsigned int expiration = systick_cnt + timeout;
@@ -135,6 +136,10 @@ const char *usart_receive_chunk(unsigned int timeout,
 
 		if (bytes >= min_preferred_chunk) break;
 	} while (systick_cnt < expiration);
+
+	if (bytes > max_preferred_chunk) {
+		bytes = max_preferred_chunk;
+	}
 
 	if ((bytes + unalign) >= preferred_align) {
 		// Fixup for align
