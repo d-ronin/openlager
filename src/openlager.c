@@ -54,6 +54,8 @@ const void *_interrupt_vectors[FPU_IRQn] __attribute((section(".interrupt_vector
 static FATFS fatfs;
 
 static uint32_t cfg_baudrate = 115200;
+static uint32_t cfg_prealloc = 0;
+static uint32_t cfg_prealloc_grow = false;
 
 #define CFGFILE_NAME "lager.cfg"
 
@@ -87,6 +89,21 @@ static int parse_num(const char *cfg_buf, jsmntok_t *t) {
 	}
 
 	return value;
+}
+
+static bool parse_bool(const char *cfg_buf, jsmntok_t *t) {
+	switch (cfg_buf[t->start]) {
+		case 't':
+		case 'T':
+			return true;
+		case 'f':
+		case 'F':
+			return false;
+		default:
+			led_panic("?");
+	}
+
+	return false;	// Unreachable
 }
 
 static inline bool compare_key(const char *cfg_buf, jsmntok_t *t,
@@ -206,9 +223,16 @@ void process_config() {
 			memcpy(cfg_morse, cfg_buf + next->start, len);
 			cfg_morse[len] = 0;
 		} else if (compare_key(cfg_buf, t, "useSPI", JSMN_PRIMITIVE)) {
-			// XXX SPI not supported yet
+			if (parse_bool(cfg_buf, next)) {
+				// XXX SPI not supported yet
+				led_panic("?SPI?");
+			}
 		} else if (compare_key(cfg_buf, t, "baudRate", JSMN_PRIMITIVE)) {
 			cfg_baudrate = parse_num(cfg_buf, next);
+		} else if (compare_key(cfg_buf, t, "preallocBytes", JSMN_PRIMITIVE)) {
+			cfg_prealloc = parse_num(cfg_buf, next);
+		} else if (compare_key(cfg_buf, t, "preallocGrow", JSMN_PRIMITIVE)) {
+			cfg_prealloc_grow = parse_bool(cfg_buf, next);
 		}
 
 		i++;	// Skip the value too on next iter.
@@ -276,12 +300,21 @@ static void open_log(FIL *fil) {
 			led_panic("FILES");
 		}
 
+		// This is likely n^2 or worse with number of config files
 		res = f_open(fil, filename, FA_WRITE | FA_CREATE_NEW);
 	}
 
 	if (res != FR_OK) {
 		// --- .-... --- --.
 		led_panic("OLOG");
+	}
+
+	if (cfg_prealloc > 0) {
+		// Attempt to preallocate contig space for the logfile
+		// Best effort only-- figure it's better to keep going if
+		// we can't alloc it at all.
+
+		f_expand(fil, cfg_prealloc, cfg_prealloc_grow ? 1 : 0);
 	}
 
 }
