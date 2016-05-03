@@ -452,7 +452,7 @@ int sd_write(const uint8_t *data, uint32_t sect_num, uint16_t num_to_write)
 			return ret;
 		}
 	} else {
-		ret = sd_appcmdtype1(MMC_SET_BLOCK_COUNT, num_to_write);
+		ret = sd_appcmdtype1(ACMD_SET_WR_BLK_ERASE_COUNT, num_to_write);
 
 		if (ret) {
 			sd_send_morse("BLKCNT ");

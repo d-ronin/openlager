@@ -88,11 +88,12 @@ DRESULT disk_write(
 
 	const BYTE *wptr = buff;
 
-	/* never do more than 3072 bytes in a txn for now.
+	/* never do more than 6144 bytes in a txn for now.
 	 * This is enough to get a significant boost over doing 512 at a
-	 * time.
+	 * time, while not risking TOO much on a CRC error (1280us wiretime
+	 * at 1bit, 320us at 4
 	 */
-	uint16_t writing = 6;
+	uint16_t writing = 12;
 
 	for (UINT i = 0; i < count; i += writing) {
 		int retries = 3;
