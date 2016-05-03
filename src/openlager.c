@@ -320,7 +320,7 @@ static void open_log(FIL *fil) {
 }
 
 static void do_usart_logging(void) {
-	char buf[100*1024];
+	char buf[125*1024];
 
 	usart_init(cfg_baudrate, buf, sizeof(buf));
 
