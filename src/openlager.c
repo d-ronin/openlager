@@ -376,8 +376,6 @@ static void do_usart_logging(void) {
 }
 
 int main() {
-	/* Keep it really simple for now-- just run from 16MHz RC osc,
-	 * no wait states, etc. */
 	RCC_DeInit();
 
 	// Wait for internal oscillator settle.
@@ -476,11 +474,11 @@ int main() {
 
 	SysTick_Config(96000000/250);	/* 250Hz systick */
 
-	/* Real hardware has LED on PB9 / TIM4_CH4.
-	 * Discovery hardware has blue LED on PD15 which can also be TIM4_CH4.
-	 * Nucleo F411 has LED on PA5 (source)
-	 */
-	led_init_pin(GPIOD, GPIO_Pin_15, false);
+	/* Real hardware has LED on PB9. (sink on) */
+	led_init_pin(GPIOB, GPIO_Pin_9, true);
+
+	/* Discovery hardware has blue LED on PD15. */
+	/* led_init_pin(GPIOD, GPIO_Pin_15, false); */
 
 	if (osc_err) {
 		// blink an error; though this is nonfatal.

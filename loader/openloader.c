@@ -83,10 +83,12 @@ void chk_flashop(FLASH_Status f)
  */
 void try_loader_stuff()
 {
-	/* Real hardware has LED on PB9 / TIM4_CH4.
-	 * Discovery hardware has blue LED on PD15 which can also be TIM4_CH4.
-	 * Nucleo F411 has LED on PA5 (source)
-	 */
+	/* Real hardware has LED on PB9. (sink on) */
+	led_init_pin(GPIOB, GPIO_Pin_9, true);
+
+	/* Discovery hardware has blue LED on PD15. */
+	/* led_init_pin(GPIOD, GPIO_Pin_15, false); */
+
 	led_init_pin(GPIOD, GPIO_Pin_15, false);
 
 	if (sd_init(false)) {
