@@ -89,8 +89,6 @@ void try_loader_stuff()
 	/* Discovery hardware has blue LED on PD15. */
 	/* led_init_pin(GPIOD, GPIO_Pin_15, false); */
 
-	led_init_pin(GPIOD, GPIO_Pin_15, false);
-
 	if (sd_init(false)) {
 		// -.-. .- .-. -..
 		led_send_morse("CARD ");
