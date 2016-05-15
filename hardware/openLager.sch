@@ -37,7 +37,7 @@ encoding utf-8
 Sheet 1 1
 Title "openLager HW"
 Date "2016-04-17"
-Rev "A"
+Rev "B"
 Comp ""
 Comment1 "work. If not, see http://creativecommons.org/licenses/by/4.0/"
 Comment2 "You should have received a copy of the license along with this"
