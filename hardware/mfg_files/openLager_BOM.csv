@@ -3,8 +3,8 @@ C1 C4 ,2,10uF,openLagerFootprints:C_0402,http://datasheet.octopart.com/CL05A106M
 C5 ,1,1uF,openLagerFootprints:C_0402,http://datasheet.octopart.com/GRM-Series-Murata-datasheet-family-27.pdf,Murata,GRM155R70J105MA12D,https://octopart.com/grm155r70j105ma12d-murata-23261089
 C6 ,1,4.7uF,openLagerFootprints:C_0402,http://www.samsungsem.com/kr/support/product-search/mlcc/__icsFiles/afieldfile/2015/08/14/S_CL05A475MQ5NQNC.pdf,Samsung,CL05A475MQ5NQNC,https://octopart.com/cl05a475mq5nqnc-samsung-24957780
 C3 C7 C8 ,3,0.1uF,openLagerFootprints:C_0402,http://datasheet.octopart.com/GRM155R70J104KA01D-Murata-datasheet-14400549.pdf,Murata,GRM155R70J104KA01D,https://octopart.com/grm155r70j104ka01d-murata-17930200
-D1 ,1,APHHS1005CGCK,openLagerFootprints:LED_0603,http://datasheet.octopart.com/APHHS1005CGCK-Kingbright-datasheet-17019150.pdf,Kingbright,APHHS1005CGCK,https://octopart.com/aphhs1005cgck-kingbright-5355571
-D2 ,1,APHHS1005SURCK,openLagerFootprints:LED_0603,http://datasheet.octopart.com/APHHS1005SURCK-Kingbright-datasheet-12529969.pdf,Kingbright,APHHS1005SURCK,https://octopart.com/aphhs1005surck-kingbright-3990646
+D1 ,1,LG L29K-F2J1-24,openLagerFootprints:LED_0603,http://datasheet.octopart.com/LG-L29K-F2J1-24-Osram-datasheet-41480516.pdf,Osram Opto,LG L29K-F2J1-24,https://octopart.com/lg+l29k-f2j1-24-osram+opto-31119809
+D2 ,1,LS L29K-G1J2-1-Z,openLagerFootprints:LED_0603,http://datasheet.octopart.com/Q65110A1757-Osram-Opto-datasheet-31819788.pdf,Osram Opto,LS L29K-G1J2-1-Z,https://octopart.com/ls+l29k-g1j2-1-z-osram+opto-31093939
 J1 ,1,CONN_01X06,openLagerFootprints:Socket_Strip_Straight_1x06,DNP,DNP,DNP,DNP
 J2 ,1,DM3CS-SF,openLagerFootprints:HRS_DM3CS-SF,http://datasheet.octopart.com/DM3CS-SF-Hirose-datasheet-62290579.pdf,Hirose,DM3CS-SF,https://octopart.com/dm3cs-sf-hirose-44525751
 R1 R3 R4 ,3,10k,openLagerFootprints:R_0402,http://datasheet.octopart.com/RC0402JR-0710KL-Yageo-datasheet-10408619.pdf,Yageo,RC0402JR-0710KL,https://octopart.com/rc0402jr-0710kl-yageo-55458470
