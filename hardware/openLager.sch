@@ -928,12 +928,12 @@ L LED D1
 U 1 1 57158033
 P 4050 7500
 F 0 "D1" V 4050 7650 50  0000 C CNN
-F 1 "APHHS1005CGCK" V 3900 7850 50  0000 C CNN
+F 1 "LG L29K-F2J1-24" V 3900 7900 50  0000 C CNN
 F 2 "openLagerFootprints:LED_0603" H 4050 7500 50  0001 C CNN
-F 3 "http://datasheet.octopart.com/APHHS1005CGCK-Kingbright-datasheet-17019150.pdf" H 4050 7500 50  0001 C CNN
-F 4 "Kingbright" H 4050 7500 60  0001 C CNN "Mfg Name"
-F 5 "APHHS1005CGCK" H 4050 7500 60  0001 C CNN "Mfg PN"
-F 6 "https://octopart.com/aphhs1005cgck-kingbright-5355571" H 4050 7500 60  0001 C CNN "Link"
+F 3 "http://datasheet.octopart.com/LG-L29K-F2J1-24-Osram-datasheet-41480516.pdf" H 4050 7500 50  0001 C CNN
+F 4 "Osram Opto" H 4050 7500 60  0001 C CNN "Mfg Name"
+F 5 "LG L29K-F2J1-24" H 4050 7500 60  0001 C CNN "Mfg PN"
+F 6 "https://octopart.com/lg+l29k-f2j1-24-osram+opto-31119809" H 4050 7500 60  0001 C CNN "Link"
 	1    4050 7500
 	0    1    -1   0   
 $EndComp
@@ -942,12 +942,12 @@ L LED D2
 U 1 1 5715835A
 P 4350 4400
 F 0 "D2" H 4350 4250 50  0000 C CNN
-F 1 "APHHS1005SURCK" H 4350 4500 50  0000 C CNN
+F 1 "LS L29K-G1J2-1-Z" H 4350 4500 50  0000 C CNN
 F 2 "openLagerFootprints:LED_0603" H 4350 4400 50  0001 C CNN
-F 3 "http://datasheet.octopart.com/APHHS1005SURCK-Kingbright-datasheet-12529969.pdf" H 4350 4400 50  0001 C CNN
-F 4 "Kingbright" H 4350 4400 60  0001 C CNN "Mfg Name"
-F 5 "APHHS1005SURCK" H 4350 4400 60  0001 C CNN "Mfg PN"
-F 6 "https://octopart.com/aphhs1005surck-kingbright-3990646" H 4350 4400 60  0001 C CNN "Link"
+F 3 "http://datasheet.octopart.com/Q65110A1757-Osram-Opto-datasheet-31819788.pdf" H 4350 4400 50  0001 C CNN
+F 4 "Osram Opto" H 4350 4400 60  0001 C CNN "Mfg Name"
+F 5 "LS L29K-G1J2-1-Z" H 4350 4400 60  0001 C CNN "Mfg PN"
+F 6 "https://octopart.com/ls+l29k-g1j2-1-z-osram+opto-31093939" H 4350 4400 60  0001 C CNN "Link"
 	1    4350 4400
 	-1   0    0    1   
 $EndComp

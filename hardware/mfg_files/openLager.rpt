@@ -1,4 +1,4 @@
-## Footprint report - date 4/26/2016 9:53:39 PM
+## Footprint report - date 5/14/2016 2:38:27 PM
 ## Created by Pcbnew version kicad 4.0.2-stable
 ## Unit = mm, Angle = deg.
 
@@ -6,7 +6,7 @@ $BeginDESCRIPTION
 
 $BOARD
 upper_left_corner 186.709267 94.196100
-lower_right_corner 207.871543 121.981539
+lower_right_corner 208.776305 121.981539
 $EndBOARD
 
 $MODULE "C1"
@@ -992,7 +992,7 @@ $EndMODULE  J1
 
 $MODULE "D1"
 reference "D1"
-value "APHHS1005CGCK"
+value "LG L29K-F2J1-24"
 footprint "openLagerFootprints:LED_0603"
 attribut smd
 position 200.787000 97.536000  orientation 0.00
@@ -1013,7 +1013,7 @@ $EndMODULE  D1
 
 $MODULE "D2"
 reference "D2"
-value "APHHS1005SURCK"
+value "LS L29K-G1J2-1-Z"
 footprint "openLagerFootprints:LED_0603"
 attribut smd
 position 200.787000 98.679000  orientation 0.00
@@ -1085,5 +1085,14 @@ drill  0.000000
 shape_offset  0.000000  0.000000
 $EndPAD
 $EndMODULE  U2
+
+$MODULE "G***"
+reference "G***"
+value "LOGO"
+footprint "dRLogo:test"
+attribut none
+position 204.216000 106.680000  orientation 90.00
+layer front
+$EndMODULE  G***
 
 $EndDESCRIPTION
