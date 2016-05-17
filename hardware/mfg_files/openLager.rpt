@@ -1,4 +1,4 @@
-## Footprint report - date 5/14/2016 2:38:27 PM
+## Footprint report - date 5/16/2016 9:01:13 PM
 ## Created by Pcbnew version kicad 4.0.2-stable
 ## Unit = mm, Angle = deg.
 
@@ -1032,21 +1032,6 @@ shape_offset  0.000000  0.000000
 $EndPAD
 $EndMODULE  D2
 
-$MODULE "TP1"
-reference "TP1"
-value "TEST_1P"
-footprint "openLagerFootprints:Socket_Strip_Straight_1x01"
-attribut none
-position 191.770000 111.760000  orientation 0.00
-layer front
-$PAD "1"
-Shape Rect Layer both
-position  0.000000  0.000000  size  1.727200  2.032000  orientation 0.00
-drill  1.016000
-shape_offset  0.000000  0.000000
-$EndPAD
-$EndMODULE  TP1
-
 $MODULE "U2"
 reference "U2"
 value "SPX3819M5-L-3-3"
@@ -1094,5 +1079,20 @@ attribut none
 position 204.216000 106.680000  orientation 90.00
 layer front
 $EndMODULE  G***
+
+$MODULE "TP1"
+reference "TP1"
+value "TEST_1P"
+footprint "openLagerFootprints:TP"
+attribut none
+position 191.135000 106.045000  orientation 0.00
+layer front
+$PAD "1"
+Shape Circle Layer both
+position  0.000000  0.000000  size  0.685800  0.685800  orientation 0.00
+drill  0.330200
+shape_offset  0.000000  0.000000
+$EndPAD
+$EndMODULE  TP1
 
 $EndDESCRIPTION
