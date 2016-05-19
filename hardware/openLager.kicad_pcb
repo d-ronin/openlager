@@ -3,10 +3,10 @@
   (general
     (links 92)
     (no_connects 0)
-    (area 186.709267 94.1961 207.871543 121.981539)
+    (area 186.709267 94.1961 208.776305 121.981539)
     (thickness 1.6)
-    (drawings 13)
-    (tracks 434)
+    (drawings 12)
+    (tracks 428)
     (zones 0)
     (modules 30)
     (nets 45)
@@ -63,7 +63,7 @@
     (pad_to_mask_clearance 0)
     (pad_to_paste_clearance_ratio -0.1)
     (aux_axis_origin 0 0)
-    (visible_elements 7FFFFF7F)
+    (visible_elements 7FFFFF5F)
     (pcbplotparams
       (layerselection 0x010fc_80000007)
       (usegerberextensions true)
@@ -190,13 +190,13 @@
     (add_net TX_NSS)
   )
 
-  (module openLagerFootprints:C_0402 (layer F.Cu) (tedit 572014F4) (tstamp 5718B8A7)
+  (module openLagerFootprints:C_0402 (layer F.Cu) (tedit 57376E79) (tstamp 5718B8A7)
     (at 200.787 111.6965)
     (descr "Capacitor SMD 0402, reflow soldering, AVX (see smccp.pdf)")
     (tags "capacitor 0402")
     (path /57127D31)
     (attr smd)
-    (fp_text reference C1 (at 1.4605 0) (layer F.SilkS)
+    (fp_text reference C1 (at 1.4605 0) (layer F.SilkS) hide
       (effects (font (size 0.5 0.5) (thickness 0.125)))
     )
     (fp_text value 10uF (at 0 1.7) (layer F.Fab) hide
@@ -219,13 +219,13 @@
     )
   )
 
-  (module openLagerFootprints:C_0402 (layer F.Cu) (tedit 5720157F) (tstamp 5718B8AC)
+  (module openLagerFootprints:C_0402 (layer F.Cu) (tedit 57376E53) (tstamp 5718B8AC)
     (at 196.1515 110.4265 270)
     (descr "Capacitor SMD 0402, reflow soldering, AVX (see smccp.pdf)")
     (tags "capacitor 0402")
     (path /57145609)
     (attr smd)
-    (fp_text reference C3 (at -0.5715 1.8415 270) (layer F.SilkS)
+    (fp_text reference C3 (at -0.5715 1.8415 270) (layer F.SilkS) hide
       (effects (font (size 0.5 0.5) (thickness 0.125)))
     )
     (fp_text value 0.1uF (at 0 1.7 270) (layer F.Fab) hide
@@ -248,13 +248,13 @@
     )
   )
 
-  (module openLagerFootprints:C_0402 (layer F.Cu) (tedit 57201586) (tstamp 5718B8B1)
+  (module openLagerFootprints:C_0402 (layer F.Cu) (tedit 57376E4B) (tstamp 5718B8B1)
     (at 195.199 110.4265 270)
     (descr "Capacitor SMD 0402, reflow soldering, AVX (see smccp.pdf)")
     (tags "capacitor 0402")
     (path /57127CF8)
     (attr smd)
-    (fp_text reference C4 (at -0.5715 1.5875 270) (layer F.SilkS)
+    (fp_text reference C4 (at -0.5715 1.5875 270) (layer F.SilkS) hide
       (effects (font (size 0.5 0.5) (thickness 0.125)))
     )
     (fp_text value 10uF (at 0 1.7 270) (layer F.Fab) hide
@@ -277,13 +277,13 @@
     )
   )
 
-  (module openLagerFootprints:C_0402 (layer F.Cu) (tedit 5720138B) (tstamp 5718B8B6)
+  (module openLagerFootprints:C_0402 (layer F.Cu) (tedit 57376DAC) (tstamp 5718B8B6)
     (at 193.1035 105.41 180)
     (descr "Capacitor SMD 0402, reflow soldering, AVX (see smccp.pdf)")
     (tags "capacitor 0402")
     (path /57128592)
     (attr smd)
-    (fp_text reference C5 (at 2.0955 0 180) (layer F.SilkS)
+    (fp_text reference C5 (at 2.0955 0 180) (layer F.SilkS) hide
       (effects (font (size 0.5 0.5) (thickness 0.125)))
     )
     (fp_text value 1uF (at 0 1.7 180) (layer F.Fab) hide
@@ -306,13 +306,13 @@
     )
   )
 
-  (module openLagerFootprints:C_0402 (layer F.Cu) (tedit 572014B4) (tstamp 5718B8BB)
+  (module openLagerFootprints:C_0402 (layer F.Cu) (tedit 57376DC8) (tstamp 5718B8BB)
     (at 200.787 108.839)
     (descr "Capacitor SMD 0402, reflow soldering, AVX (see smccp.pdf)")
     (tags "capacitor 0402")
     (path /5712A212)
     (attr smd)
-    (fp_text reference C6 (at 1.524 0) (layer F.SilkS)
+    (fp_text reference C6 (at 1.524 0) (layer F.SilkS) hide
       (effects (font (size 0.5 0.5) (thickness 0.125)))
     )
     (fp_text value 4.7uF (at 0 1.7) (layer F.Fab) hide
@@ -335,13 +335,13 @@
     )
   )
 
-  (module openLagerFootprints:C_0402 (layer F.Cu) (tedit 5720150D) (tstamp 5718B8C0)
+  (module openLagerFootprints:C_0402 (layer F.Cu) (tedit 57376E7E) (tstamp 5718B8C0)
     (at 200.787 112.649)
     (descr "Capacitor SMD 0402, reflow soldering, AVX (see smccp.pdf)")
     (tags "capacitor 0402")
     (path /57166D8A)
     (attr smd)
-    (fp_text reference C7 (at 1.4605 0) (layer F.SilkS)
+    (fp_text reference C7 (at 1.4605 0) (layer F.SilkS) hide
       (effects (font (size 0.5 0.5) (thickness 0.125)))
     )
     (fp_text value 0.1uF (at 0 1.7) (layer F.Fab) hide
@@ -364,13 +364,13 @@
     )
   )
 
-  (module openLagerFootprints:C_0402 (layer F.Cu) (tedit 572013C0) (tstamp 5718B8C5)
+  (module openLagerFootprints:C_0402 (layer F.Cu) (tedit 57376D85) (tstamp 5718B8C5)
     (at 195.1355 100.203 180)
     (descr "Capacitor SMD 0402, reflow soldering, AVX (see smccp.pdf)")
     (tags "capacitor 0402")
     (path /57147F54)
     (attr smd)
-    (fp_text reference C8 (at 1.4605 -0.4445 180) (layer F.SilkS)
+    (fp_text reference C8 (at 1.4605 -0.4445 180) (layer F.SilkS) hide
       (effects (font (size 0.5 0.5) (thickness 0.125)))
     )
     (fp_text value 0.1uF (at 0 1.7 180) (layer F.Fab) hide
@@ -393,12 +393,12 @@
     )
   )
 
-  (module openLagerFootprints:HRS_DM3CS-SF (layer B.Cu) (tedit 57201A10) (tstamp 5718B8DD)
+  (module openLagerFootprints:HRS_DM3CS-SF (layer B.Cu) (tedit 57376D73) (tstamp 5718B8DD)
     (at 201.1045 111.1885)
     (path /571409CA)
     (solder_mask_margin 0.1)
     (attr smd)
-    (fp_text reference J2 (at 1.524 -13.335) (layer B.SilkS)
+    (fp_text reference J2 (at 1.524 -13.335) (layer B.SilkS) hide
       (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
     )
     (fp_text value DM3CS-SF (at -7.025 -16.065) (layer B.SilkS) hide
@@ -459,13 +459,13 @@
       (net 2 GND))
   )
 
-  (module openLagerFootprints:R_0402 (layer F.Cu) (tedit 57201399) (tstamp 5718B8ED)
+  (module openLagerFootprints:R_0402 (layer F.Cu) (tedit 57376DB2) (tstamp 5718B8ED)
     (at 192.913 106.4895)
     (descr "Resistor SMD 0402, reflow soldering, Vishay (see dcrcw.pdf)")
     (tags "resistor 0402")
     (path /571284A0)
     (attr smd)
-    (fp_text reference R1 (at -1.8415 0.1905) (layer F.SilkS)
+    (fp_text reference R1 (at -1.8415 0.1905) (layer F.SilkS) hide
       (effects (font (size 0.5 0.5) (thickness 0.125)))
     )
     (fp_text value 10k (at 0 1.8) (layer F.Fab) hide
@@ -488,13 +488,13 @@
     )
   )
 
-  (module openLagerFootprints:R_0402 (layer F.Cu) (tedit 57201445) (tstamp 5718B8F2)
+  (module openLagerFootprints:R_0402 (layer F.Cu) (tedit 57376D6B) (tstamp 5718B8F2)
     (at 204.597 98.2345 180)
     (descr "Resistor SMD 0402, reflow soldering, Vishay (see dcrcw.pdf)")
     (tags "resistor 0402")
     (path /571299EA)
     (attr smd)
-    (fp_text reference R2 (at -0.127 0.889 180) (layer F.SilkS)
+    (fp_text reference R2 (at -0.127 0.889 180) (layer F.SilkS) hide
       (effects (font (size 0.5 0.5) (thickness 0.125)))
     )
     (fp_text value DNP (at 0 1.8 180) (layer F.Fab) hide
@@ -517,13 +517,13 @@
     )
   )
 
-  (module openLagerFootprints:R_0402 (layer F.Cu) (tedit 57201459) (tstamp 5718B8F7)
+  (module openLagerFootprints:R_0402 (layer F.Cu) (tedit 57376D91) (tstamp 5718B8F7)
     (at 204.597 99.187)
     (descr "Resistor SMD 0402, reflow soldering, Vishay (see dcrcw.pdf)")
     (tags "resistor 0402")
     (path /5712884E)
     (attr smd)
-    (fp_text reference R3 (at -0.3175 0.9525) (layer F.SilkS)
+    (fp_text reference R3 (at -0.3175 0.9525) (layer F.SilkS) hide
       (effects (font (size 0.5 0.5) (thickness 0.125)))
     )
     (fp_text value 10k (at 0 1.8) (layer F.Fab) hide
@@ -546,13 +546,13 @@
     )
   )
 
-  (module openLagerFootprints:R_0402 (layer F.Cu) (tedit 572014CD) (tstamp 5718B8FC)
+  (module openLagerFootprints:R_0402 (layer F.Cu) (tedit 57376E72) (tstamp 5718B8FC)
     (at 200.66 109.855)
     (descr "Resistor SMD 0402, reflow soldering, Vishay (see dcrcw.pdf)")
     (tags "resistor 0402")
     (path /571319A7)
     (attr smd)
-    (fp_text reference R4 (at 1.397 0) (layer F.SilkS)
+    (fp_text reference R4 (at 1.397 0) (layer F.SilkS) hide
       (effects (font (size 0.5 0.5) (thickness 0.125)))
     )
     (fp_text value 10k (at 0 1.8) (layer F.Fab) hide
@@ -575,13 +575,13 @@
     )
   )
 
-  (module openLagerFootprints:R_0402 (layer F.Cu) (tedit 57201474) (tstamp 5718B901)
+  (module openLagerFootprints:R_0402 (layer F.Cu) (tedit 57376D9F) (tstamp 5718B901)
     (at 204.978 101.1555 90)
     (descr "Resistor SMD 0402, reflow soldering, Vishay (see dcrcw.pdf)")
     (tags "resistor 0402")
     (path /5716970C)
     (attr smd)
-    (fp_text reference R5 (at -1.3335 0 90) (layer F.SilkS)
+    (fp_text reference R5 (at -1.3335 0 90) (layer F.SilkS) hide
       (effects (font (size 0.5 0.5) (thickness 0.125)))
     )
     (fp_text value 22R (at 0 1.8 90) (layer F.Fab) hide
@@ -604,13 +604,13 @@
     )
   )
 
-  (module openLagerFootprints:R_0402 (layer F.Cu) (tedit 57201545) (tstamp 5718B906)
+  (module openLagerFootprints:R_0402 (layer F.Cu) (tedit 57376E5D) (tstamp 5718B906)
     (at 194.437 112.268 90)
     (descr "Resistor SMD 0402, reflow soldering, Vishay (see dcrcw.pdf)")
     (tags "resistor 0402")
     (path /57169706)
     (attr smd)
-    (fp_text reference R6 (at 0.9525 -0.8255 90) (layer F.SilkS)
+    (fp_text reference R6 (at 0.9525 -0.8255 90) (layer F.SilkS) hide
       (effects (font (size 0.5 0.5) (thickness 0.125)))
     )
     (fp_text value 22R (at 0 1.8 90) (layer F.Fab) hide
@@ -633,13 +633,13 @@
     )
   )
 
-  (module openLagerFootprints:R_0402 (layer F.Cu) (tedit 5720153C) (tstamp 5718B90B)
+  (module openLagerFootprints:R_0402 (layer F.Cu) (tedit 57376E64) (tstamp 5718B90B)
     (at 196.1515 112.268 90)
     (descr "Resistor SMD 0402, reflow soldering, Vishay (see dcrcw.pdf)")
     (tags "resistor 0402")
     (path /57169700)
     (attr smd)
-    (fp_text reference R7 (at 0.3175 -0.8255 90) (layer F.SilkS)
+    (fp_text reference R7 (at 0.3175 -0.8255 90) (layer F.SilkS) hide
       (effects (font (size 0.5 0.5) (thickness 0.125)))
     )
     (fp_text value 22R (at 0 1.8 90) (layer F.Fab) hide
@@ -662,13 +662,13 @@
     )
   )
 
-  (module openLagerFootprints:R_0402 (layer F.Cu) (tedit 5720149B) (tstamp 5718B910)
+  (module openLagerFootprints:R_0402 (layer F.Cu) (tedit 57376E84) (tstamp 5718B910)
     (at 204.47 112.268 90)
     (descr "Resistor SMD 0402, reflow soldering, Vishay (see dcrcw.pdf)")
     (tags "resistor 0402")
     (path /57169712)
     (attr smd)
-    (fp_text reference R8 (at 0 -0.9525 90) (layer F.SilkS)
+    (fp_text reference R8 (at 0 -0.9525 90) (layer F.SilkS) hide
       (effects (font (size 0.5 0.5) (thickness 0.125)))
     )
     (fp_text value 22R (at 0 1.8 90) (layer F.Fab) hide
@@ -691,13 +691,13 @@
     )
   )
 
-  (module openLagerFootprints:R_0402 (layer F.Cu) (tedit 5720159F) (tstamp 5718B915)
+  (module openLagerFootprints:R_0402 (layer F.Cu) (tedit 57376DBA) (tstamp 5718B915)
     (at 195.199 108.9025)
     (descr "Resistor SMD 0402, reflow soldering, Vishay (see dcrcw.pdf)")
     (tags "resistor 0402")
     (path /571586DA)
     (attr smd)
-    (fp_text reference R9 (at -1.27 -0.4445) (layer F.SilkS)
+    (fp_text reference R9 (at -1.27 -0.4445) (layer F.SilkS) hide
       (effects (font (size 0.5 0.5) (thickness 0.125)))
     )
     (fp_text value 47k (at 0 1.8) (layer F.Fab) hide
@@ -720,13 +720,13 @@
     )
   )
 
-  (module openLagerFootprints:R_0402 (layer F.Cu) (tedit 572013AA) (tstamp 5718B91A)
+  (module openLagerFootprints:R_0402 (layer F.Cu) (tedit 57376D7F) (tstamp 5718B91A)
     (at 193.294 99.5045)
     (descr "Resistor SMD 0402, reflow soldering, Vishay (see dcrcw.pdf)")
     (tags "resistor 0402")
     (path /571587C7)
     (attr smd)
-    (fp_text reference R10 (at -1.524 0) (layer F.SilkS)
+    (fp_text reference R10 (at -1.524 0) (layer F.SilkS) hide
       (effects (font (size 0.5 0.5) (thickness 0.125)))
     )
     (fp_text value 47k (at 0 1.8) (layer F.Fab) hide
@@ -749,13 +749,13 @@
     )
   )
 
-  (module openLagerFootprints:R_0402 (layer F.Cu) (tedit 57201411) (tstamp 5718B91F)
+  (module openLagerFootprints:R_0402 (layer F.Cu) (tedit 57376D8C) (tstamp 5718B91F)
     (at 202.946 97.536)
     (descr "Resistor SMD 0402, reflow soldering, Vishay (see dcrcw.pdf)")
     (tags "resistor 0402")
     (path /57158A4B)
     (attr smd)
-    (fp_text reference R12 (at -0.127 2.032) (layer F.SilkS)
+    (fp_text reference R12 (at -0.127 2.032) (layer F.SilkS) hide
       (effects (font (size 0.5 0.5) (thickness 0.125)))
     )
     (fp_text value 330R (at 0 1.8) (layer F.Fab) hide
@@ -778,13 +778,13 @@
     )
   )
 
-  (module openLagerFootprints:R_0402 (layer F.Cu) (tedit 5720142C) (tstamp 5718B924)
+  (module openLagerFootprints:R_0402 (layer F.Cu) (tedit 57376D97) (tstamp 5718B924)
     (at 202.946 98.552 180)
     (descr "Resistor SMD 0402, reflow soldering, Vishay (see dcrcw.pdf)")
     (tags "resistor 0402")
     (path /5715A3A0)
     (attr smd)
-    (fp_text reference R13 (at 0.127 -1.7145 180) (layer F.SilkS)
+    (fp_text reference R13 (at 0.127 -1.7145 180) (layer F.SilkS) hide
       (effects (font (size 0.5 0.5) (thickness 0.125)))
     )
     (fp_text value 330R (at 0 1.8 180) (layer F.Fab) hide
@@ -820,11 +820,11 @@
       (net 2 GND))
   )
 
-  (module openLagerFootprints:TP (layer F.Cu) (tedit 57146A99) (tstamp 5718B931)
+  (module openLagerFootprints:TP (layer F.Cu) (tedit 57376E3C) (tstamp 5718B931)
     (at 202.692 103.4415)
     (path /571566CA)
-    (fp_text reference TP3 (at 0 0.5) (layer F.SilkS) hide
-      (effects (font (size 1 1) (thickness 0.15)))
+    (fp_text reference TP3 (at 0.3175 -0.762) (layer F.SilkS)
+      (effects (font (size 0.5 0.5) (thickness 0.125)))
     )
     (fp_text value TEST_1P (at 0 -0.5) (layer F.Fab) hide
       (effects (font (size 1 1) (thickness 0.15)))
@@ -833,13 +833,13 @@
       (net 43 "Net-(TP3-Pad1)"))
   )
 
-  (module openLagerFootprints:QFN-48-1EP_7x7mm_Pitch0.5mm (layer F.Cu) (tedit 572015EB) (tstamp 5718B935)
+  (module openLagerFootprints:QFN-48-1EP_7x7mm_Pitch0.5mm (layer F.Cu) (tedit 57376D7A) (tstamp 5718B935)
     (at 198.374 104.521)
     (descr "UK Package; 48-Lead Plastic QFN (7mm x 7mm); (see Linear Technology QFN_48_05-08-1704.pdf)")
     (tags "QFN 0.5")
     (path /57174720)
     (attr smd)
-    (fp_text reference U1 (at -0.3175 -4.826) (layer F.SilkS)
+    (fp_text reference U1 (at -0.3175 -4.826) (layer F.SilkS) hide
       (effects (font (size 1 1) (thickness 0.15)))
     )
     (fp_text value STM32F411CEUx (at 0 4.75) (layer F.Fab) hide
@@ -991,12 +991,12 @@
     )
   )
 
-  (module openLagerFootprints:X3-SMD-3.6X1.3X0.8MM (layer F.Cu) (tedit 5720128A) (tstamp 5718B980)
+  (module openLagerFootprints:X3-SMD-3.6X1.3X0.8MM (layer F.Cu) (tedit 57376DA6) (tstamp 5718B980)
     (at 193.167 103.124 270)
     (path /571278BF)
     (solder_mask_margin 0.1)
     (attr smd)
-    (fp_text reference Y1 (at -0.0635 1.8415 270) (layer F.SilkS)
+    (fp_text reference Y1 (at -0.0635 1.8415 270) (layer F.SilkS) hide
       (effects (font (size 0.75 0.75) (thickness 0.1)))
     )
     (fp_text value CSTCE8M00G15L99 (at 0.3175 1.8875 270) (layer F.SilkS) hide
@@ -1060,16 +1060,16 @@
     )
   )
 
-  (module openLagerFootprints:LED_0603 (layer F.Cu) (tedit 572013F9) (tstamp 5718B8CA)
+  (module openLagerFootprints:LED_0603 (layer F.Cu) (tedit 57376D5D) (tstamp 5718B8CA)
     (at 200.787 97.536)
     (descr "LED 0603 smd package")
     (tags "LED led 0603 SMD smd SMT smt smdled SMDLED smtled SMTLED")
     (path /57158033)
     (attr smd)
-    (fp_text reference D1 (at 0 2.159) (layer F.SilkS)
+    (fp_text reference D1 (at 0 2.159) (layer F.SilkS) hide
       (effects (font (size 0.5 0.5) (thickness 0.125)))
     )
-    (fp_text value APHHS1005CGCK (at 0 1.5) (layer F.Fab) hide
+    (fp_text value "LG L29K-F2J1-24" (at 0 1.5) (layer F.Fab) hide
       (effects (font (size 1 1) (thickness 0.15)))
     )
     (fp_line (start -1.1 0.55) (end 0.8 0.55) (layer F.SilkS) (width 0.15))
@@ -1094,16 +1094,16 @@
     )
   )
 
-  (module openLagerFootprints:LED_0603 (layer F.Cu) (tedit 572013F5) (tstamp 5718B8CF)
+  (module openLagerFootprints:LED_0603 (layer F.Cu) (tedit 57376D64) (tstamp 5718B8CF)
     (at 200.787 98.679)
     (descr "LED 0603 smd package")
     (tags "LED led 0603 SMD smd SMT smt smdled SMDLED smtled SMTLED")
     (path /5715835A)
     (attr smd)
-    (fp_text reference D2 (at 0 1.651) (layer F.SilkS)
+    (fp_text reference D2 (at 0 1.651) (layer F.SilkS) hide
       (effects (font (size 0.5 0.5) (thickness 0.125)))
     )
-    (fp_text value APHHS1005SURCK (at 0 1.5) (layer F.Fab) hide
+    (fp_text value "LS L29K-G1J2-1-Z" (at 0 1.5) (layer F.Fab) hide
       (effects (font (size 1 1) (thickness 0.15)))
     )
     (fp_line (start -1.1 0.55) (end 0.8 0.55) (layer F.SilkS) (width 0.15))
@@ -1128,31 +1128,12 @@
     )
   )
 
-  (module openLagerFootprints:Socket_Strip_Straight_1x01 (layer F.Cu) (tedit 57201364) (tstamp 57158A04)
-    (at 191.77 111.76)
-    (descr "Through hole socket strip")
-    (tags "socket strip")
-    (path /5714C675)
-    (fp_text reference TP1 (at 0 -1.5875) (layer F.SilkS)
-      (effects (font (size 0.5 0.5) (thickness 0.125)))
-    )
-    (fp_text value TEST_1P (at 0 -3.1) (layer F.Fab) hide
-      (effects (font (size 1 1) (thickness 0.15)))
-    )
-    (fp_line (start -1.75 -1.75) (end -1.75 1.75) (layer F.CrtYd) (width 0.05))
-    (fp_line (start 1.75 -1.75) (end 1.75 1.75) (layer F.CrtYd) (width 0.05))
-    (fp_line (start -1.75 -1.75) (end 1.75 -1.75) (layer F.CrtYd) (width 0.05))
-    (fp_line (start -1.75 1.75) (end 1.75 1.75) (layer F.CrtYd) (width 0.05))
-    (pad 1 thru_hole rect (at 0 0) (size 1.7272 2.032) (drill 1.016) (layers *.Cu *.Mask F.SilkS)
-      (net 4 NRST))
-  )
-
-  (module openLagerFootprints:SOT95P280X145-5N (layer F.Cu) (tedit 572015CB) (tstamp 5718B978)
+  (module openLagerFootprints:SOT95P280X145-5N (layer F.Cu) (tedit 57376E6B) (tstamp 5718B978)
     (at 198.247 111.0615 90)
     (path /57126B6F)
     (solder_mask_margin 0.1)
     (attr smd)
-    (fp_text reference U2 (at 0.254 2.032 180) (layer F.SilkS)
+    (fp_text reference U2 (at 0.254 2.032 180) (layer F.SilkS) hide
       (effects (font (size 0.5 0.5) (thickness 0.125)))
     )
     (fp_text value SPX3819M5-L-3-3 (at 1.7526 3.4036 90) (layer F.SilkS) hide
@@ -1634,6 +1615,19 @@
       (xy -1.94426 -1.037172) (xy -1.942844 -1.035594)) (layer F.SilkS) (width 0.01))
   )
 
+  (module openLagerFootprints:TP (layer F.Cu) (tedit 57146A99) (tstamp 573A6CA4)
+    (at 191.135 106.045)
+    (path /5714C675)
+    (fp_text reference TP1 (at 0 0.5) (layer F.SilkS) hide
+      (effects (font (size 1 1) (thickness 0.15)))
+    )
+    (fp_text value TEST_1P (at 0 -0.5) (layer F.Fab) hide
+      (effects (font (size 1 1) (thickness 0.15)))
+    )
+    (pad 1 thru_hole circle (at 0 0) (size 0.6858 0.6858) (drill 0.3302) (layers *.Cu *.Mask F.SilkS)
+      (net 4 NRST))
+  )
+
   (gr_text SI (at 204.47 112.649) (layer B.SilkS)
     (effects (font (size 0.5 0.5) (thickness 0.1)) (justify mirror))
   )
@@ -1652,13 +1646,10 @@
   (gr_text SO (at 193.2305 112.7125) (layer B.SilkS)
     (effects (font (size 0.5 0.5) (thickness 0.1)) (justify mirror))
   )
-  (gr_text NRST (at 193.675 111.6965) (layer B.SilkS)
+  (gr_text "openLager\nRev B ©2016\ndRonin - CC BY" (at 196.85 103.886) (layer B.SilkS)
     (effects (font (size 0.5 0.5) (thickness 0.1)) (justify mirror))
   )
-  (gr_text "openLager\nRev A ©2016\ndRonin - CC BY" (at 196.85 103.886) (layer B.SilkS)
-    (effects (font (size 0.5 0.5) (thickness 0.1)) (justify mirror))
-  )
-  (gr_text "openLager\nRev A ©2016\ndRonin - CC BY" (at 195.707 97.7265) (layer F.SilkS)
+  (gr_text "openLager\nRev B ©2016\ndRonin - CC BY" (at 195.707 97.7265) (layer F.SilkS)
     (effects (font (size 0.5 0.5) (thickness 0.1)))
   )
   (gr_line (start 190.5 96.52) (end 190.5 115.57) (angle 90) (layer Edge.Cuts) (width 0.1))
@@ -1678,6 +1669,7 @@
   (segment (start 198.882 114.3) (end 199.39 114.3) (width 0.47625) (layer F.Cu) (net 1) (tstamp 57142D51))
   (segment (start 199.1868 112.1664) (end 199.1868 112.0267) (width 0.508) (layer F.Cu) (net 1))
   (segment (start 199.1868 114.0968) (end 199.39 114.3) (width 0.508) (layer F.Cu) (net 1) (tstamp 57142C72))
+  (via (at 191.5795 112.141) (size 0.6858) (drill 0.3302) (layers F.Cu B.Cu) (net 2))
   (segment (start 197.739 111.0615) (end 196.2365 111.0615) (width 0.47625) (layer F.Cu) (net 2))
   (segment (start 196.2365 111.0615) (end 196.1515 110.9765) (width 0.47625) (layer F.Cu) (net 2) (tstamp 57201AAD))
   (segment (start 196.1515 110.9765) (end 195.199 110.9765) (width 0.47625) (layer F.Cu) (net 2) (tstamp 57201AAE))
@@ -1848,23 +1840,16 @@
   (segment (start 191.9605 106.4895) (end 192.463 106.4895) (width 0.1524) (layer F.Cu) (net 3))
   (segment (start 192.2145 107.1245) (end 191.77 106.68) (width 0.254) (layer F.Cu) (net 3) (tstamp 571452DE))
   (segment (start 193.675 107.1245) (end 192.2145 107.1245) (width 0.254) (layer F.Cu) (net 3) (tstamp 571452DC))
-  (via (at 191.135 106.045) (size 0.6858) (drill 0.3302) (layers F.Cu B.Cu) (net 4))
-  (segment (start 191.897 106.045) (end 191.135 106.045) (width 0.1524) (layer F.Cu) (net 4) (tstamp 571452A9))
-  (segment (start 192.024 105.918) (end 191.897 106.045) (width 0.1524) (layer F.Cu) (net 4) (tstamp 571452A8))
-  (segment (start 192.786 105.918) (end 192.024 105.918) (width 0.1524) (layer F.Cu) (net 4) (tstamp 571452A7))
   (segment (start 193.3575 106.4895) (end 192.786 105.918) (width 0.1524) (layer F.Cu) (net 4) (tstamp 571452A6))
-  (segment (start 190.754 110.744) (end 191.77 111.76) (width 0.1524) (layer B.Cu) (net 4) (tstamp 57158B2D))
-  (segment (start 190.754 106.426) (end 190.754 110.744) (width 0.1524) (layer B.Cu) (net 4) (tstamp 57158B23))
-  (segment (start 191.135 106.045) (end 190.754 106.426) (width 0.1524) (layer B.Cu) (net 4) (tstamp 57158B22))
-  (segment (start 192.024 111.506) (end 191.77 111.76) (width 0.1524) (layer B.Cu) (net 4) (tstamp 57158B13))
+  (segment (start 192.786 105.918) (end 192.024 105.918) (width 0.1524) (layer F.Cu) (net 4) (tstamp 571452A7))
+  (segment (start 192.024 105.918) (end 191.897 106.045) (width 0.1524) (layer F.Cu) (net 4) (tstamp 571452A8))
+  (segment (start 191.897 106.045) (end 191.135 106.045) (width 0.1524) (layer F.Cu) (net 4) (tstamp 571452A9))
   (segment (start 193.363 106.4895) (end 193.363 105.7005) (width 0.1524) (layer F.Cu) (net 4))
   (segment (start 193.363 105.7005) (end 193.6535 105.41) (width 0.1524) (layer F.Cu) (net 4) (tstamp 571452BF))
   (segment (start 193.363 106.4895) (end 193.3575 106.4895) (width 0.1524) (layer F.Cu) (net 4))
   (segment (start 194.974 104.771) (end 194.6315 104.771) (width 0.1524) (layer F.Cu) (net 4))
   (segment (start 194.6315 104.771) (end 193.9925 105.41) (width 0.1524) (layer F.Cu) (net 4) (tstamp 57143FF4))
   (segment (start 193.9925 105.41) (end 193.6535 105.41) (width 0.1524) (layer F.Cu) (net 4) (tstamp 57143FF6))
-  (segment (start 192.3415 111.125) (end 192.3415 111.818) (width 0.1524) (layer F.Cu) (net 4) (tstamp 57145C2E))
-  (segment (start 192.278 111.0615) (end 192.3415 111.125) (width 0.1524) (layer F.Cu) (net 4) (tstamp 57145C2D))
   (segment (start 200.237 108.839) (end 200.237 108.67) (width 0.254) (layer F.Cu) (net 5))
   (segment (start 200.237 108.67) (end 200.124 108.557) (width 0.254) (layer F.Cu) (net 5) (tstamp 571430EA))
   (segment (start 200.124 108.557) (end 200.124 107.921) (width 0.25) (layer F.Cu) (net 5) (tstamp 571430EE))
@@ -2427,25 +2412,27 @@
         (xy 197.769 110.811375) (xy 197.769 111.304963) (xy 197.858137 111.520159) (xy 198.022841 111.684863) (xy 198.238037 111.774)
         (xy 199.381625 111.774) (xy 199.528 111.627625) (xy 199.528 110.665) (xy 197.915375 110.665) (xy 197.769 110.811375)
         (xy 196.74 110.811375) (xy 196.593625 110.665) (xy 194.981 110.665) (xy 194.981 110.685) (xy 194.628 110.685)
-        (xy 194.628 110.665) (xy 193.015375 110.665) (xy 192.870654 110.809721) (xy 192.870654 110.744) (xy 192.854442 110.657841)
-        (xy 192.803522 110.578709) (xy 192.725827 110.525623) (xy 192.6336 110.506946) (xy 191.0627 110.506946) (xy 191.0627 109.605411)
-        (xy 191.148847 109.519264) (xy 191.171018 109.692916) (xy 191.528891 109.784235) (xy 191.894469 109.73165) (xy 191.987982 109.692916)
-        (xy 192.010962 109.512929) (xy 191.5795 109.081467) (xy 191.561787 109.09918) (xy 191.31932 108.856713) (xy 191.337033 108.839)
-        (xy 191.821967 108.839) (xy 192.253429 109.270462) (xy 192.433416 109.247482) (xy 192.524735 108.889609) (xy 192.47215 108.524031)
-        (xy 192.433416 108.430518) (xy 192.253429 108.407538) (xy 191.821967 108.839) (xy 191.337033 108.839) (xy 191.31932 108.821287)
-        (xy 191.561787 108.57882) (xy 191.5795 108.596533) (xy 192.010962 108.165071) (xy 191.987982 107.985084) (xy 191.630109 107.893765)
-        (xy 191.264531 107.94635) (xy 191.171018 107.985084) (xy 191.148847 108.158736) (xy 191.0627 108.072589) (xy 191.0627 106.620337)
-        (xy 191.194652 106.620453) (xy 191.1945 106.793952) (xy 191.281915 107.005512) (xy 191.443636 107.167516) (xy 191.655044 107.2553)
-        (xy 191.883952 107.2555) (xy 192.095512 107.168085) (xy 192.257516 107.006364) (xy 192.3453 106.794956) (xy 192.3455 106.566048)
-        (xy 192.258085 106.354488) (xy 192.096364 106.192484) (xy 191.884956 106.1047) (xy 191.710348 106.104547) (xy 191.7105 105.931048)
-        (xy 191.623085 105.719488) (xy 191.461364 105.557484) (xy 191.249956 105.4697) (xy 191.021048 105.4695) (xy 190.809488 105.556915)
-        (xy 190.7825 105.583856) (xy 190.7825 100.174) (xy 190.8035 100.174) (xy 190.8035 103.505) (xy 190.809606 103.535152)
-        (xy 190.826962 103.560553) (xy 190.852832 103.5772) (xy 190.881 103.5825) (xy 191.77 103.5825) (xy 191.800152 103.576394)
-        (xy 191.825553 103.559038) (xy 191.8422 103.533168) (xy 191.8475 103.505) (xy 191.8475 100.174) (xy 191.920963 100.174)
-        (xy 192.136159 100.084863) (xy 192.300863 99.920159) (xy 192.39 99.704963) (xy 192.39 98.611375) (xy 192.243625 98.465)
-        (xy 191.481 98.465) (xy 191.481 98.485) (xy 191.128 98.485) (xy 191.128 98.465) (xy 191.108 98.465)
-        (xy 191.108 98.112) (xy 191.128 98.112) (xy 191.128 98.092) (xy 191.481 98.092) (xy 191.481 98.112)
-        (xy 192.243625 98.112) (xy 192.39 97.965625) (xy 192.39 96.872037) (xy 192.361197 96.8025) (xy 192.817446 96.8025)
+        (xy 194.628 110.665) (xy 193.015375 110.665) (xy 192.869 110.811375) (xy 192.869 111.304963) (xy 192.905895 111.394037)
+        (xy 192.758216 111.541716) (xy 192.691298 111.641865) (xy 192.691298 111.641866) (xy 192.6678 111.76) (xy 192.6678 112.889)
+        (xy 190.7825 112.889) (xy 190.7825 109.512929) (xy 191.148038 109.512929) (xy 191.171018 109.692916) (xy 191.528891 109.784235)
+        (xy 191.894469 109.73165) (xy 191.987982 109.692916) (xy 192.010962 109.512929) (xy 191.5795 109.081467) (xy 191.148038 109.512929)
+        (xy 190.7825 109.512929) (xy 190.7825 109.254749) (xy 190.905571 109.270462) (xy 191.337033 108.839) (xy 191.821967 108.839)
+        (xy 192.253429 109.270462) (xy 192.433416 109.247482) (xy 192.524735 108.889609) (xy 192.47215 108.524031) (xy 192.433416 108.430518)
+        (xy 192.253429 108.407538) (xy 191.821967 108.839) (xy 191.337033 108.839) (xy 190.905571 108.407538) (xy 190.7825 108.423251)
+        (xy 190.7825 108.165071) (xy 191.148038 108.165071) (xy 191.5795 108.596533) (xy 192.010962 108.165071) (xy 191.987982 107.985084)
+        (xy 191.630109 107.893765) (xy 191.264531 107.94635) (xy 191.171018 107.985084) (xy 191.148038 108.165071) (xy 190.7825 108.165071)
+        (xy 190.7825 106.506334) (xy 190.808636 106.532516) (xy 191.020044 106.6203) (xy 191.194652 106.620453) (xy 191.1945 106.793952)
+        (xy 191.281915 107.005512) (xy 191.443636 107.167516) (xy 191.655044 107.2553) (xy 191.883952 107.2555) (xy 192.095512 107.168085)
+        (xy 192.257516 107.006364) (xy 192.3453 106.794956) (xy 192.3455 106.566048) (xy 192.258085 106.354488) (xy 192.096364 106.192484)
+        (xy 191.884956 106.1047) (xy 191.710348 106.104547) (xy 191.7105 105.931048) (xy 191.623085 105.719488) (xy 191.461364 105.557484)
+        (xy 191.249956 105.4697) (xy 191.021048 105.4695) (xy 190.809488 105.556915) (xy 190.7825 105.583856) (xy 190.7825 100.174)
+        (xy 190.8035 100.174) (xy 190.8035 103.505) (xy 190.809606 103.535152) (xy 190.826962 103.560553) (xy 190.852832 103.5772)
+        (xy 190.881 103.5825) (xy 191.77 103.5825) (xy 191.800152 103.576394) (xy 191.825553 103.559038) (xy 191.8422 103.533168)
+        (xy 191.8475 103.505) (xy 191.8475 100.174) (xy 191.920963 100.174) (xy 192.136159 100.084863) (xy 192.300863 99.920159)
+        (xy 192.39 99.704963) (xy 192.39 98.611375) (xy 192.243625 98.465) (xy 191.481 98.465) (xy 191.481 98.485)
+        (xy 191.128 98.485) (xy 191.128 98.465) (xy 191.108 98.465) (xy 191.108 98.112) (xy 191.128 98.112)
+        (xy 191.128 98.092) (xy 191.481 98.092) (xy 191.481 98.112) (xy 192.243625 98.112) (xy 192.39 97.965625)
+        (xy 192.39 96.872037) (xy 192.361197 96.8025) (xy 192.817446 96.8025)
       )
     )
     (filled_polygon

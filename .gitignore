@@ -4,6 +4,7 @@
 /hardware/*.kicad_pcb-bak
 /hardware/*.net
 /hardware/*.xml
+/hardware/*.xsl
 /hardware/output
 
 # Build cruft
