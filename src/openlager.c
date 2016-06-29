@@ -55,12 +55,17 @@ static FATFS fatfs;
 
 static uint32_t cfg_baudrate = 115200;
 static uint32_t cfg_prealloc = 0;
-static uint32_t cfg_prealloc_grow = false;
+static bool cfg_prealloc_grow = false;
+static bool cfg_bist = false;
+static bool osc_err = false;
+
 
 #define CFGFILE_NAME "lager.cfg"
 
 // Must have non-digit characters before the digit characters.
 #define LOGNAME_FMT "log000.txt"
+
+#define NELEMENTS(x) (sizeof(x) / sizeof(*(x)))
 
 /* Configuration functions */
 static int parse_num(const char *cfg_buf, jsmntok_t *t) {
@@ -233,6 +238,8 @@ void process_config() {
 			cfg_prealloc = parse_num(cfg_buf, next);
 		} else if (compare_key(cfg_buf, t, "preallocGrow", JSMN_PRIMITIVE)) {
 			cfg_prealloc_grow = parse_bool(cfg_buf, next);
+		} else if (compare_key(cfg_buf, t, "builtInSelfTest", JSMN_PRIMITIVE)) {
+			cfg_bist = parse_bool(cfg_buf, next);
 		}
 
 		i++;	// Skip the value too on next iter.
@@ -319,6 +326,107 @@ static void open_log(FIL *fil) {
 
 }
 
+static void fill_lcg(uint32_t *state, uint32_t *buf, int num_words) {
+	register uint32_t s = *state;
+
+	for (register int i=0; i<num_words; i++) {
+		// Constants for mixed congruential generator from
+		// Numerical Recipes.
+		s *= 1664525;
+		s += 1013904223;
+
+		buf[i] = s;
+	}
+
+	*state = s;
+}
+
+static int compare_lcg(uint32_t *state, uint32_t *buf, int num_words) {
+	register uint32_t s = *state;
+
+	for (register int i=0; i<num_words; i++) {
+		// Constants for mixed congruential generator from
+		// Numerical Recipes.
+		s *= 1664525;
+		s += 1013904223;
+
+		if (buf[i] != s) {
+			return -1;
+		}
+	}
+
+	*state = s;
+
+	return 0;
+}
+
+static void do_bist(void) {
+	/* 120K.  To test writing 6 megabytes, write 50 chunks of this */
+	uint32_t buf[120*1024 / sizeof(uint32_t)];
+
+	uint32_t state = 0;
+
+	FRESULT res;
+	UINT cnt;
+	FIL fil;
+
+	f_unlink("bist.txt");
+
+	/* Create a bist text file */
+	res = f_open(&fil, "bist.txt", FA_WRITE | FA_CREATE_NEW);
+	if (res != FR_OK) {
+		led_panic("BISTOPEN");
+	}
+
+
+	for (int i=0; i<50; i++) {
+		fill_lcg(&state, buf, NELEMENTS(buf));
+
+		res = f_write(&fil, buf, sizeof(buf), &cnt);
+
+		if (res != FR_OK) {
+			led_panic("BISTWERR");
+		}
+
+		if (cnt != sizeof(buf)) {
+			led_panic("BISTWSIZE");
+		}
+	}
+
+	f_close(&fil);
+
+	res = f_open(&fil, "bist.txt", FA_READ | FA_OPEN_EXISTING);
+
+	if (res != FR_OK) {
+		led_panic("BISTOPEN2");
+	}
+
+	state = 0;
+	for (int i=0; i<50; i++) {
+		res = f_read(&fil, buf, sizeof(buf), &cnt);
+
+		if (res != FR_OK) {
+			led_panic("BISTRERR");
+		}
+
+		if (cnt != sizeof(buf)) {
+			led_panic("BISTRSIZE");
+		}
+
+		if (compare_lcg(&state, buf, NELEMENTS(buf))) {
+			led_panic("DERR");
+		}
+	}
+
+	res = f_unlink("bist.txt");
+
+	if (res != FR_OK) {
+		led_panic("ERAS");
+	}
+
+	led_panic("SI");	// ... ..
+}
+
 static void do_usart_logging(void) {
 	char buf[125*1024];
 
@@ -383,8 +491,6 @@ int main() {
 
 	// Turn on the external oscillator
 	RCC_HSEConfig(RCC_HSE_ON);
-
-	bool osc_err = false;
 
 	if (RCC_WaitForHSEStartUp() == ERROR) {
 		// Settle for HSI, and flag error.
@@ -496,6 +602,10 @@ int main() {
         }
 
 	process_config();
+
+	if (cfg_bist) {
+		do_bist();
+	}
 
 	do_usart_logging();
 
