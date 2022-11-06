@@ -29,6 +29,8 @@
 
 #include <stdint.h>
 
+void SysTick_Handler(void);
+
 extern volatile uint32_t systick_cnt;
 
 #endif // _SYSTICK_HANDLER_H

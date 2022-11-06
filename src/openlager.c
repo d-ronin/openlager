@@ -511,8 +511,8 @@ int main() {
 	} else {
 		// Program the PLL.
 		RCC_PLLConfig(RCC_PLLSource_HSE,
-				4,	/* PLLM = /4 = 2MHz */
-				96,	/* PLLN = *96 = 192MHz */
+				25,	/* PLLM = /25 = 1MHz */
+				192,	/* PLLN = *192 = 192MHz */
 				2,	/* PLLP = /2 = 96MHz, slight underclock */
 				5	/* PLLQ = /5 = 38.4MHz, underclock SDIO
 					 * (Maximum is 48MHz)  Will get a 19.2MHz
@@ -561,17 +561,6 @@ int main() {
 			RCC_APB2Periph_SDIO,
 			ENABLE);
 
-	/* Seize PA14/PA13 from SWD. */
-	GPIO_InitTypeDef swd_def = {
-		.GPIO_Pin = GPIO_Pin_14 | GPIO_Pin_13,
-		.GPIO_Mode = GPIO_Mode_IN,	// Input, not AF
-		.GPIO_Speed = GPIO_Low_Speed,
-		.GPIO_OType = GPIO_OType_PP,
-		.GPIO_PuPd = GPIO_PuPd_NOPULL
-	};
-
-	GPIO_Init(GPIOA, &swd_def);
-
 	// Program 3 wait states as necessary at >2.7V for 96MHz
 	FLASH_SetLatency(FLASH_Latency_3);
 
@@ -581,7 +570,7 @@ int main() {
 	SysTick_Config(96000000/250);	/* 250Hz systick */
 
 	/* Real hardware has LED on PB9. (sink on) */
-	led_init_pin(GPIOB, GPIO_Pin_9, true);
+	led_init_pin(GPIOC, GPIO_Pin_13, true);
 
 	/* Discovery hardware has blue LED on PD15. */
 	/* led_init_pin(GPIOD, GPIO_Pin_15, false); */
