@@ -32,8 +32,8 @@
 #define OUR_USART USART1
 #define TXPORT GPIOA
 #define TXPIN 15
-#define RXPORT GPIOB
-#define RXPIN 3
+#define RXPORT GPIOA
+#define RXPIN 10
 
 static volatile char *usart_rx_buf;
 static unsigned int usart_rx_buf_len;
@@ -90,7 +90,7 @@ static void usart_rxint()
 
 // RXNE is the interrupt flag
 // RXNEIE is the interrupt enable
-void usart_int_handler()
+void USART1_IRQHandler()
 {
 	if (USART_GetITStatus(OUR_USART, USART_IT_RXNE) == SET) {
 		usart_rxint();

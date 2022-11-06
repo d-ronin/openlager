@@ -36,6 +36,6 @@ const char *usart_receive_chunk(unsigned int timeout,
 		unsigned int max_preferred_chunk,
 		unsigned int *bytes_returned);
 
-void usart_int_handler() __attribute__((interrupt));
+void USART1_IRQHandler();
 
 #endif

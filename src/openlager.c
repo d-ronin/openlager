@@ -47,10 +47,6 @@
 	 _a < _b ? _a : _b; })
 #endif
 
-const void *_interrupt_vectors[FPU_IRQn] __attribute((section(".interrupt_vectors"))) = {
-	[USART1_IRQn] = usart_int_handler
-};
-
 static FATFS fatfs;
 
 static uint32_t cfg_baudrate = 115200;
